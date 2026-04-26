@@ -1,0 +1,208 @@
+<form class="row g-3 mb-4" method="GET" action="/service/dashboard">
+  <div class="col-md-3">
+    <label class="form-label">处理状态</label>
+    <select name="service_status" class="form-select rounded-4">
+      <% serviceStatusOptions.forEach((option) => { %>
+        <option value="<%= option.value %>" <%= currentServiceStatus === option.value ? "selected" : "" %>>
+          <%= option.label %>
+        </option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">商品状态</label>
+    <select name="listing_status" class="form-select rounded-4">
+      <% listingStatusOptions.forEach((option) => { %>
+        <option value="<%= option.value %>" <%= currentListingStatus === option.value ? "selected" : "" %>>
+          <%= option.label %>
+        </option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">关键词</label>
+    <input
+      name="keyword"
+      value="<%= keyword || '' %>"
+      class="form-control rounded-4"
+      placeholder="商品 / 买家 / 卖家 / openid"
+    />
+  </div>
+  <div class="col-md-2 d-flex align-items-end">
+    <button class="btn btn-dark rounded-4 w-100" type="submit">筛选</button>
+  </div>
+</form>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="text-muted small">对话总数</div>
+        <div class="display-6 fw-bold"><%= stats.conversationCount %></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="text-muted small">消息总数</div>
+        <div class="display-6 fw-bold"><%= stats.messageCount %></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="text-muted small">处理中对话</div>
+        <div class="display-6 fw-bold"><%= stats.processingConversationCount %></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="text-muted small">待处理反馈</div>
+        <div class="display-6 fw-bold"><%= stats.pendingFeedbackCount %></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="rounded-4 border p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3 gap-3">
+        <div>
+          <h2 class="h5 mb-1">进行中的交易对话</h2>
+          <div class="text-muted small">展示商品信息、买卖双方和最后一条消息预览</div>
+        </div>
+        <div class="text-muted small">共 <%= recentConversations.length %> 条</div>
+      </div>
+
+      <div class="table-responsive" style="overflow-x: auto;">
+        <table class="table align-middle mb-0" style="min-width: 800px;">
+          <thead>
+            <tr>
+              <th style="width: 25%;">商品</th>
+              <th style="width: 20%;">买家 / 卖家</th>
+              <th style="width: 20%;">最后消息</th>
+              <th style="width: 10%;">状态</th>
+              <th style="width: 15%;">更新时间</th>
+              <th style="width: 20%;" class="text-end">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!recentConversations.length) { %>
+              <tr>
+                <td colspan="6" class="py-5 text-center text-muted">当前还没有交易对话。</td>
+              </tr>
+            <% } %>
+
+            <% recentConversations.forEach((conversation) => { %>
+              <tr>
+                <td>
+                  <div class="fw-semibold text-truncate" style="max-width: 200px;"><%= conversation.listing_title %></div>
+                  <div class="small text-muted">
+                    <%= conversation.district_name %>
+                    ·
+                    <%= conversation.listing_type === "wanted" ? "求购帖" : "出售帖" %>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-truncate" style="max-width: 150px;">买家：<%= conversation.buyer_name %></div>
+                  <div class="small text-muted text-truncate" style="max-width: 150px;">卖家：<%= conversation.seller_name %></div>
+                </td>
+                <td>
+                  <div class="small text-truncate" style="max-width: 180px;"><%= conversation.last_message_preview || "-" %></div>
+                </td>
+                <td>
+                  <span class="status-pill <%= conversation.is_processed ? 'closed' : 'processing' %>">
+                    <%= conversation.is_processed ? "已处理" : "处理中" %>
+                  </span>
+                </td>
+                <td class="small text-muted"><%= conversation.last_active_label %></td>
+                <td class="text-end">
+                  <div class="d-flex justify-content-end gap-1 flex-nowrap">
+                    <a class="btn btn-sm btn-dark rounded-4" href="/service/conversations/<%= conversation.route_id %>">进入</a>
+                    <form method="POST" action="/service/conversations/<%= conversation.route_id %>/processed" style="margin: 0;">
+                      <button class="btn btn-sm <%= conversation.is_processed ? 'btn-outline-secondary' : 'btn-outline-success' %> rounded-4" type="submit">
+                        <%= conversation.is_processed ? "恢复" : "处理" %>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="rounded-4 border p-4 h-100 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">待处理反馈</h2>
+        <div class="text-muted small">客服可直接进入处理</div>
+      </div>
+
+      <div class="d-grid gap-3">
+        <% if (!pendingFeedbacks.length) { %>
+          <div class="rounded-4 bg-light p-4 text-center text-muted">当前没有待处理反馈。</div>
+        <% } %>
+
+        <% pendingFeedbacks.forEach((feedback) => { %>
+          <div class="rounded-4 bg-light p-3">
+            <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+              <div class="fw-semibold"><%= feedback.title || "用户反馈" %></div>
+              <span class="status-pill <%= feedback.status || 'new' %>"><%= feedback.status || "new" %></span>
+            </div>
+            <div class="small text-muted mb-2">
+              <%= feedback.user?.nickname || feedback.openid || feedback.user_id || "-" %>
+              ·
+              <%= new Date(feedback.created_at).toLocaleString("zh-CN") %>
+            </div>
+            <div class="small mb-3"><%= String(feedback.content || feedback.description || "").slice(0, 80) %></div>
+            <a class="btn btn-sm btn-dark rounded-4" href="/service/feedback/<%= feedback.id || feedback._id %>">进入处理</a>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- 新增：私聊对话列表 -->
+    <div class="rounded-4 border p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">🛡️ 我的私聊对话</h2>
+        <div class="text-muted small">与买家/卖家的独立对话</div>
+      </div>
+
+      <% if (!serviceConversations.length) { %>
+        <div class="text-center text-muted py-4">
+          <div class="mb-2">💬</div>
+          <div>当前还没有私聊对话。</div>
+          <div class="small">在交易对话详情页可以发起私聊。</div>
+        </div>
+      <% } %>
+
+      <div class="d-grid gap-3">
+        <% serviceConversations.forEach((sc) => { %>
+          <div class="rounded-4 p-3" style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:1px solid #a5d6a7;">
+            <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+              <div class="fw-semibold text-truncate" style="max-width: 150px;color:#2e7d32;"><%= sc.listing_title || "未知商品" %></div>
+              <span class="badge" style="background:#4caf50;color:#fff;"><%= sc.participant_type === "seller" ? "卖家" : "买家" %></span>
+            </div>
+            <div class="small text-muted mb-2">
+              🛡️ 与 <strong><%= sc.participant_nickname || sc.participant_name %></strong> 的私聊
+              ·
+              <%= new Date(sc.updated_at || Date.now()).toLocaleString("zh-CN") %>
+            </div>
+            <div class="small mb-3 text-truncate"><%= sc.last_message || "暂无消息" %></div>
+            <a class="btn btn-sm rounded-4" style="background:#4caf50;color:#fff;font-weight:600;" href="/service/conversations/<%= sc.original_conversation_id %>/chat?type=<%= sc.participant_type %>">
+              进入私聊
+            </a>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+</div>

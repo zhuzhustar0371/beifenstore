@@ -1,0 +1,538 @@
+<style>
+  .private-chat-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .private-chat-main {
+    border: 1px solid rgba(37, 35, 33, 0.08);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.76);
+    box-shadow: 0 10px 24px rgba(34, 34, 34, 0.05);
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    overflow: hidden;
+    min-height: 600px;
+  }
+
+  .private-chat-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(37, 35, 33, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .private-service-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+    border-bottom: 1px solid #a5d6a7;
+  }
+
+  .private-service-banner-icon {
+    font-size: 22px;
+  }
+
+  .private-service-banner-info {
+    flex: 1;
+  }
+
+  .private-service-banner-name {
+    font-weight: 700;
+    font-size: 13px;
+    color: #2e7d32;
+  }
+
+  .private-service-banner-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: #4caf50;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .private-service-banner-desc {
+    font-size: 11px;
+    color: #66bb6a;
+  }
+
+  .private-chat-messages {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: min(62vh, 600px);
+    display: grid;
+    gap: 16px;
+  }
+
+  .private-message-group {
+    display: grid;
+    gap: 6px;
+  }
+
+  .private-message-time {
+    justify-self: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(37, 35, 33, 0.08);
+    color: rgba(37, 35, 33, 0.58);
+    font-size: 12px;
+  }
+
+  .private-message-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  .private-message-row.mine {
+    justify-content: flex-end;
+  }
+
+  .private-message-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: #ffe351;
+    font-weight: 700;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .private-message-row.mine .private-message-avatar {
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    color: #fff;
+  }
+
+  .private-message-bubble {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 18px 18px 18px 8px;
+    background: #fff7db;
+    box-shadow: 0 4px 12px rgba(34, 34, 34, 0.05);
+  }
+
+  .private-message-row.mine .private-message-bubble {
+    border-radius: 18px 18px 8px 18px;
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+    border: 1px solid #a5d6a7;
+  }
+
+  .private-message-meta {
+    font-size: 11px;
+    color: rgba(37, 35, 33, 0.56);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .private-message-row.mine .private-message-meta {
+    color: #2e7d32;
+  }
+
+  .private-message-service-badge {
+    display: inline-block;
+    padding: 0px 5px;
+    border-radius: 999px;
+    background: #4caf50;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  .private-message-image {
+    display: block;
+    max-width: min(240px, 48vw);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .private-message-image:hover {
+    transform: scale(1.02);
+  }
+
+  .private-chat-composer {
+    padding: 20px;
+    border-top: 1px solid rgba(37, 35, 33, 0.08);
+  }
+
+  .private-composer-tools {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .private-composer-tools button {
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(37, 35, 33, 0.12);
+    background: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .private-composer-tools button:hover {
+    background: #f8f8f4;
+  }
+
+  .private-chat-composer textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+
+  .private-image-preview {
+    display: none;
+    margin-bottom: 12px;
+    padding: 12px;
+    border-radius: 16px;
+    background: #f8f8f4;
+    border: 1px dashed rgba(37, 35, 33, 0.15);
+  }
+
+  .private-image-preview.active {
+    display: block;
+  }
+
+  .private-image-preview-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .private-image-preview img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  .private-image-preview-info {
+    flex: 1;
+  }
+
+  .private-image-preview-name {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .private-image-preview-size {
+    font-size: 11px;
+    color: rgba(37, 35, 33, 0.56);
+  }
+
+  .private-image-preview-remove {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(37, 35, 33, 0.12);
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .private-upload-progress {
+    display: none;
+    margin-bottom: 12px;
+  }
+
+  .private-upload-progress.active {
+    display: block;
+  }
+
+  .private-progress-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(37, 35, 33, 0.08);
+    overflow: hidden;
+  }
+
+  .private-progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #4caf50, #2e7d32);
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+
+  .private-progress-text {
+    font-size: 11px;
+    color: rgba(37, 35, 33, 0.56);
+    margin-top: 4px;
+  }
+
+  .private-chat-sidebar {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+  }
+
+  .private-info-card {
+    padding: 16px;
+    border-radius: 18px;
+    background: #fffdf7;
+    border: 1px solid rgba(37, 35, 33, 0.08);
+  }
+
+  @media (max-width: 900px) {
+    .private-chat-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .private-chat-messages {
+      max-height: min(50vh, 400px);
+    }
+  }
+</style>
+
+<div class="private-chat-layout">
+  <div class="private-chat-main">
+    <header class="private-chat-header">
+      <div>
+        <div class="fw-semibold">与<%= participantName %>的私聊</div>
+        <div class="small text-muted">
+          对话ID: <%= serviceConversation.id %>
+          ·
+          <%= serviceConversation.status === 'open' ? '进行中' : '已关闭' %>
+        </div>
+      </div>
+      <a class="btn btn-outline-dark rounded-4 btn-sm" href="/service/conversations/<%= serviceConversation.original_conversation_id %>">返回交易对话</a>
+    </header>
+
+    <div class="private-service-banner">
+      <div class="private-service-banner-icon">🛡️</div>
+      <div class="private-service-banner-info">
+        <div class="private-service-banner-name">
+          <%= currentUser.nickname || "客服" %>
+          <span class="private-service-banner-badge">官方客服</span>
+        </div>
+        <div class="private-service-banner-desc">您的消息带有客服专属标识，仅<%= participantName %>可见</div>
+      </div>
+    </div>
+
+    <section class="private-chat-messages" id="private-chat-messages">
+      <% if (!messages.length) { %>
+        <div class="text-center text-muted py-5">
+          <div class="mb-2">💬</div>
+          <div>还没有消息，开始对话吧！</div>
+        </div>
+      <% } %>
+
+      <% messages.forEach((message) => { %>
+        <div class="private-message-group">
+          <div class="private-message-time">
+            <%= new Date(message.created_at || Date.now()).toLocaleString('zh-CN') %>
+          </div>
+          <div class="private-message-row <%= message.sender_type === 'service' ? 'mine' : '' %>">
+            <% if (message.sender_type !== 'service') { %>
+              <div class="private-message-avatar"><%= String(message.sender_name || '?').slice(0, 2) %></div>
+            <% } %>
+
+            <div class="private-message-bubble">
+              <div class="private-message-meta">
+                <%= message.sender_name %>
+                <% if (message.sender_type === 'service') { %>
+                  <span class="private-message-service-badge">客服</span>
+                <% } %>
+              </div>
+              <% if (message.message_type === 'image' && message.image_url) { %>
+                <a href="<%= message.image_url %>" target="_blank" rel="noreferrer">
+                  <img class="private-message-image" src="<%= message.image_url %>" alt="图片消息" />
+                </a>
+              <% } else { %>
+                <div><%= message.content || '（空消息）' %></div>
+              <% } %>
+            </div>
+
+            <% if (message.sender_type === 'service') { %>
+              <div class="private-message-avatar">🛡️</div>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+    </section>
+
+    <footer class="private-chat-composer">
+      <form id="privateChatForm" method="POST" action="/service/conversations/<%= serviceConversation.original_conversation_id %>/chat/messages" enctype="multipart/form-data" class="d-grid gap-3">
+        <input type="hidden" name="service_conversation_id" value="<%= serviceConversation.id %>" />
+        <input type="hidden" name="chat_type" value="<%= chatType %>" />
+        <input type="hidden" name="message_type" id="privateMessageType" value="text" />
+
+        <div class="private-composer-tools">
+          <button type="button" onclick="document.getElementById('privateImageInput').click()">📷 图片</button>
+          <input type="file" id="privateImageInput" name="image" accept="image/jpeg,image/jpg,image/png,image/webp" style="display:none;" onchange="handlePrivateImageSelect(event)" />
+        </div>
+
+        <div class="private-image-preview" id="privateImagePreview">
+          <div class="private-image-preview-row">
+            <img id="privateImageThumb" src="" alt="预览" />
+            <div class="private-image-preview-info">
+              <div class="private-image-preview-name" id="privateImageName"></div>
+              <div class="private-image-preview-size" id="privateImageSize"></div>
+            </div>
+            <button type="button" class="private-image-preview-remove" onclick="removePrivateImage()">移除</button>
+          </div>
+        </div>
+
+        <div class="private-upload-progress" id="privateUploadProgress">
+          <div class="private-progress-bar">
+            <div class="private-progress-fill" id="privateProgressFill"></div>
+          </div>
+          <div class="private-progress-text" id="privateProgressText">上传中 0%</div>
+        </div>
+
+        <label for="private-reply" class="form-label fw-semibold mb-0">发送消息给<%= participantName %></label>
+        <textarea
+          id="private-reply"
+          name="content"
+          class="form-control rounded-4"
+          placeholder="输入消息内容..."
+        ></textarea>
+        <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+          <div class="text-muted small">此消息仅<%= participantName %>可见，不会显示在交易对话中。</div>
+          <button class="btn btn-dark rounded-4 px-4" type="submit" id="privateSendBtn">发送消息</button>
+        </div>
+      </form>
+    </footer>
+  </div>
+
+  <aside class="private-chat-sidebar">
+    <div class="private-info-card">
+      <div class="fw-semibold mb-3">对话信息</div>
+      <div class="small text-muted mb-1">对话类型</div>
+      <div class="mb-3">客服 ↔ <%= participantName %></div>
+      <div class="small text-muted mb-1">创建时间</div>
+      <div class="mb-3"><%= new Date(serviceConversation.created_at || Date.now()).toLocaleString('zh-CN') %></div>
+      <div class="small text-muted mb-1">最后更新</div>
+      <div><%= new Date(serviceConversation.updated_at || Date.now()).toLocaleString('zh-CN') %></div>
+    </div>
+
+    <div class="private-info-card">
+      <div class="fw-semibold mb-3">操作提示</div>
+      <div class="small text-muted">
+        <p>· 在此页面发送的消息仅<%= participantName %>可见</p>
+        <p>· 交易双方不会看到此私聊内容</p>
+        <p>· 可以用于协商退款、调解纠纷等</p>
+        <p>· 支持发送文字和图片消息</p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+  (function () {
+    const panel = document.getElementById("private-chat-messages");
+    if (panel) {
+      panel.scrollTop = panel.scrollHeight;
+    }
+
+    let selectedImageFile = null;
+
+    window.handlePrivateImageSelect = function (event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert("图片文件大小不能超过 5MB");
+        event.target.value = "";
+        return;
+      }
+
+      const allowedTypes = ["image/jpeg", "image/jpg", "image/pjpeg", "image/png", "image/webp"];
+      if (!allowedTypes.includes(file.type)) {
+        alert("仅支持 JPG、PNG、WEBP 格式的图片");
+        event.target.value = "";
+        return;
+      }
+
+      selectedImageFile = file;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        document.getElementById("privateImageThumb").src = e.target.result;
+        document.getElementById("privateImageName").textContent = file.name;
+        document.getElementById("privateImageSize").textContent = (file.size / 1024).toFixed(1) + " KB";
+        document.getElementById("privateImagePreview").classList.add("active");
+        document.getElementById("privateMessageType").value = "image";
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.removePrivateImage = function () {
+      selectedImageFile = null;
+      document.getElementById("privateImageInput").value = "";
+      document.getElementById("privateImagePreview").classList.remove("active");
+      document.getElementById("privateMessageType").value = "text";
+    };
+
+    const form = document.getElementById("privateChatForm");
+    form.addEventListener("submit", function (e) {
+      const messageType = document.getElementById("privateMessageType").value;
+      const content = document.getElementById("private-reply").value.trim();
+
+      if (messageType === "text" && !content) {
+        e.preventDefault();
+        return;
+      }
+
+      if (messageType === "image" && selectedImageFile) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const progressEl = document.getElementById("privateUploadProgress");
+        const progressFill = document.getElementById("privateProgressFill");
+        const progressText = document.getElementById("privateProgressText");
+        const sendBtn = document.getElementById("privateSendBtn");
+
+        progressEl.classList.add("active");
+        sendBtn.disabled = true;
+
+        const xhr = new XMLHttpRequest();
+
+        xhr.upload.addEventListener("progress", function (ev) {
+          if (ev.lengthComputable) {
+            const pct = Math.round((ev.loaded / ev.total) * 100);
+            progressFill.style.width = pct + "%";
+            progressText.textContent = "上传中 " + pct + "%";
+          }
+        });
+
+        xhr.addEventListener("load", function () {
+          progressFill.style.width = "100%";
+          progressText.textContent = "上传完成";
+
+          try {
+            if (xhr.status >= 200 && xhr.status < 400) {
+              window.location.reload();
+            } else {
+              alert("发送失败，请重试");
+              sendBtn.disabled = false;
+            }
+          } catch (err) {
+            alert("发送失败");
+            sendBtn.disabled = false;
+          }
+        });
+
+        xhr.addEventListener("error", function () {
+          progressText.textContent = "上传失败";
+          sendBtn.disabled = false;
+        });
+
+        xhr.open("POST", form.action);
+        xhr.send(formData);
+      }
+    });
+  })();
+</script>

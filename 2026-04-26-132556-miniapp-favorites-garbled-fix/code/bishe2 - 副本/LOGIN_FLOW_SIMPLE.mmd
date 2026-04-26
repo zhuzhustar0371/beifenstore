@@ -1,0 +1,23 @@
+sequenceDiagram
+    autonumber
+    participant U as 用户
+    participant M as 小程序
+    participant W as 微信服务器
+    participant F as 云函数
+    participant D as 数据库
+
+    U->>M: 点击微信登录
+    M->>W: wx.login 获取 code
+    W-->>M: 返回 code
+    M->>F: 调用云函数
+    F->>W: code 换 openid
+    W-->>F: 返回 openid
+    F->>D: 查询用户
+    alt 用户不存在
+        D-->>F: 无记录
+        F->>D: 创建用户
+    else 用户存在
+        D-->>F: 返回用户
+    end
+    F-->>M: 返回 Token
+    M-->>U: 登录成功
