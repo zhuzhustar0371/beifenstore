@@ -1,2 +1,0 @@
-﻿G:\zhiximini\backend-api\src\main\java\com\zhixi\backend\service\WechatPayService.java:338: String url = "https://api.mch.weixin.qq.com/v3/fund-app/mch-transfer/transfer-bills";
-G:\zhiximini\backend-api\src\main\java\com\zhixi\backend\service\WechatPayService.java:352: String url = "https://api.mch.weixin.qq.com/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/" + encodedOutBillNo;
