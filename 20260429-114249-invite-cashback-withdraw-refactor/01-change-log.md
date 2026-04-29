@@ -100,11 +100,62 @@
 ## 5. 当前发布状态
 
 - 本地修改已完成并通过构建验证。
-- 尚未执行正式云端构建、发布上线。
+- 三个代码仓库已提交并推送远端分支 `release/20260423-invite-cashback-linkage`。
+- 后端与管理端静态资源已发布上线。
 - 尚未触发异常回退。
+
+## 7. 代码提交与推送
+
+- `backend-api`：`474c41e feat: refactor invite cashback withdrawals`，已推送。
+- `wechat-app`：`cc8a9b4 feat: update cashback withdrawal modes`，已推送。
+- `zhixi-website`：`cde64ff feat: support cashback withdrawal approvals`，已推送。
+- 说明：`zhixi-website` 发布前已有 `admin-frontend/src/styles.css`、`admin-frontend/src/views/OrdersPage.vue` 未提交改动，本次按当前工作状态一并保留提交；未跟踪目录 `frontend-dist-upload/` 未提交。
+
+## 8. 后端发布记录
+
+- 发布时间：`2026-04-29 13:36:39 +08:00`
+- 服务器：`ubuntu@43.139.76.37`
+- 线上旧包备份：`/home/ubuntu/apps/backend-api/backups/app-20260429133639-before-invite-cashback-withdraw.jar`
+- 发布步骤：
+  1. 本地执行 `mvn -q -DskipTests package`
+  2. 上传 `backend-api\target\backend-1.0.0.jar`
+  3. 备份并替换 `/home/ubuntu/apps/backend-api/app.jar`
+  4. 重启 `zhixi-backend.service`
+  5. 健康检查
+- 发布中现象：
+  - 首次 3 秒健康检查时 8080 尚未监听，随后等待复查成功，无需回退。
+- 发布后验证：
+  - `http://127.0.0.1:8080/api/health` 返回 `UP`
+  - `https://api.mashishi.com/api/health` 返回 `UP`
+  - `https://api.mashishi.com/api/cashbacks/rules` 返回邀请规则 `每邀请1人 / 被邀请人首单 / 100%`
+
+## 9. 管理端静态资源发布记录
+
+- 发布时间：`2026-04-29 13:38:21 +08:00`
+- 线上旧静态目录备份：`/home/ubuntu/zhixi/backups/current-20260429133821-before-invite-cashback-withdraw`
+- 发布步骤：
+  1. 本地构建官网前端：`npm run build`
+  2. 本地构建管理端前端：`npm run build`
+  3. 打包上传到 `/home/ubuntu/zhixi/releases`
+  4. 备份并替换 `/home/ubuntu/zhixi/current`
+  5. `nginx -t`
+  6. `systemctl reload nginx`
+- 发布中异常：
+  - 第一次远端命令中 `2>/dev/null` 被 PowerShell 当成本地重定向解析，命令未完成。
+  - 去掉该重定向后重新执行成功，无需回退。
+- 发布后验证：
+  - `https://mashishi.com/` 返回 HTTP 200
+  - `https://mashishi.com/admin/` 返回 HTTP 200
+
+## 10. beifenstore 日志同步
+
+- 初次日志提交：`63d2175 log: invite cashback withdraw refactor progress 20260429-114249`
+- 推送结果：成功推送到 `git@github.com:zhuzhustar0371/beifenstore.git`
 
 ## 6. 回退依据
 
 - 后端服务器包：`G:\store\20260429-114249-invite-cashback-withdraw-refactor\server\app.jar`
+- 后端线上发布前备份：`/home/ubuntu/apps/backend-api/backups/app-20260429133639-before-invite-cashback-withdraw.jar`
 - 备份源码：`G:\store\20260429-114249-invite-cashback-withdraw-refactor\code`
+- 管理端静态目录备份：`/home/ubuntu/zhixi/backups/current-20260429133821-before-invite-cashback-withdraw`
 - beifenstore 远端备份提交：`afee038`
