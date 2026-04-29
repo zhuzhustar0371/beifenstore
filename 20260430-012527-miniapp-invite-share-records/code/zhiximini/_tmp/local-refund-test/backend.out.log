@@ -1,0 +1,30 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2026-04-23T00:10:45.819+08:00  INFO 46076 --- [zhixi-backend] [           main] c.zhixi.backend.ZhixiBackendApplication  : Starting ZhixiBackendApplication v1.0.0 using Java 24.0.1 with PID 46076 (G:\zhiximini\backend-api\target\backend-1.0.0.jar started by 朱鑫 in G:\zhiximini\backend-api)
+2026-04-23T00:10:45.827+08:00  INFO 46076 --- [zhixi-backend] [           main] c.zhixi.backend.ZhixiBackendApplication  : No active profile set, falling back to 1 default profile: "default"
+2026-04-23T00:10:57.981+08:00  INFO 46076 --- [zhixi-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-04-23T00:10:58.012+08:00  INFO 46076 --- [zhixi-backend] [           main] o.a.catalina.core.AprLifecycleListener   : Loaded Apache Tomcat Native library [2.0.8] using APR version [1.7.4].
+2026-04-23T00:10:58.049+08:00  INFO 46076 --- [zhixi-backend] [           main] o.a.catalina.core.AprLifecycleListener   : OpenSSL successfully initialized [OpenSSL 3.0.14 4 Jun 2024]
+2026-04-23T00:10:58.293+08:00  INFO 46076 --- [zhixi-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-23T00:10:58.295+08:00  INFO 46076 --- [zhixi-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2026-04-23T00:10:58.828+08:00  INFO 46076 --- [zhixi-backend] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-04-23T00:10:58.831+08:00  INFO 46076 --- [zhixi-backend] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 12671 ms
+2026-04-23T00:11:06.308+08:00  INFO 46076 --- [zhixi-backend] [           main] c.z.backend.config.UploadStorageSupport  : Using upload directory: G:\zhiximini\_tmp\local-refund-test\uploads
+2026-04-23T00:11:08.343+08:00  INFO 46076 --- [zhixi-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-04-23T00:11:08.431+08:00  INFO 46076 --- [zhixi-backend] [           main] c.zhixi.backend.ZhixiBackendApplication  : Started ZhixiBackendApplication in 25.367 seconds (process running for 28.225)
+2026-04-23T00:11:08.501+08:00  INFO 46076 --- [zhixi-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-23T00:11:16.021+08:00  INFO 46076 --- [zhixi-backend] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn1: url=jdbc:h2:file:G:/zhiximini/_tmp/local-refund-test/db/refunddb user=SA
+2026-04-23T00:11:16.065+08:00  INFO 46076 --- [zhixi-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-23T00:11:16.220+08:00  INFO 46076 --- [zhixi-backend] [           main] c.z.b.config.DatabaseMigrationRunner     : Ensure table user_addresses completed.
+2026-04-23T00:11:16.773+08:00  INFO 46076 --- [zhixi-backend] [           main] c.z.b.config.DatabaseMigrationRunner     : Backfilled product sales_count from paid orders.
+2026-04-23T00:11:26.856+08:00  INFO 46076 --- [zhixi-backend] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-23T00:11:26.857+08:00  INFO 46076 --- [zhixi-backend] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-04-23T00:11:26.864+08:00  INFO 46076 --- [zhixi-backend] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms

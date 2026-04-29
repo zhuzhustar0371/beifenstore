@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>小程序发货信息管理服务 | 微信开放文档</title>
+    <meta name="description" content="微信开发者平台文档">
+    <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="keywords" content="微信官方文档">
+  <link rel="shortcut icon" type="image/x-icon" href="https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico">
+  <link rel="mask-icon" color="#4C4C4C" href="https://res.wx.qq.com/a/wx_fed/assets/res/MjliNWVm.svg">
+  <link rel="apple-touch-icon-precomposed" href="https://res.wx.qq.com/a/wx_fed/assets/res/OTE0YTAw.png">
+  <script>
+(function () {
+  'use strict';
+
+  const SCRIPT_URLs = [
+      'https://dldir1.qq.com/WechatWebDev/devPlatform/px.min.js',
+      'https://dev.weixin.qq.com/platform-console/proxy/assets/tel/px.min.js',
+  ];
+  const param = {
+      maskMode: 'no-mask', // 隐私策略, all-mask 或 no-mask, 详见：https://dev.weixin.qq.com/docs/analysis/sdk/docs.html
+      recordCanvas: false,  // 若要采集canvas, 设为true
+      projectId: 'wxef34f91ddab0c534-0HLdQNKAk-dzsFsA', // 项目 ID，需替换为体验分析项目 ID
+      iframe: false, // 是否采集 iframe 页面
+      console: true, // 是否采集 console 输出的错误日志
+      network: true, // 是否采集网络错误
+  };
+  function loadScript(url) {
+      return new Promise((resolve, reject) => {
+          const scriptEle = document.createElement('script');
+          scriptEle.type = 'text/javascript';
+          scriptEle.async = true;
+          scriptEle.src = url;
+          scriptEle.onload = () => {
+              resolve(url);
+          };
+          scriptEle.onerror = () => {
+              reject(new Error('Script load error'));
+          };
+          document.head.appendChild(scriptEle);
+      });
+  }
+  async function main() {
+      try {
+          sessionStorage.setItem('wxobs_start_timestamp', String(Date.now()));
+          const fastestUrl = await Promise.race(SCRIPT_URLs.map(url => loadScript(url)));
+          window.__startPX && window.__startPX(param);
+      }
+      catch (error) {
+          console.error('Error loading scripts:', error);
+      }
+  }
+  main();
+
+})();
+        </script>
+    
+    <link rel="preload" href="https://res.wx.qq.com/wxdoc/dist/assets/css/0.styles.0c823ac3.css" as="style"><link rel="preload" href="https://res.wx.qq.com/wxdoc/dist/assets/js/app.ecb7fcef.js" as="script"><link rel="preload" href="https://res.wx.qq.com/wxdoc/dist/assets/js/2684.3490ac4c.js" as="script">
+    <link rel="stylesheet" href="https://res.wx.qq.com/wxdoc/dist/assets/css/0.styles.0c823ac3.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><div class="theme-container"><header class="navbar navbar_with-link"><div class="navbar__left"><a href="/doc/" class="home-link"><div class="logo__wrp"><span class="logo__icon"></span></div></a> <span class="dot"></span> <div class="dropdown-wrapper"><a class="dropdown-title"><span class="title">小程序</span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item selected"><!----> <a href="/miniprogram/dev/framework/" class="nav-link external">
+  小程序
+</a></li><li class="dropdown-item"><!----> <a href="/minigame/introduction/" class="nav-link external">
+  小游戏
+</a></li><li class="dropdown-item"><!----> <a href="/doc/subscription/guide/" class="nav-link external">
+  公众号
+</a></li><li class="dropdown-item"><!----> <a href="/doc/service/guide/" class="nav-link external">
+  服务号
+</a></li><li class="dropdown-item"><!----> <a href="/doc/oplatform/open/intro.html" class="nav-link external">
+  开放平台
+</a></li><li class="dropdown-item"><!----> <a href="https://work.weixin.qq.com/api/doc" class="nav-link external">
+  企业微信
+</a></li><li class="dropdown-item"><!----> <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012062524" class="nav-link external">
+  微信支付
+</a></li><li class="dropdown-item"><!----> <a href="/doc/channels/" class="nav-link external">
+  视频号
+</a></li><li class="dropdown-item"><!----> <a href="/doc/store/shop/" class="nav-link external">
+  微信小店
+</a></li><li class="dropdown-item"><!----> <a href="/doc/aispeech/platform/INTRODUCTION.html" class="nav-link external">
+  智能对话
+</a></li><li class="dropdown-item"><!----> <a href="/doc/xwei/xiaowei-introduction/Introduction.html" class="nav-link external">
+  腾讯小微
+</a></li><li class="dropdown-item"><!----> <a href="/doc/edu/introduction.html" class="nav-link external">
+  教育平台
+</a></li></ul></div></div> <div class="navbar__center"><nav class="nav-links"><div class="nav-item selected"><a href="/miniprogram/dev/framework/" class="nav-link external">
+  开发
+</a></div><div class="nav-item"><a href="/miniprogram/introduction/" class="nav-link external">
+  介绍
+</a></div><div class="nav-item"><a href="/miniprogram/design/" class="nav-link external">
+  设计
+</a></div><div class="nav-item"><a href="/miniprogram/product/" class="nav-link external">
+  运营
+</a></div><div class="nav-item"><a href="/miniprogram/analysis/wedata/intro/" class="nav-link external">
+  数据
+</a></div><div class="nav-item"><a href="/miniprogram/security/basic/" class="nav-link external">
+  安全
+</a></div></nav></div> <div class="navbar__right"><nav class="nav-links"><div class="nav-item community-item"><a href="https://developers.weixin.qq.com/community/develop/mixflow" target="_blank" class="nav-link external">
+  社区
+</a></div><div class="nav-item community-item"><a href="https://developers.weixin.qq.com/community/business" target="_blank" class="nav-link external">
+  学堂
+</a></div></nav> <ul class="lang-tab"><li class="lang-tab__icon"><img src="https://res.wx.qq.com/t/components/icons/base/translate_regular.svg"></li></ul> <div class="search__wrp-flex"><div class="search__input"><div class="weui-desktop-search"><button class="weui-desktop-icon-btn weui-desktop-search__btn weui-desktop-icon-btn__width"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.4529 16.4014C14.2428 17.4001 12.6915 18 11 18C7.134 18 4 14.866 4 11C4 7.134 7.134 4 11 4C14.866 4 18 7.134 18 11C18 12.7425 17.3633 14.3363 16.3099 15.5614L20.4243 19.6757L19.5757 20.5243L15.4529 16.4014ZM16.8 11C16.8 14.2033 14.2033 16.8 11 16.8C7.79674 16.8 5.2 14.2033 5.2 11C5.2 7.79676 7.79674 5.20001 11 5.20001C14.2033 5.20001 16.8 7.79676 16.8 11Z" fill="black"></path></svg></button></div> <a href="javascript:;" class="search-back__btn">取消</a></div> <div class="reco-list__wrp" style="display:none;"><ul class="reco__list"></ul> <div class="show-more"><a href="/doc/search?source=more&amp;query=&amp;doc_type=miniprogram&amp;jumpbackUrl=%2Fdoc%2F" class="reco-item__link">查看更多 </a></div></div> <div class="reco-list__wrp" style="display:none;"><div class="show-more"><a href="/doc/search?source=more&amp;query=&amp;doc_type=miniprogram&amp;jumpbackUrl=%2Fdoc%2F" class="reco-item__link">在小程序下暂无结果，查看其它业务相关内容 &gt; </a></div></div></div></div></header> <div class="subnavbar"><ul class="subnavbar__list"><li class="subnavbar__item" style="display:;"><div class="dropdown-subnavbar-title"><a href="/miniprogram/dev/framework/" target="_self">指南</a> <!----></div> <!----></li><li class="subnavbar__item" style="display:;"><div class="dropdown-subnavbar-title"><a href="/miniprogram/dev/reference/" target="_self">框架</a> <!----></div> <!----></li><li class="subnavbar__item" style="display:;"><div class="dropdown-subnavbar-title"><a href="/miniprogram/dev/component/" target="_self">组件</a> <!----></div> <!----></li><li class="subnavbar__item" style="display:;"><div class="dropdown-subnavbar-title"><a href="/miniprogram/dev/api/" target="_self">API</a> <!----></div> <!----></li><li class="subnavbar__item" style="display:;"><div class="dropdown-subnavbar-title"><a href="/miniprogram/dev/server/API/" target="_self">服务端</a> <!----></div> <!----></li><li class="subnavbar__item selected dropdown-subnavbar" style="display:;"><div class="dropdown-subnavbar-title"><a>平台能力 · 商业能力</a> <span class="arrow right dropdown-subnavbar-select"></span></div> <ul class="dropdown-subnavbar-ul"><li class="dropdown-item" style="display:;"><a href="/miniprogram/dev/platform-capabilities/industry/" target="_self" class="nav-link external">
+            行业能力
+          </a></li><li class="dropdown-item" style="display:;"><a href="/miniprogram/dev/platform-capabilities/business-capabilities/" target="_self" class="nav-link external">
+            商业能力
+          </a></li><li class="dropdown-item" style="display:;"><a href="/miniprogram/dev/platform-capabilities/miniapp/intro/intro" target="_self" class="nav-link external">
+            多端能力
+          </a></li><li class="dropdown-item" style="display:;"><a href="/miniprogram/dev/platform-capabilities/service-market/" target="_self" class="nav-link external">
+            服务市场
+          </a></li><li class="dropdown-item" style="display:;"><a href="/miniprogram/dev/platform-capabilities/cityservice/" target="_self" class="nav-link external">
+            城市服务
+          </a></li><li class="dropdown-item" style="display:;"><a href="/miniprogram/dev/platform-capabilities/charge/" target="_self" class="nav-link external">
+            付费能力
+          </a></li><li class="dropdown-item" style="display:;"><a href="/miniprogram/dev/platform-capabilities/extended/" target="_self" class="nav-link external">
+            拓展能力
+          </a></li></ul></li><li class="subnavbar__item" style="display:;"><div class="dropdown-subnavbar-title"><a href="/miniprogram/dev/devtools/devtools" target="_self">工具</a> <!----></div> <!----></li><li class="subnavbar__item dropdown-subnavbar" style="display:;"><div class="dropdown-subnavbar-title"><a>云服务</a> <span class="arrow right dropdown-subnavbar-select"></span></div> <ul class="dropdown-subnavbar-ul"><li class="dropdown-item" style="display:;"><a href="/miniprogram/dev/wxcloudservice/wxcloud/basis/getting-started" target="_self" class="nav-link external">
+            云开发
+          </a></li><li class="dropdown-item" style="display:;"><a href="/miniprogram/dev/wxcloudservice/wxcloudrun/src/" target="_self" class="nav-link external">
+            云托管
+          </a></li></ul></li><li class="subnavbar__item" style="display:;"><div class="dropdown-subnavbar-title"><a href="/miniprogram/dev/framework/release/" target="_self">更新日志</a> <!----></div> <!----></li></ul></div> <div class="mobile-links__wrp"><div class="mobile-links_mobile"><a href="javascript:;" class="mobile-links__btn">开发</a></div> <div class="mobile-links__panel"><div class="links-panel__bd"><nav class="nav-links"><div class="nav-item selected"><a href="/miniprogram/dev/framework/" class="nav-link external">
+  开发
+</a></div><div class="nav-item"><a href="/miniprogram/introduction/" class="nav-link external">
+  介绍
+</a></div><div class="nav-item"><a href="/miniprogram/design/" class="nav-link external">
+  设计
+</a></div><div class="nav-item"><a href="/miniprogram/product/" class="nav-link external">
+  运营
+</a></div><div class="nav-item"><a href="/miniprogram/analysis/wedata/intro/" class="nav-link external">
+  数据
+</a></div><div class="nav-item"><a href="/miniprogram/security/basic/" class="nav-link external">
+  安全
+</a></div></nav></div> <div class="links-panel__ft"><ul class="lang-tab"><li class="lang-tab__icon"><img src="https://res.wx.qq.com/t/components/icons/base/translate_regular.svg"></li></ul></div></div> <div><div class="weui-mask" style="display:none;"></div> <div class="weui-actionsheet "><!----> <div class="weui-actionsheet__menu"><div class="weui-actionsheet__cell">中文</div><div class="weui-actionsheet__cell">EN</div></div> <div class="weui-actionsheet__action"><div class="weui-actionsheet__cell">取消</div></div></div></div></div> <a href="javascript:;" class="mobile-search-btn"></a> <div class="main-container" style="margin-top:144px;"><div class="main-contontaier__bd" style="min-height:0px;"><div class="sidebar__wrp"><div class="sidebar-cell_mobile"><li class="subnavbar__item selected"><a href="javascript:;" target="_self">平台能力</a></li></div> <aside class="sidebar" style="top:144px;"> <div class="TreeNavigation"><div class="NavigationLevel NavigationLevel--level-0"><ul><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/" class="NavigationItem__router-link router-link-active">
+      介绍
+    <!----></a> <!----> <!----></span></li><li><div class="NavigationLevel NavigationLevel--closed NavigationLevel--level-1"><div class="NavigationLevel__parent"><span class="NavigationToggle NavigationToggle--closed"><span class="NavigationToggle__icon NavigationToggle__icon--closed"></span></span> <span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/guarantee/complaint.html" class="NavigationItem__router-link">
+      交易保障
+    <!----></a> <!----> <!----></span></div> <ul class="NavigationLevel__children"><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/guarantee/complaint.html" class="NavigationItem__router-link">
+      交易类投诉处理
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/guarantee/shopping_guarantee_introduction.html" class="NavigationItem__router-link">
+      交易保障标产品说明
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/guarantee/official_flagship.html" class="NavigationItem__router-link">
+      官方旗舰标产品说明
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/guarantee/shopping-guarantee.html" class="NavigationItem__router-link">
+      交易保障标展示组件
+    <!----></a> <!----> <!----></span></li></ul></div></li><li><div class="NavigationLevel NavigationLevel--closed NavigationLevel--level-1"><div class="NavigationLevel__parent"><span class="NavigationToggle NavigationToggle--closed"><span class="NavigationToggle__icon NavigationToggle__icon--closed"></span></span> <span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/order-shipping/order-shipping.html" aria-current="page" class="NavigationItem__router-link router-link-exact-active router-link-active">
+      小程序发货信息管理服务
+    <!----></a> <!----> <!----></span></div> <ul class="NavigationLevel__children"><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/order-shipping/order-shipping.html" aria-current="page" class="NavigationItem__router-link router-link-exact-active router-link-active">
+      能力指南
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/order-shipping/order-shipping-half.html" class="NavigationItem__router-link">
+      小程序确认收货组件
+    <!----></a> <!----> <!----></span></li></ul></div></li><li><div class="NavigationLevel NavigationLevel--closed NavigationLevel--level-1"><div class="NavigationLevel__parent"><span class="NavigationToggle NavigationToggle--closed"><span class="NavigationToggle__icon NavigationToggle__icon--closed"></span></span> <span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/globalpay/intro.html" class="NavigationItem__router-link">
+      全球收银台
+    <!----></a> <!----> <!----></span></div> <ul class="NavigationLevel__children"><li><div class="NavigationLevel NavigationLevel--closed NavigationLevel--level-2"><div class="NavigationLevel__parent"><span class="NavigationToggle NavigationToggle--closed"><span class="NavigationToggle__icon NavigationToggle__icon--closed"></span></span> <span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/globalpay/intro.html" class="NavigationItem__router-link">
+      介绍
+    <!----></a> <!----> <!----></span></div> <ul class="NavigationLevel__children"><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/globalpay/intro.html" class="NavigationItem__router-link">
+      服务概览及开放范围
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/globalpay/payment_method.html" class="NavigationItem__router-link">
+      支付方式
+    <!----></a> <!----> <!----></span></li></ul></div></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/globalpay/service_access.html" class="NavigationItem__router-link">
+      服务开通及技术集成
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/globalpay/rule.html" class="NavigationItem__router-link">
+      支付规则及流程
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/globalpay/refund.html" class="NavigationItem__router-link">
+      退款规则及流程
+    <!----></a> <!----> <!----></span></li><li><div class="NavigationLevel NavigationLevel--closed NavigationLevel--level-2"><div class="NavigationLevel__parent"><span class="NavigationToggle NavigationToggle--closed"><span class="NavigationToggle__icon NavigationToggle__icon--closed"></span></span> <span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/globalpay/reconciliation.html" class="NavigationItem__router-link">
+      经营对账
+    <!----></a> <!----> <!----></span></div> <ul class="NavigationLevel__children"><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/globalpay/reconciliation.html" class="NavigationItem__router-link">
+      经营交易流水核对
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/globalpay/credit.html" class="NavigationItem__router-link">
+      银行入账金额核对
+    <!----></a> <!----> <!----></span></li></ul></div></li></ul></div></li><li><div class="NavigationLevel NavigationLevel--closed NavigationLevel--level-1"><div class="NavigationLevel__parent"><span class="NavigationToggle NavigationToggle--closed"><span class="NavigationToggle__icon NavigationToggle__icon--closed"></span></span> <span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment.html" class="NavigationItem__router-link">
+      虚拟支付
+    <!----></a> <!----> <!----></span></div> <ul class="NavigationLevel__children"><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment.html" class="NavigationItem__router-link">
+      虚拟支付
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/vip.html" class="NavigationItem__router-link">
+      会员订阅
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment/ios.html" class="NavigationItem__router-link">
+      iOS 端接入
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment/devplan.html" class="NavigationItem__router-link">
+      技术服务费
+    <!----></a> <!----> <!----></span></li></ul></div></li><li><div class="NavigationLevel NavigationLevel--closed NavigationLevel--level-1"><div class="NavigationLevel__parent"><span class="NavigationToggle NavigationToggle--closed"><span class="NavigationToggle__icon NavigationToggle__icon--closed"></span></span> <span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/card/card.html" class="NavigationItem__router-link">
+      卡券
+    <!----></a> <!----> <!----></span></div> <ul class="NavigationLevel__children"><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/card/card.html" class="NavigationItem__router-link">
+      卡券
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/card/membership-card.html" class="NavigationItem__router-link">
+      会员卡组件
+    <!----></a> <!----> <!----></span></li></ul></div></li><li><div class="NavigationLevel NavigationLevel--closed NavigationLevel--level-1"><div class="NavigationLevel__parent"><span class="NavigationToggle NavigationToggle--closed"><span class="NavigationToggle__icon NavigationToggle__icon--closed"></span></span> <span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/ministore/minishopopencomponent2/Introduction.html" class="NavigationItem__router-link">
+      交易组件
+    <!----></a> <!----> <!----></span></div> <ul class="NavigationLevel__children"><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/ministore/minishopopencomponent2/Introduction.html" class="NavigationItem__router-link">
+      交易组件介绍
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/ministore/minishopopencomponent2/zujianyunyingguifan.html" class="NavigationItem__router-link">
+      组件运营规范
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/ministore/minishopopencomponent/Introduction.html" class="NavigationItem__router-link">
+      基础交易工具（原标准版交易组件）
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/ministore/minishopopencomponent2/Introduction2.html" class="NavigationItem__router-link">
+      视频号小程序自定义交易组件
+    <!----></a> <!----> <!----></span></li><li><span class="NavigationItem"><!----> <a href="/miniprogram/dev/platform-capabilities/business-capabilities/ministore/wxafunds/Introduction.html" class="NavigationItem__router-link">
+      小程序支付管理服务介绍
+    <!----></a> <!----> <!----></span></li></ul></div></li></ul></div></div> </aside></div> <div class="page__wrp"><main class="page"><div class="page-inner" style="min-height:0px;"> <div id="docContent"><div class="Breadcrumb"></div> <div class="content custom"><h1 id="小程序发货信息管理服务"><a href="#小程序发货信息管理服务" class="header-anchor">#</a> 小程序发货信息管理服务</h1> <p>根据<a href="https://developers.weixin.qq.com/miniprogram/product/jiaoyilei/yunyingguifan.html#%E5%95%86%E5%AE%B6%E8%87%AA%E8%90%A5%E7%B1%BB%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%90%A5%E8%A7%84%E8%8C%83" target="_blank">《商家自营类小程序运营规范》</a>,特定类型的小程序需要在平台完成发货信息录入及确认收货流程后方可进行资金结算。</p> <p>开发者可以通过该接入服务，完成商品发货信息录入、提醒用户确认收货、在小程序内调起确认收货组件等功能，提升发货信息录入效率，优化用户体验。</p> <h3 id="一、小程序内确认收货"><a href="#一、小程序内确认收货" class="header-anchor">#</a> 一、小程序内确认收货</h3> <p><a href="order-shipping-half" target="_blank">小程序确认收货组件接入说明</a></p> <h2 id="二、相关-API-接口"><a href="#二、相关-API-接口" class="header-anchor">#</a> 二、相关 API 接口</h2> <div class="table-wrp"><table><thead><tr><th>接口名称</th> <th>请求路径</th> <th>描述</th></tr></thead> <tbody><tr><td><a href="https://developers.weixin.qq.com/miniprogram/dev/server/API/order_shipping/api_uploadshippinginfo" target="_blank">发货信息录入</a></td> <td>/wxa/sec/order/upload_shipping_info</td> <td>用户交易后，默认资金将会进入冻结状态，开发者在发货后，需要在小程序平台录入相关发货信息，平台会将发货信息以消息的形式推送给购买的微信用户</td></tr> <tr><td><a href="https://developers.weixin.qq.com/miniprogram/dev/server/API/order_shipping/api_uploadcombinedshippinginfo" target="_blank">发货信息合单录入</a></td> <td>/wxa/sec/order/upload_combined_shipping_info</td> <td>用户交易后，默认资金将会进入冻结状态，开发者在发货后，需要在小程序平台录入相关发货信息，平台会将发货信息以消息的形式推送给购买的微信用户</td></tr> <tr><td><a href="https://developers.weixin.qq.com/miniprogram/dev/server/API/order_shipping/api_getorder" target="_blank">查询订单发货状态</a></td> <td>/wxa/sec/order/get_order</td> <td>可以通过交易单号或商户号+商户单号来查询该支付单的发货状态</td></tr> <tr><td><a href="https://developers.weixin.qq.com/miniprogram/dev/server/API/order_shipping/api_getorderlist" target="_blank">查询订单列表</a></td> <td>/wxa/sec/order/get_order_list</td> <td>可以通过支付时间、支付者openid或订单状态来查询订单列表</td></tr> <tr><td><a href="https://developers.weixin.qq.com/miniprogram/dev/server/API/order_shipping/api_notifyconfirmreceive" target="_blank">确认收货提醒</a></td> <td>/wxa/sec/order/notify_confirm_receive</td> <td>如你已经从你的快递物流服务方获知到用户已经签收相关商品，可以通过该接口提醒用户及时确认收货，以提高资金结算效率，每个订单仅可调用一次</td></tr> <tr><td><a href="https://developers.weixin.qq.com/miniprogram/dev/server/API/order_shipping/api_setmsgjumppath" target="_blank">消息跳转路径设置</a></td> <td>/wxa/sec/order/set_msg_jump_path</td> <td>如你已经在小程序内接入平台提供的确认收货组件，可以通过该接口设置发货消息及确认收货消息的跳转动作，用户点击发货消息时会直接进入你的小程序订单列表页面或详情页面进</td></tr> <tr><td><a href="https://developers.weixin.qq.com/miniprogram/dev/server/API/order_shipping/api_istrademanaged" target="_blank">查询小程序是否已开通发货信息管理服务</a></td> <td>/wxa/sec/order/is_trade_managed</td> <td>调用该接口可查询小程序账号是否已开通小程序发货信息管理服务（已开通的小程序，可接入发货信息管理服务API进行发货管理）</td></tr> <tr><td><a href="https://developers.weixin.qq.com/miniprogram/dev/server/API/order_shipping/api_istrademanagementconfirmationcompleted" target="_blank">查询小程序是否已完成交易结算管理确认</a></td> <td>/wxa/sec/order/is_trade_management_confirmation_completed</td> <td>调用该接口可查询小程序账号是否已完成交易结算管理确认（即对小程序已关联的所有商户号都完成了订单管理授权或解绑）</td></tr> <tr><td><a href="https://developers.weixin.qq.com/miniprogram/dev/server/API/order_shipping/api_opspecialorder" target="_blank">特殊发货报备</a></td> <td>/wxa/sec/order/opspecialorder</td> <td>调用该接口可以对未发货的订单进行特殊发货报备，适用于预售商品订单和测试订单</td></tr> <tr><td><a href="https://developers.weixin.qq.com/miniprogram/dev/server/API/order_shipping/api_famousbrandapply" target="_blank">品牌申请</a></td> <td>/wxa/sec/famousbrand/apply</td> <td>本接口用于小程序品牌申请</td></tr> <tr><td><a href="https://developers.weixin.qq.com/miniprogram/dev/server/API/order_shipping/api_getfamousbrandapplystatus" target="_blank">小程序品牌申请状态查询</a></td> <td>/wxa/sec/famousbrand/get_status</td> <td>本接口用于查询小程序品牌申请状态</td></tr> <tr><td><a href="https://developers.weixin.qq.com/miniprogram/dev/server/API/order_shipping/api_setwxatradetypecgi" target="_blank">小程序交易类型变更申请</a></td> <td>/wxa/sec/order/setwxatradetypecgi</td> <td>本接口用于小程序开发者提交交易类型变更申请</td></tr></tbody></table></div><h2 id="三、相关消息推送"><a href="#三、相关消息推送" class="header-anchor">#</a> 三、相关消息推送</h2> <p>当产生交易或订单结算时，微信服务器会向开发者服务器、第三方平台方的消息与事件接收 URL 以  <code>POST</code>  的方式推送相关事件。注意，需要先接入 <a href="https://developers.weixin.qq.com/miniprogram/dev/framework/server-ability/message-push.html#option-url" target="_blank">微信小程序消息推送服务</a> 才能接收事件。</p> <h3 id="事件类型"><a href="#事件类型" class="header-anchor">#</a> 事件类型</h3> <div class="table-wrp"><table><thead><tr><th>事件类型</th> <th>说明</th></tr></thead> <tbody><tr><td>trade_manage_remind_access_api</td> <td>提醒接入发货信息管理服务API</td></tr> <tr><td>trade_manage_remind_shipping</td> <td>提醒需要上传发货信息</td></tr> <tr><td>trade_manage_order_settlement</td> <td>订单将要结算或已经结算</td></tr> <tr><td>wxa_trade_controlled</td> <td>小程序需接入订单发货管理</td></tr></tbody></table></div><h3 id="消息推送时机"><a href="#消息推送时机" class="header-anchor">#</a> 消息推送时机</h3> <p><code>wxa_trade_controlled</code> 事件：</p> <ul><li>小程序需接入订单发货管理时</li></ul> <p><code>trade_manage_remind_access_api</code> 事件：</p> <ul><li>小程序完成交易结算管理确认时</li> <li>小程序产生第一笔交易时</li> <li>已产生交易但从未发货的小程序，每天一次</li></ul> <p><code>trade_manage_remind_shipping</code> 事件：</p> <ul><li>曾经发过货的小程序，订单超过48小时未发货时</li></ul> <p><code>trade_manage_order_settlement</code> 事件：</p> <ul><li>订单完成发货时</li> <li>订单结算时</li></ul> <h3 id="字段说明"><a href="#字段说明" class="header-anchor">#</a> 字段说明</h3> <p><code>trade_manage_remind_access_api</code> 事件字段说明</p> <div class="table-wrp"><table><thead><tr><th>参数</th> <th>类型</th> <th>说明</th></tr></thead> <tbody><tr><td>ToUserName</td> <td>string</td> <td>小程序的原始 ID</td></tr> <tr><td>FromUserName</td> <td>string</td> <td>发送方账号（一个 OpenID，此时发送方是系统账号）</td></tr> <tr><td>CreateTime</td> <td>number</td> <td>消息创建时间 （整型），时间戳</td></tr> <tr><td>MsgType</td> <td>string</td> <td>消息类型，为固定值 <code>&quot;event&quot;</code></td></tr> <tr><td>Event</td> <td>string</td> <td>事件类型</td></tr> <tr><td>msg</td> <td>string</td> <td>消息文本内容</td></tr></tbody></table></div><p><code>trade_manage_remind_shipping</code> 事件字段说明</p> <div class="table-wrp"><table><thead><tr><th>参数</th> <th>类型</th> <th>说明</th></tr></thead> <tbody><tr><td>ToUserName</td> <td>string</td> <td>小程序的原始 ID</td></tr> <tr><td>FromUserName</td> <td>string</td> <td>发送方账号（一个 OpenID，此时发送方是系统账号）</td></tr> <tr><td>CreateTime</td> <td>number</td> <td>消息创建时间 （整型），时间戳</td></tr> <tr><td>MsgType</td> <td>string</td> <td>消息类型，为固定值 <code>&quot;event&quot;</code></td></tr> <tr><td>Event</td> <td>string</td> <td>事件类型</td></tr> <tr><td>transaction_id</td> <td>string</td> <td>微信支付订单号</td></tr> <tr><td>merchant_id</td> <td>string</td> <td>商户号</td></tr> <tr><td>sub_merchant_id</td> <td>string</td> <td>子商户号</td></tr> <tr><td>merchant_trade_no</td> <td>string</td> <td>商户订单号</td></tr> <tr><td>pay_time</td> <td>number</td> <td>支付成功时间，秒级时间戳</td></tr> <tr><td>msg</td> <td>string</td> <td>消息文本内容</td></tr></tbody></table></div><p><code>trade_manage_order_settlement</code> 事件字段说明</p> <div class="table-wrp"><table><thead><tr><th>参数</th> <th>类型</th> <th>说明</th></tr></thead> <tbody><tr><td>ToUserName</td> <td>string</td> <td>小程序的原始 ID</td></tr> <tr><td>FromUserName</td> <td>string</td> <td>发送方账号（一个 OpenID，此时发送方是系统账号）</td></tr> <tr><td>CreateTime</td> <td>number</td> <td>消息创建时间 （整型），时间戳</td></tr> <tr><td>MsgType</td> <td>string</td> <td>消息类型，为固定值 <code>&quot;event&quot;</code></td></tr> <tr><td>Event</td> <td>string</td> <td>事件类型</td></tr> <tr><td>transaction_id</td> <td>string</td> <td>支付订单号</td></tr> <tr><td>merchant_id</td> <td>string</td> <td>商户号</td></tr> <tr><td>sub_merchant_id</td> <td>string</td> <td>子商户号</td></tr> <tr><td>merchant_trade_no</td> <td>string</td> <td>商户订单号</td></tr> <tr><td>pay_time</td> <td>number</td> <td>支付成功时间，秒级时间戳</td></tr> <tr><td>shipped_time</td> <td>number</td> <td>发货时间，秒级时间戳</td></tr> <tr><td>estimated_settlement_time</td> <td>number</td> <td>预计结算时间，秒级时间戳。发货时推送才有该字段</td></tr> <tr><td>confirm_receive_method</td> <td>number</td> <td>确认收货方式：1. 手动确认收货；2. 自动确认收货。结算时推送才有该字段</td></tr> <tr><td>confirm_receive_time</td> <td>number</td> <td>确认收货时间，秒级时间戳。结算时推送才有该字段</td></tr> <tr><td>settlement_time</td> <td>number</td> <td>订单结算时间，秒级时间戳。结算时推送才有该字段</td></tr></tbody></table></div><p><code>wxa_trade_controlled</code> 事件字段说明</p> <div class="table-wrp"><table><thead><tr><th>参数</th> <th>类型</th> <th>说明</th></tr></thead> <tbody><tr><td>ToUserName</td> <td>string</td> <td>小程序的原始 ID</td></tr> <tr><td>FromUserName</td> <td>string</td> <td>发送方账号（一个 OpenID，此时发送方是系统账号）</td></tr> <tr><td>CreateTime</td> <td>number</td> <td>消息创建时间 （整型），时间戳</td></tr> <tr><td>MsgType</td> <td>string</td> <td>消息类型，为固定值 <code>&quot;event&quot;</code></td></tr> <tr><td>Event</td> <td>string</td> <td>事件类型</td></tr> <tr><td>msg</td> <td>string</td> <td>消息文本内容</td></tr></tbody></table></div></div> <div class="fixed-translate" style="display:none;"><span>The translations are provided by WeChat Translation and are for reference only. In case of any inconsistency and discrepancy between the Chinese version and the English version, the Chinese version shall prevail.Incorrect translation. <a href="javascript:;" class="fixed-translate-btn">Tap to report.</a></span></div></div> <!----> <div class="related"><!----> <!----></div> <footer class="page-edit"><!----></footer>  <footer class="footer"><ul class="footer-links"><li class="footer-link"><a href="http://www.tencent.com/zh-cn/index.shtml" target="_blank">关于腾讯</a></li> <li class="footer-link"><a href="https://mp.weixin.qq.com/debug/wxadoc/introduction/index.html?t=1484641676" target="_blank">文档中心</a></li> <li class="footer-link"><a href="https://kf.qq.com/faq/17030722muuu170307MFBny2.html" target="_blank">辟谣中心</a></li> <li class="footer-link"><a href="http://kf.qq.com/faq/120911VrYVrA1509086vyumm.html" target="_blank">客服中心</a></li></ul> <p class="copyright">Copyright ? 2012-<span>2026</span> Tencent. All Rights Reserved.</p></footer></div></main></div> <!----></div></div> <div id="popoverWrapId" class="pop-links__wrp popover_hide"><ul class="pop-links__list"><li class="pop-links__item"><button class="pop-link">复制</button></li> <li class="pop-links__item"><button class="pop-link">问题反馈</button></li></ul></div> <div class="fixed-btns"><a href="javascript:;" class="fixed-btn fixed-btn__feedback"><div class="fixed-btn__inner"><span class="fixed-btn__icon"></span> <span class="fixed-btn__text">反馈</span></div></a> <a href="javascript:;" class="fixed-btn fixed-btn__top" style="display:none;"><div class="fixed-btn__inner"><span class="fixed-btn__icon"></span></div></a></div></div></div></div>
+    <script src="https://res.wx.qq.com/wxdoc/dist/assets/js/app.ecb7fcef.js" defer></script><script src="https://res.wx.qq.com/wxdoc/dist/assets/js/2684.3490ac4c.js" defer></script>
+  </body>
+</html>
+

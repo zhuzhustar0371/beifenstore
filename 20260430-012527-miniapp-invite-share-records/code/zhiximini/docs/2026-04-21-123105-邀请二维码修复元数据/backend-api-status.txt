@@ -1,0 +1,16 @@
+ M .env.example
+ M src/main/java/com/zhixi/backend/common/GlobalExceptionHandler.java
+ M src/main/java/com/zhixi/backend/config/DatabaseMigrationRunner.java
+ M src/main/java/com/zhixi/backend/controller/AuthController.java
+ M src/main/java/com/zhixi/backend/controller/OrderController.java
+ M src/main/java/com/zhixi/backend/dto/SmsSendRequest.java
+ M src/main/java/com/zhixi/backend/mapper/CashbackRecordMapper.java
+ M src/main/java/com/zhixi/backend/mapper/UserWechatAuthMapper.java
+ M src/main/java/com/zhixi/backend/service/AdminManageService.java
+ M src/main/java/com/zhixi/backend/service/AdminPermissionService.java
+ M src/main/java/com/zhixi/backend/service/CashbackService.java
+ M src/main/java/com/zhixi/backend/service/OrderService.java
+ M src/main/java/com/zhixi/backend/service/UserAuthService.java
+ M src/main/java/com/zhixi/backend/service/WechatPayService.java
+ M src/main/resources/application.yml
+ M src/main/resources/data.sql

@@ -1,0 +1,19 @@
+
+> zhixi-website-frontend@1.0.0 dev
+> vite --host 127.0.0.1 --port 5173
+
+
+  [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m818[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m5173[22m/[39m
+[2m14:25:15[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue[22m
+[2m14:25:24[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue[22m
+[2m14:25:34[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue[22m
+[2m14:25:51[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue[22m
+[2m14:26:01[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue[22m
+[2m14:26:17[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue?vue&type=style&index=0&scoped=8e255f99&lang.css[22m
+[2m14:37:02[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/styles.css[22m
+[2m14:37:30[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/styles.css[22m
+[2m22:56:17[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue?vue&type=style&index=0&scoped=8e255f99&lang.css, /src/components/LoginModal.vue[22m
+[2m22:56:52[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue?vue&type=style&index=0&scoped=8e255f99&lang.css, /src/components/LoginModal.vue[22m
+[2m22:58:18[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue, /src/components/LoginModal.vue?vue&type=style&index=0&scoped=8e255f99&lang.css[22m

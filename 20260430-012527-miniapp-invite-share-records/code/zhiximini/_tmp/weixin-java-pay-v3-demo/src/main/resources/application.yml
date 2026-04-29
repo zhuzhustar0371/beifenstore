@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+# 微信支付
+wx:
+  pay:
+    appId: 111 #微信公众号或者小程序等的appid
+    mchId: 111 #微信支付商户号
+    apiV3Key: 111
+    # 以下为设置API证书时下载解压的三个证书，放到对应位置就行，正式生产场景也可以放到服务器的绝对位置
+    keyPath: classpath:cert/apiclient_cert.p12
+    privateKeyPath: classpath:cert/apiclient_key.pem
+    privateCertPath: classpath:cert/apiclient_cert.pem
+    # 这个参数是我自己加的，配置的回调地址，注意要用内网穿透搞个外网能访问的
+    notifyUrl: http://localhost:8080/notifyOrderV3
+    refundNotifyUrl: http://localhost:8080/notifyRefundV3
