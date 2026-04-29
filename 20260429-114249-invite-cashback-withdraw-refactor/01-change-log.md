@@ -151,6 +151,14 @@
 
 - 初次日志提交：`63d2175 log: invite cashback withdraw refactor progress 20260429-114249`
 - 推送结果：成功推送到 `git@github.com:zhuzhustar0371/beifenstore.git`
+- 二次日志提交：`e042984 log: record invite cashback withdraw release`
+- 推送结果：成功推送到 `git@github.com:zhuzhustar0371/beifenstore.git`
+
+## 11. 小程序发布说明
+
+- `wechat-app` 源码已提交并推送到 GitHub。
+- 本机未发现微信小程序上传所需的 `miniprogram-ci` 私钥文件，且本轮未执行微信公众平台上传、提审、发布。
+- 因此小程序端代码需要后续通过微信开发者工具或已配置私钥的 CI 上传版本。
 
 ## 6. 回退依据
 
