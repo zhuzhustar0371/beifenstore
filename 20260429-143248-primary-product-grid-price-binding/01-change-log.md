@@ -15,3 +15,9 @@
 - 备份内容：backend-api、wechat-app、zhixi-website 源码快照；修改前 git HEAD、分支、状态；原子化操作文档。
 - 排除内容：.git、node_modules、target、dist、.package、frontend-dist-upload 等生成/仓库元数据目录。
 - 源码快照文件数：272。
+
+## 2026-04-29 14:40 根脚本补充备份
+
+- 发现根目录 scripts/create_zhixi_schema.sql 也需要随表结构同步。
+- 已先撤回该文件临时改动，再将修改前文件补充备份到 code-root/scripts/create_zhixi_schema.sql。
+
