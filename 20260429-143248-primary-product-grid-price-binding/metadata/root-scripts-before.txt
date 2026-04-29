@@ -1,0 +1,1 @@
+﻿Backed up G:\zhiximini\scripts\create_zhixi_schema.sql before root script modification.

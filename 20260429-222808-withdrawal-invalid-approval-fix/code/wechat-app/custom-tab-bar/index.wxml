@@ -1,0 +1,33 @@
+<view class="liquid-tabbar-shell">
+  <view class="liquid-tabbar-shadow"></view>
+  <view class="liquid-tabbar">
+    <view class="liquid-tabbar-glow liquid-tabbar-glow-left"></view>
+    <view class="liquid-tabbar-glow liquid-tabbar-glow-right"></view>
+    <view class="liquid-tabbar-highlight"></view>
+    <view class="tab-list">
+      <block wx:for="{{list}}" wx:key="pagePath">
+        <view
+          class="tab-item {{selected === index ? 'tab-item-active' : ''}}"
+          data-index="{{index}}"
+          data-path="{{item.pagePath}}"
+          bindtap="switchTab"
+          hover-class="tab-item-hover"
+          hover-start-time="0"
+          hover-stay-time="120"
+        >
+          <view class="tab-content">
+            <view class="tab-bubble {{selected === index ? 'tab-bubble-active' : ''}}">
+              <view class="tab-bubble-shine"></view>
+              <image
+                class="tab-icon"
+                src="{{selected === index ? item.selectedIconPath : item.iconPath}}"
+                mode="aspectFit"
+              />
+            </view>
+            <text class="tab-label">{{item.text}}</text>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>

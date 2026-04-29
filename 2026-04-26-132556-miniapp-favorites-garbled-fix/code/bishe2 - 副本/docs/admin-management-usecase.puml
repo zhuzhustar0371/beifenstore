@@ -1,0 +1,115 @@
+@startuml
+!theme plain
+left to right direction
+
+skinparam backgroundColor #FEFEFE
+skinparam handwritten false
+skinparam shadowing false
+
+skinparam packageStyle rectangle
+
+skinparam actor {
+  BorderColor #333333
+  BackgroundColor #FFFFFF
+  FontColor #222222
+  FontName Microsoft YaHei
+}
+
+skinparam usecase {
+  BorderColor #333333
+  BackgroundColor #FFFFFF
+  FontColor #222222
+  ArrowColor #333333
+  FontName Microsoft YaHei
+}
+
+title 管理端用例图
+
+actor "管理员" as Admin
+
+rectangle "校园二手交易平台管理端" {
+  usecase "后台登录" as UC_Login
+  usecase "商品管理" as UC_Product
+  usecase "账号管理" as UC_User
+  usecase "反馈与举报管理" as UC_Feedback
+  usecase "记录管理操作日志" as UC_Log
+
+  package "商品管理子用例" {
+    usecase "查看商品列表" as UC_ProductList
+    usecase "筛选商品" as UC_ProductFilter
+    usecase "查看商品详情" as UC_ProductDetail
+    usecase "驳回异常商品" as UC_ProductReject
+    usecase "违规下架商品" as UC_ProductRemove
+    usecase "恢复上架商品" as UC_ProductRestore
+  }
+
+  package "账号管理子用例" {
+    usecase "查看账号列表" as UC_UserList
+    usecase "筛选账号" as UC_UserFilter
+    usecase "禁用账号" as UC_UserDisable
+    usecase "恢复账号" as UC_UserEnable
+    usecase "重置账号密码" as UC_UserReset
+    usecase "设置客服角色" as UC_MakeService
+    usecase "移除客服角色" as UC_RemoveService
+  }
+
+  package "反馈管理子用例" {
+    usecase "查看反馈详情" as UC_FeedbackDetail
+    usecase "更新反馈状态" as UC_FeedbackStatus
+  }
+}
+
+Admin --> UC_Login
+Admin --> UC_Product
+Admin --> UC_User
+Admin --> UC_Feedback
+
+UC_Product .> UC_ProductList : <<包含>>
+UC_Product .> UC_ProductFilter : <<包含>>
+UC_Product .> UC_ProductDetail : <<包含>>
+UC_Product .> UC_ProductReject : <<包含>>
+UC_Product .> UC_ProductRemove : <<包含>>
+UC_Product .> UC_ProductRestore : <<包含>>
+
+UC_User .> UC_UserList : <<包含>>
+UC_User .> UC_UserFilter : <<包含>>
+UC_User .> UC_UserDisable : <<包含>>
+UC_User .> UC_UserEnable : <<包含>>
+UC_User .> UC_UserReset : <<包含>>
+UC_User .> UC_MakeService : <<包含>>
+UC_User .> UC_RemoveService : <<包含>>
+
+UC_Feedback .> UC_FeedbackDetail : <<包含>>
+UC_Feedback .> UC_FeedbackStatus : <<包含>>
+
+UC_ProductReject .> UC_Log : <<包含>>
+UC_ProductRemove .> UC_Log : <<包含>>
+UC_ProductRestore .> UC_Log : <<包含>>
+UC_UserDisable .> UC_Log : <<包含>>
+UC_UserEnable .> UC_Log : <<包含>>
+UC_UserReset .> UC_Log : <<包含>>
+UC_MakeService .> UC_Log : <<包含>>
+UC_RemoveService .> UC_Log : <<包含>>
+UC_FeedbackStatus .> UC_Log : <<包含>>
+
+UC_ProductList -[hidden]down-> UC_ProductFilter
+UC_ProductFilter -[hidden]down-> UC_ProductDetail
+UC_ProductDetail -[hidden]down-> UC_ProductReject
+UC_ProductReject -[hidden]down-> UC_ProductRemove
+UC_ProductRemove -[hidden]down-> UC_ProductRestore
+
+UC_UserList -[hidden]down-> UC_UserFilter
+UC_UserFilter -[hidden]down-> UC_UserDisable
+UC_UserDisable -[hidden]down-> UC_UserEnable
+UC_UserEnable -[hidden]down-> UC_UserReset
+UC_UserReset -[hidden]down-> UC_MakeService
+UC_MakeService -[hidden]down-> UC_RemoveService
+
+UC_FeedbackDetail -[hidden]down-> UC_FeedbackStatus
+
+UC_Login -[hidden]down-> UC_Product
+UC_Product -[hidden]down-> UC_User
+UC_User -[hidden]down-> UC_Feedback
+UC_Feedback -[hidden]down-> UC_Log
+
+@enduml

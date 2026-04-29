@@ -1,0 +1,40 @@
+<view class="page">
+  <view class="content card">
+    <text class="section-title">一、个人下单返现规则</text>
+    <text class="p">按您在本小程序内下单顺序计算返现：</text>
+    <view class="table-wrap">
+      <view class="row head">
+        <text class="col">订单次序</text>
+        <text class="col">返现比例</text>
+        <text class="col">返现金额</text>
+      </view>
+      <view class="row" wx:for="{{rule.personalRules}}" wx:key="label">
+        <text class="col">{{item.label}}</text>
+        <text class="col">{{item.ratioText}}</text>
+        <text class="col">{{item.amountText}}</text>
+      </view>
+    </view>
+    <text class="p">商品单价 {{rule.unitPriceText}} 元/件，{{rule.settleCondition}}。</text>
+  </view>
+
+  <view class="content card">
+    <text class="section-title">二、邀请他人购买返现规则</text>
+    <text class="p">被邀请人首次成功付款订单计入您的邀请；按被邀请人首单时间顺序，每满 3 人为一批，您可获得对应批次返现：</text>
+    <view class="table-wrap">
+      <view class="row head">
+        <text class="col">批次</text>
+        <text class="col">每批人数</text>
+        <text class="col">邀请人获得返现</text>
+      </view>
+      <view class="row" wx:for="{{rule.inviteRules}}" wx:key="label">
+        <text class="col">{{item.label}}</text>
+        <text class="col">{{item.peopleRule}}</text>
+        <text class="col">{{item.amountText}}</text>
+      </view>
+    </view>
+    <text class="p">{{rule.inviteCondition}}。</text>
+  </view>
+
+  <view class="status" wx:if="{{loading}}">规则加载中...</view>
+  <view class="status error" wx:if="{{!loading && error}}">{{error}}</view>
+</view>

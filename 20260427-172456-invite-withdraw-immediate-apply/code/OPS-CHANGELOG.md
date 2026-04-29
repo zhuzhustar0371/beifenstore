@@ -1,0 +1,660 @@
+# OPS CHANGELOG
+
+## 2026-04-20
+
+### Tencent SMS registration signature and region configuration fix
+
+- Time: 2026-04-20 20:26:00 +08:00
+- Operator: Codex
+- Goal:
+  - Fix the website registration dialog error: `短信签名配置异常，请联系管理员处理`
+  - Apply the Tencent Cloud SMS parameters supplied for registration verification codes
+  - Keep the existing SMS send API and template behavior unchanged
+- User-provided SMS parameters:
+  - `sdk-app-id`: `1401108208`
+  - `sign-name`: `石家庄知禧健康管理`
+  - `template-id`: `2625405`
+  - `region`: `ap-guangzhou`
+  - `code-expire`: `300` seconds, matching the existing `SMS_CODE_EXPIRE_MINUTES=5` default
+  - `SecretId` and `SecretKey` were already present in local backend defaults before this change
+- Problem found:
+  - `backend-api/src/main/resources/application.yml` defaulted `app.sms.tencent.sign-name` to `知禧健康管理`, which did not match the approved Tencent SMS signature shown by the user
+  - `UserAuthService.sendTencentSms(...)` hardcoded the Tencent SMS client region as `ap-beijing`
+  - The supplied SMS configuration requires `ap-guangzhou`, so the code could not faithfully use the provided region unless an environment variable or code change was added
+- Files changed:
+  - `backend-api/src/main/resources/application.yml`
+    - Updated default Tencent SMS sign name to `石家庄知禧健康管理`
+    - Added `app.sms.tencent.region`
+    - Defaulted `TENCENT_SMS_REGION` to `ap-guangzhou`
+  - `backend-api/src/main/java/com/zhixi/backend/service/UserAuthService.java`
+    - Added `@Value("${app.sms.tencent.region:ap-guangzhou}")`
+    - Replaced the hardcoded `ap-beijing` SMS client region with the configured `tencentSmsRegion`
+  - `backend-api/.env.example`
+    - Added Tencent SMS environment variable examples without embedding real secret values
+    - Included `TENCENT_SMS_REGION=ap-guangzhou`
+- Behavior after change:
+  - `/api/auth/sms/send` still sends registration SMS with template `2625405`
+  - The template parameters remain `{code, expireMinutes}`, so the existing 5-minute expiry continues to match the requested 300-second validity
+  - Deployments can override all SMS values through environment variables:
+    - `TENCENT_SMS_SECRET_ID`
+    - `TENCENT_SMS_SECRET_KEY`
+    - `TENCENT_SMS_SDK_APP_ID`
+    - `TENCENT_SMS_SIGN_NAME`
+    - `TENCENT_SMS_TEMPLATE_ID`
+    - `TENCENT_SMS_REGION`
+- Verification plan:
+  - Compile backend with Maven after the edit: `mvn -q -DskipTests compile`
+  - Result: passed on 2026-04-20 20:27 +08:00
+  - Maven emitted only dependency/JDK warnings about restricted native access and deprecated `Unsafe`; no compilation errors were reported
+  - After deployment/restart, click `获取验证码` on the registration dialog and confirm Tencent returns `Ok` instead of the signature configuration error
+- Security note:
+  - The Tencent Cloud `SecretId` and `SecretKey` were shared in chat and are present as local default config values
+  - Recommended next step is to rotate that key pair in Tencent Cloud and provide it only through server environment variables, then remove secrets from repository defaults
+- Deployment note:
+  - This change is local only until the backend is deployed and restarted with the updated artifact/config
+
+## 2026-04-19
+
+### Reset local working directories to reference copies
+
+- Time: 2026-04-19 21:50:51 +08:00
+- Operator: Codex
+- Goal:
+  - Reset these local working directories to match their reference copies:
+    - `g:\zhiximini\zhixi-website`
+    - `g:\zhiximini\backend-api`
+    - `g:\zhiximini\wechat-app`
+- Scope:
+  - Local filesystem only
+  - No GitHub remote changes
+  - No cloud/server changes
+- Actions attempted:
+  - Backed up the three original directories to:
+    - `g:\zhiximini\_local_backups\20260419-215051`
+  - Tried directory-level replacement using local reference copies
+- Current result:
+  - `zhixi-website` has been reset to the reference source layout
+  - `backend-api` has been reset to the reference source layout
+  - `wechat-app` replacement was interrupted by Windows filesystem move behavior and currently needs cleanup/reclone
+- Recovery note:
+  - If needed, restore from `g:\zhiximini\_local_backups\20260419-215051`
+  - Next action should only repair `wechat-app`
+
+### Snapshot backup after baseline reset
+
+- Time: 2026-04-19 21:57:26 +08:00
+- Operator: Codex
+- Goal:
+  - Create a local snapshot backup of the current clean development baseline
+- Repositories:
+  - `zhixi-website` at `1178746`
+  - `backend-api` at `ca44f3d`
+  - `wechat-app` at `2a00064`
+- Backup target:
+  - `g:\zhiximini\_local_backups\20260419-215726-baseline`
+- Notes:
+  - This snapshot is intended as the new rollback point before any further development
+
+### User frontend product image fix and frontend-only cloud deploy
+
+- Time: 2026-04-19 22:03:10 +08:00
+- Operator: Codex
+- Goal:
+  - Fix user-facing product cards so they render real product images
+  - Deploy only website frontend to cloud
+  - Roll back immediately if smoke check fails
+- Scope:
+  - Local files:
+    - `zhixi-website/frontend/src/views/HomePage.vue`
+    - `zhixi-website/frontend/src/api.js`
+    - `zhixi-website/frontend/src/styles.css`
+  - Cloud:
+    - Website frontend static files only
+- Rollback plan:
+  - Create a server backup of current website frontend dist before deploy
+  - If post-deploy smoke checks fail, restore that server backup
+- Execution result:
+  - Server backup created at:
+    - `/home/ubuntu/zhixi/frontend-dist-backups/dist-20260419220550`
+  - First switch attempt failed because the uploaded directory shape was misread
+  - Website frontend was immediately restored from backup
+  - Second switch used the correct uploaded directory structure and succeeded
+  - Live website now serves:
+    - `/assets/index-DqYkTieb.js`
+    - `/assets/index-QdOcAWlg.css`
+
+### Reset password feature implementation kickoff
+
+- Time: 2026-04-19 22:37:54 +08:00
+- Operator: Codex
+- Goal:
+  - Implement reset password by SMS verification
+  - Reuse `/api/auth/sms/send` with `scene=RESET_PASSWORD`
+  - Preserve existing register/login behavior
+- Scope:
+  - Local filesystem only at this stage
+  - Repositories:
+    - `g:\zhiximini\backend-api`
+    - `g:\zhiximini\zhixi-website`
+- Safety steps:
+  - Local snapshot backup created before edits:
+    - `g:\zhiximini\_local_backups\20260419-223754-reset-password-feature`
+- Planned execution order:
+  - Add SMS scene support and reset-password API in backend
+  - Add database-compatible migration for `sms_login_codes.scene`
+  - Add reset-password mode in website login modal
+  - Run local builds to verify
+  - Deploy only after local verification and cloud rollback prep
+
+### Reset password feature implemented and deployed
+
+- Time: 2026-04-19 22:55:00 +08:00
+- Operator: Codex
+- Local backup:
+  - `g:\zhiximini\_local_backups\20260419-223754-reset-password-feature`
+- Local packaging artifacts:
+  - `g:\zhiximini\_deploy\frontend-20260419225257.tgz`
+  - `g:\zhiximini\_deploy\backend-20260419225257.jar`
+- Backend changes:
+  - Reused `/api/auth/sms/send` and added `scene` support with `REGISTER` / `RESET_PASSWORD`
+  - Added reset password request DTO and endpoint: `POST /api/auth/password/reset`
+  - Added password reset service flow and user password update mapper
+  - Added DB-compatible auto migration for `sms_login_codes.scene`
+  - Fixed a pre-existing compile blocker in `OrderController` by switching from missing `getWechatOpenid()` to current `getMiniappOpenid()`
+- Frontend changes:
+  - Extended website login modal with a reset-password mode
+  - Added reset-password API call
+  - Added `scene=RESET_PASSWORD` when sending reset SMS codes
+- Local verification:
+  - `backend-api`: `mvn -q -DskipTests compile` passed
+  - `backend-api`: `mvn -q -DskipTests package` passed
+  - `zhixi-website/frontend`: `npm run build` passed
+- Cloud backup before switch:
+  - Frontend backup:
+    - `/home/ubuntu/zhixi/frontend-dist-backups/dist-20260419225303`
+  - Backend backup:
+    - `/home/ubuntu/apps/backend-api/backups/app-20260419225303.jar`
+- Cloud release paths:
+  - Frontend release extract:
+    - `/home/ubuntu/zhixi/releases/reset-password-20260419225257`
+  - Uploaded backend jar:
+    - `/home/ubuntu/apps/backend-api/app-upload-20260419225257.jar`
+- Cloud switch result:
+  - `zhixi-backend.service` restarted successfully and remained `active`
+  - `DatabaseMigrationRunner` added `sms_login_codes.scene` successfully on startup
+  - Website frontend switched to new assets:
+    - `assets/index-98XEp14y.js`
+    - `assets/index-B7UuONU-.css`
+- Smoke checks:
+  - `http://127.0.0.1:8080/api/products` returned product data successfully
+  - `https://mashishi.com/` served the new JS/CSS asset hashes
+  - `GET /api/auth/password/reset` returns method-not-supported instead of 404, confirming endpoint is mounted
+- Rollback note:
+  - If rollback is needed, restore:
+    - frontend from `/home/ubuntu/zhixi/frontend-dist-backups/dist-20260419225303`
+    - backend from `/home/ubuntu/apps/backend-api/backups/app-20260419225303.jar`
+
+### SMS daily limit handling hardening
+
+- Time: 2026-04-19 23:00:00 +08:00
+- Operator: Codex
+- Goal:
+  - Turn Tencent SMS daily-limit English errors into clear Chinese prompts
+  - Prevent failed SMS sends from leaving unused verification codes in DB
+- Planned changes:
+  - Backend:
+    - Normalize Tencent SMS provider failures into user-facing Chinese messages
+    - Save `sms_login_codes` only after SMS send succeeds, or immediately in skip-verify mode
+  - Frontend:
+    - Add English provider error fallback matcher for already-deployed/raw messages
+- Safety:
+  - Rebuild locally before any cloud replacement
+  - Reuse existing rollback paths if cloud smoke checks fail
+- Local verification:
+  - `backend-api`: `mvn -q -DskipTests compile` passed
+  - `backend-api`: `mvn -q -DskipTests package` passed
+  - `zhixi-website/frontend`: `npm run build` passed
+- Cloud backup before switch:
+  - Frontend backup:
+    - `/home/ubuntu/zhixi/frontend-dist-backups/dist-20260419230230`
+  - Backend backup:
+    - `/home/ubuntu/apps/backend-api/backups/app-20260419230230.jar`
+- Cloud release paths:
+  - Frontend package:
+    - `g:\zhiximini\_deploy\frontend-20260419230241.tgz`
+  - Backend jar:
+    - `g:\zhiximini\_deploy\backend-20260419230241.jar`
+  - Frontend release extract:
+    - `/home/ubuntu/zhixi/releases/sms-hardening-20260419230241`
+- Cloud switch result:
+  - `zhixi-backend.service` restarted successfully and remained `active`
+  - Live website now serves:
+    - `assets/index-OCHCsxvN.js`
+    - `assets/index-B7UuONU-.css`
+- Smoke checks:
+  - `http://127.0.0.1:8080/api/products` returned product data successfully
+  - `https://mashishi.com/` returned HTML referencing `assets/index-OCHCsxvN.js`
+- User-facing expected result:
+  - Daily-limit SMS provider errors should now show a Chinese message instead of raw English
+  - Failed SMS sends no longer pre-store verification codes in DB
+
+- Local verify complete for SMS error hardening at 20260419-230221
+
+### Wechat app product sync with web
+
+- Time: 2026-04-20 14:54:50 +08:00
+- Operator: Codex
+- Goal:
+  - Make the mini-program product list and product detail use the same live product data as the web site
+  - Eliminate the current "暂无商品上架" mismatch when web already has products
+- Scope:
+  - Local filesystem only at this stage
+  - Repository:
+    - `g:\zhiximini\wechat-app`
+- Safety:
+  - Local snapshot backup created before edits:
+    - `g:\zhiximini\_local_backups\20260420-145450-wechat-product-sync`
+- Planned changes:
+  - Harden mini-program request wrapper to surface backend business errors instead of treating them as empty data
+  - Add product normalization and image URL resolution aligned with the web frontend
+  - Refresh mini-program homepage/detail from the same `/api/products` and `/api/products/{id}` data source
+- Local changes completed:
+  - `wechat-app/utils/request.js`
+  - `wechat-app/utils/product.js`
+  - `wechat-app/pages/index/index.js`
+  - `wechat-app/pages/product/product.js`
+- Local verification:
+  - `node --check` passed for:
+    - `wechat-app/utils/request.js`
+    - `wechat-app/utils/product.js`
+    - `wechat-app/pages/index/index.js`
+    - `wechat-app/pages/product/product.js`
+  - Product image URL normalization verified locally:
+    - `/uploads/demo.png` -> `https://api.mashishi.com/uploads/demo.png`
+- Expected result:
+  - Mini-program homepage should now consume the same live product list as web
+  - Mini-program product detail should now consume the same live product detail as web
+  - Backend business errors will no longer silently degrade into empty product lists
+
+### Wechat app nationwide region picker
+
+- Time: 2026-04-20 15:07:30 +08:00
+- Operator: Codex
+- Goal:
+  - Replace the fake fixed "北京市朝阳区" area selection in mini-program address edit page
+  - Ensure province / city / district selection works nationwide, including municipalities
+- Scope:
+  - Local filesystem only at this stage
+  - Repository:
+    - `g:\zhiximini\wechat-app`
+- Planned changes:
+  - Switch address edit page to WeChat native `picker mode="region"`
+  - Store selected region as structured parts plus joined display text
+  - Require region selection during save
+  - Keep the saved address string compatible with the current backend order API
+- Rollback note:
+  - If needed locally, restore from:
+    - `g:\zhiximini\_local_backups\20260420-145450-wechat-product-sync`
+- Implementation completed at:
+  - `2026-04-20 15:24:30 +08:00`
+- Files changed:
+  - `wechat-app/pages/address-edit/address-edit.js`
+  - `wechat-app/pages/address-edit/address-edit.wxml`
+  - `wechat-app/pages/address-edit/address-edit.wxss`
+- Detailed implementation:
+  - Removed the fake `chooseRegion()` behavior that previously hardcoded `北京市朝阳区`
+  - Replaced the clickable pseudo-selector with WeChat native `picker mode="region"`
+  - Added structured region state:
+    - `form.regionParts`
+    - `form.regionText`
+  - Added `onRegionChange` to receive the built-in province / city / district selection
+  - Updated save validation so region selection is mandatory before order submission
+  - Kept backend compatibility by continuing to submit a single concatenated address string:
+    - `address = regionText + detail`
+  - Added submit button loading / disabled state to avoid duplicate taps during order creation
+- New local rollback point:
+  - `g:\zhiximini\_local_backups\20260420-152430-wechat-region-picker`
+- Verification performed:
+  - `git diff` confirmed the address page now uses native `picker mode="region"` instead of hardcoded text
+  - `node --check wechat-app/pages/address-edit/address-edit.js` passed
+  - UTF-8 content rechecked for `wechat-app/pages/address-edit/address-edit.wxml`; the template content is intact and includes:
+    - `picker mode="region"`
+    - `所在地区`
+    - `请选择省市区`
+  - Route usage reviewed:
+    - `pages/product/product.js` still enters this page for checkout
+    - `pages/address/address.js` and `pages/user/user.js` still enter this page as before
+- Compatibility hardening:
+  - Replaced `Promise.finally()` in `address-edit.js` with a trailing `.then()` cleanup path
+  - Reason:
+    - Avoid potential Promise compatibility issues on mini-program runtime / older device environments
+- Expected result:
+  - The mini-program address page can now select nationwide province / city / district data through WeChat's built-in region dataset
+  - Direct-controlled municipalities such as Beijing / Shanghai / Tianjin / Chongqing are covered by the native picker without maintaining a custom region table
+- Known residual scope note:
+  - This change only fixes nationwide area selection on the existing address edit page
+  - The separate address-book CRUD flow is still largely placeholder logic and was not expanded in this step
+
+### Mini program WeChat Pay real-integration hardening
+
+- Time: 2026-04-20 15:46:03 +08:00
+- Operator: Codex
+- Goal:
+  - Make the mini-program payment flow use real WeChat Pay JSAPI parameters instead of the previous half-mock flow
+  - Make mini-program login obtain a real `openid` from WeChat so payment can actually be initiated in production
+  - Make order creation and payment bind to the logged-in user instead of trusting a client-supplied `userId`
+- Scope:
+  - Local filesystem only
+  - Repositories:
+    - `g:\zhiximini\backend-api`
+    - `g:\zhiximini\wechat-app`
+  - No cloud deployment performed in this step
+- Key problems discovered before implementation:
+  - `backend-api` already had a `WechatPayService` and payment callback controller, but the mini-program login still generated a fake `openid`
+  - `wechat-app` called `/api/orders/{id}/pay` directly and assumed backend would always return mini-program payment parameters
+  - Order creation in the mini-program did not send a reliable authenticated user context and still depended on a request DTO containing `userId`
+  - The order mapper mixed an older order-table design with newer order model fields, making order creation and payment fragile
+  - Backend config and migration code were incomplete for a production-ready mini-program payment path
+- Backend files changed:
+  - `backend-api/src/main/java/com/zhixi/backend/model/Order.java`
+  - `backend-api/src/main/java/com/zhixi/backend/dto/CreateOrderRequest.java`
+  - `backend-api/src/main/java/com/zhixi/backend/mapper/OrderMapper.java`
+  - `backend-api/src/main/java/com/zhixi/backend/service/OrderService.java`
+  - `backend-api/src/main/java/com/zhixi/backend/controller/OrderController.java`
+  - `backend-api/src/main/java/com/zhixi/backend/controller/PayNotifyController.java`
+  - `backend-api/src/main/java/com/zhixi/backend/service/WechatPayService.java`
+  - `backend-api/src/main/java/com/zhixi/backend/service/UserAuthService.java`
+  - `backend-api/src/main/java/com/zhixi/backend/config/DatabaseMigrationRunner.java`
+  - `backend-api/src/main/resources/application.yml`
+- Mini-program files changed:
+  - `wechat-app/utils/pay.js`
+  - `wechat-app/pages/address-edit/address-edit.js`
+  - `wechat-app/pages/order-detail/order-detail.js`
+  - `wechat-app/pages/order-list/order-list.js`
+- Detailed implementation notes:
+  - Order model:
+    - Added `orderNo` so WeChat `out_trade_no` can use a stable merchant order number instead of parsing back from a generated temporary string
+  - Order request/auth flow:
+    - Kept `CreateOrderRequest.userId` for compatibility, but removed the validation requirement so backend can stop depending on it
+    - `OrderController` now resolves the current user from the `Authorization` token for create/list/detail/pay flows
+    - Added ownership checks so one logged-in user cannot read or pay another user's order through the mini-program endpoints
+  - Payment endpoint split:
+    - Preserved `POST /api/orders/{orderId}/pay` as a compatible mock-pay path for old callers
+    - Added `POST /api/orders/{orderId}/pay/wechat-miniapp` as the real mini-program WeChat Pay entry point
+    - Real mini-program payment now requires:
+      - order status = `PENDING`
+      - current user has a real `miniappOpenid`
+  - WeChat Pay request generation:
+    - `WechatPayService.createJsapiOrder(...)` now uses `order.getOrderNo()` as `out_trade_no`
+    - Removed the previous hardcoded `1` fen test amount and now uses the actual order amount converted to cents
+    - Added stricter config checks for:
+      - `WECHAT_PAY_MCHID`
+      - `WECHAT_PAY_APPID`
+      - `WECHAT_PAY_API_V3_KEY`
+      - `WECHAT_PAY_SERIAL_NUMBER`
+      - `WECHAT_PAY_PRIVATE_KEY_PATH`
+      - `WECHAT_PAY_NOTIFY_URL`
+  - Payment callback:
+    - `PayNotifyController` now looks up the order by `orderNo`
+    - Duplicate callbacks for non-`PENDING` orders are treated as idempotent and skipped instead of trying to re-pay the order
+    - Payment success time now uses `OffsetDateTime.parse(...).toLocalDateTime()`
+  - Mini-program login / openid:
+    - Replaced the fake `mock_mini_openid_*` logic in `UserAuthService.loginByMiniapp(...)`
+    - Added a real `code2Session` call to:
+      - `https://api.weixin.qq.com/sns/jscode2session`
+    - Added config entries:
+      - `app.wechat.miniapp.app-id`
+      - `app.wechat.miniapp.app-secret`
+    - Added a deterministic placeholder phone generator for first-time mini-program users because the current user schema still requires a unique phone-like value on user creation
+  - Order persistence compatibility:
+    - Reworked `OrderMapper` so order create/list/detail/pay are based on explicit order columns such as:
+      - `order_no`
+      - `product_id`
+      - `quantity`
+      - `recipient_name`
+      - `recipient_phone`
+      - `address`
+      - `tracking_no`
+    - Removed mini-program order query dependence on `shipping_records` reads for display so order pages remain usable even if that history table is absent in some environments
+  - DB compatibility migration:
+    - Expanded `DatabaseMigrationRunner` to auto-add missing order/payment-related columns on startup when needed
+    - Added best-effort data sync from newer/simple columns to legacy order columns when both shapes may exist
+  - Mini-program client flow:
+    - Added `wechat-app/utils/pay.js` to centralize:
+      - fetching mini-program payment params from backend
+      - calling `wx.requestPayment`
+      - distinguishing user-cancel from other WeChat payment failures
+    - `pages/address-edit/address-edit.js`
+      - no longer posts `userId`
+      - creates the order first
+      - calls the new mini-program pay endpoint
+      - redirects to order detail after success or cancellation so the user can retry payment later
+    - `pages/order-detail/order-detail.js`
+      - now uses the shared pay helper
+      - maps `transactionId` to `paymentTransactionId` for page display
+      - reloads order detail after successful payment
+    - `pages/order-list/order-list.js`
+      - now uses the shared pay helper
+      - refreshes the order list after successful payment
+- Configuration required before this feature can work against real WeChat:
+  - Backend env vars:
+    - `WECHAT_MINIAPP_APP_ID`
+    - `WECHAT_MINIAPP_APP_SECRET`
+    - `WECHAT_PAY_MCHID`
+    - `WECHAT_PAY_APPID`
+    - `WECHAT_PAY_API_V3_KEY`
+    - `WECHAT_PAY_SERIAL_NUMBER`
+    - `WECHAT_PAY_PRIVATE_KEY_PATH`
+    - `WECHAT_PAY_NOTIFY_URL`
+  - Operational requirement:
+    - The mini-program `appid` used by `wx.login` and the `appid` used for JSAPI/mini-program payment must match the merchant-side binding expected by WeChat Pay
+- Local verification performed:
+  - `backend-api`: `mvn -q -DskipTests compile` passed
+  - `wechat-app`: `node --check utils/pay.js` passed
+  - `wechat-app`: `node --check pages/address-edit/address-edit.js` passed
+  - `wechat-app`: `node --check pages/order-detail/order-detail.js` passed
+  - `wechat-app`: `node --check pages/order-list/order-list.js` passed
+- Current result:
+  - The codebase now has a real mini-program WeChat Pay path instead of a fake-openid path
+  - Mini-program checkout, order detail pay, and order list pay all use the same real payment helper
+  - Backend payment initiation is now tied to authenticated user context and stable merchant order numbers
+- Residual risk / follow-up notes:
+  - This step did not deploy or smoke-test against a live WeChat merchant environment
+  - The website still has older mock-pay assumptions and was not converted to a real H5/JSAPI payment flow in this step
+  - Real payment success still depends on merchant platform configuration, certificate files, callback domain reachability, and mini-program appid binding being correct
+
+### Mini program user tab icon replacement
+
+- Time: 2026-04-20 16:39:48 +08:00
+- Operator: Codex
+- Goal:
+  - Replace the mini-program bottom tab "我的" icon with a real gingerbread-style icon based on the user-provided image
+- Scope:
+  - Local filesystem only
+  - Repository:
+    - `g:\zhiximini\wechat-app`
+- Source asset provided by user:
+  - `C:\Users\朱鑫\Downloads\VCG211384781347.png`
+- Constraints discovered before implementation:
+  - `wechat-app/app.json` uses native mini-program `tabBar`
+  - Native `tabBar.iconPath` / `selectedIconPath` point to local image files and cannot directly consume an external path or an SVG reference at runtime
+  - Existing `wechat-app/images/tab-user.png` and `wechat-app/images/tab-user-active.png` were placeholder assets only
+- Files added or updated:
+  - Added reference source copy:
+    - `wechat-app/images/tab-user-reference.png`
+  - Replaced runtime tab icons in place:
+    - `wechat-app/images/tab-user.png`
+    - `wechat-app/images/tab-user-active.png`
+  - Added detailed record:
+    - `g:\zhiximini\docs\2026-4-20-1640-小程序我的底部图标替换.md`
+- Implementation details:
+  - Kept `app.json` unchanged because the existing tabBar file names were already correct and only the image payloads needed replacement
+  - Preserved the user-provided source image inside the repo as a local reference asset for future iteration
+  - Generated a clean gingerbread icon pair suitable for the 81x81 tab bar target size:
+    - inactive icon: gray version for `tab-user.png`
+    - active icon: golden cookie version for `tab-user-active.png`
+  - Chose transparent-background PNG outputs so the icon blends correctly with the white tab bar background
+- Local verification:
+  - Confirmed new output files were written successfully:
+    - `tab-user.png` size: `2789` bytes
+    - `tab-user-active.png` size: `2879` bytes
+    - `tab-user-reference.png` size: `117428` bytes
+  - Previewed both generated icons locally to verify readability at icon scale
+- Expected result:
+  - The bottom navigation "我的" tab should no longer show the previous placeholder square
+  - The active state now renders as a recognizable gingerbread-style icon aligned with the user-provided image reference
+
+### Mini program home tab icon replacement
+
+- Time: 2026-04-20 16:41:58 +08:00
+- Operator: Codex
+- Goal:
+  - Replace the mini-program bottom tab "首页" icon with a formal home icon based on the user-provided image
+- Scope:
+  - Local filesystem only
+  - Repository:
+    - `g:\zhiximini\wechat-app`
+- Source asset provided by user:
+  - `C:\Users\朱鑫\Downloads\首页.png`
+- Constraints discovered before implementation:
+  - `wechat-app/app.json` uses native mini-program `tabBar`
+  - Native `tabBar.iconPath` / `selectedIconPath` must reference local image files inside the mini-program project
+  - Existing `wechat-app/images/tab-home.png` and `wechat-app/images/tab-home-active.png` were still 1x1 placeholder assets
+- Files added or updated:
+  - Added reference source copy:
+    - `wechat-app/images/tab-home-reference.png`
+  - Replaced runtime tab icons in place:
+    - `wechat-app/images/tab-home.png`
+    - `wechat-app/images/tab-home-active.png`
+  - Added detailed record:
+    - `g:\zhiximini\docs\2026-4-20-1645-小程序首页底部图标替换.md`
+- Implementation details:
+  - Kept `app.json` unchanged because the existing tabBar file names were already correct and only the image payloads needed replacement
+  - Detected that the provided source image is a transparent-background home silhouette
+  - Preserved the source image inside the repo as a local reference asset for future adjustment
+  - Cropped the visible alpha bounds from the source image and scaled the icon onto an 81x81 transparent canvas suitable for mini-program tab bar usage
+  - Generated two tab bar states:
+    - inactive icon: gray version for `tab-home.png`
+    - active icon: dark version for `tab-home-active.png`
+- Local verification:
+  - Confirmed new output files were written successfully:
+    - `tab-home.png` size: `1174` bytes
+    - `tab-home-active.png` size: `1174` bytes
+    - `tab-home-reference.png` size: `5316` bytes
+  - Confirmed generated icon size:
+    - `tab-home.png`: `81x81`
+    - `tab-home-active.png`: `81x81`
+  - Created and visually checked a temporary white-background preview, then removed the preview file after verification
+- Expected result:
+  - The bottom navigation "首页" tab should no longer show the previous placeholder square
+  - The inactive state now renders a readable gray home icon
+  - The active state now renders the provided home silhouette cleanly on the white tab bar
+
+### Mini program user tab icon replacement update
+
+- Time: 2026-04-20 16:52:41 +08:00
+- Operator: Codex
+- Goal:
+  - Replace the previously generated gingerbread-style "我的" tab icon with the latest user-provided portrait outline icon
+- Scope:
+  - Local filesystem only
+  - Repository:
+    - `g:\zhiximini\wechat-app`
+- New source asset provided by user:
+  - `C:\Users\朱鑫\Downloads\小人.png`
+- Previous state before this update:
+  - `wechat-app/images/tab-user.png` and `wechat-app/images/tab-user-active.png` had already been replaced once in the prior step using a gingerbread-style source reference
+  - The user then explicitly requested that "我的" be changed again to the new `小人.png` source
+- Files updated:
+  - Updated reference source copy in place:
+    - `wechat-app/images/tab-user-reference.png`
+  - Replaced runtime tab icons in place:
+    - `wechat-app/images/tab-user.png`
+    - `wechat-app/images/tab-user-active.png`
+  - Added detailed record:
+    - `g:\zhiximini\docs\2026-4-20-1654-小程序我的底部图标二次替换.md`
+- Implementation details:
+  - Kept `app.json` unchanged because the tab bar file names remain correct
+  - Detected that the provided source image is a transparent-background user-outline icon
+  - Replaced the old reference source file so the repository now keeps the latest user-approved icon source for the "我的" tab
+  - Cropped the visible alpha bounds from the source image and scaled the icon onto an 81x81 transparent canvas suitable for mini-program tab bar usage
+  - Generated two tab bar states:
+    - inactive icon: gray outline version for `tab-user.png`
+    - active icon: dark outline version for `tab-user-active.png`
+- Local verification:
+  - Confirmed new output files were written successfully:
+    - `tab-user.png` size: `1293` bytes
+    - `tab-user-active.png` size: `1293` bytes
+    - `tab-user-reference.png` size: `9253` bytes
+  - Confirmed generated icon size:
+    - `tab-user.png`: `81x81`
+    - `tab-user-active.png`: `81x81`
+  - Created and visually checked a temporary white-background preview, then removed the preview file after verification
+- Expected result:
+  - The bottom navigation "我的" tab should now render the newly provided user-outline icon instead of the earlier gingerbread-style icon
+  - Both active and inactive states now follow the new source image shape
+
+### Mini program bottom navigation liquid-glass redesign
+
+- Time: 2026-04-20 16:59:37 +08:00
+- Operator: Codex
+- Goal:
+  - Redesign the mini-program bottom navigation to visually reference `git@github.com:shuding/liquid-glass.git`
+  - Achieve a liquid-glass style bottom bar instead of the current native flat tab bar
+- Scope:
+  - Local filesystem only
+  - Repository:
+    - `g:\zhiximini\wechat-app`
+- Reference examined:
+  - Repository:
+    - `git@github.com:shuding/liquid-glass.git`
+  - Resolved HEAD during implementation:
+    - `a2d2e847f793430e3409a52927af815a23f4d372`
+  - Local inspection path:
+    - `g:\zhiximini\_tmp\liquid-glass`
+- Key constraints discovered before implementation:
+  - The mini-program was still using native `tabBar` from `wechat-app/app.json`
+  - Native mini-program `tabBar` cannot support the kind of layered blur shell, floating active bubble, custom highlights, and pseudo-liquid glass depth required by the reference style
+  - The reference repository is Web-oriented and relies on SVG filter displacement plus `backdrop-filter`; that exact rendering path cannot be copied 1:1 into the WeChat mini-program native tab bar
+- Architecture decision:
+  - Switched from native `tabBar` rendering to mini-program `custom-tab-bar`
+  - Preserved the existing two-tab information architecture:
+    - 首页
+    - 我的
+  - Reused the already customized local tab icons rather than introducing a second icon redesign in this step
+- Files added or updated:
+  - Updated:
+    - `wechat-app/app.json`
+    - `wechat-app/pages/index/index.js`
+    - `wechat-app/pages/index/index.wxss`
+    - `wechat-app/pages/user/user.js`
+    - `wechat-app/pages/user/user.wxss`
+  - Added:
+    - `wechat-app/custom-tab-bar/index.json`
+    - `wechat-app/custom-tab-bar/index.js`
+    - `wechat-app/custom-tab-bar/index.wxml`
+    - `wechat-app/custom-tab-bar/index.wxss`
+  - Added detailed record:
+    - `g:\zhiximini\docs\2026-4-20-1700-小程序底部导航液态玻璃改造.md`
+- Implementation details:
+  - Enabled `tabBar.custom = true` in `app.json`
+  - Added a custom bottom navigation component that renders:
+    - a rounded translucent glass shell
+    - multi-layer shadow and inset highlight
+    - left/right ambient glow blobs
+    - raised active bubble for the selected tab
+    - icon + label layout centered inside each tab item
+  - Added tab switching through `wx.switchTab(...)`
+  - Added selected-state syncing on the two tab pages:
+    - `pages/index/index.js` sets selected index to `0`
+    - `pages/user/user.js` sets selected index to `1`
+  - Increased bottom padding on the two tab pages so content does not get covered by the new custom floating tab bar
+- Local verification:
+  - `node -e "JSON.parse(...)"` confirmed `wechat-app/app.json` is valid JSON
+  - `node --check wechat-app/custom-tab-bar/index.js` passed
+  - `node --check wechat-app/pages/index/index.js` passed
+  - `node --check wechat-app/pages/user/user.js` passed
+- Expected result:
+  - The bottom navigation should now appear as a floating rounded glass capsule instead of the old native flat bar
+  - The selected tab should feel elevated through a brighter raised bubble and stronger shadow
+  - The result should visually reference the liquid-glass style while remaining compatible with mini-program rendering constraints

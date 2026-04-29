@@ -1,0 +1,68 @@
+sequenceDiagram
+    autonumber
+    participant U as 用户
+    participant H as H5前端
+    participant A as 后端API
+    participant D as 数据库
+
+    U->>H: 点击发布按钮
+    H->>H: 检查登录状态
+    
+    alt 未登录
+        H->>H: 跳转登录页
+        U->>H: 登录账号
+        H->>A: POST /auth/login
+        A-->>H: 返回Token
+    end
+    
+    H->>H: 进入发布表单页
+    U->>H: 选择发布类型
+    Note over H: 出售或求购
+    U->>H: 填写标题
+    U->>H: 填写描述
+    U->>H: 输入价格
+    U->>H: 选择区县
+    U->>H: 选择分类
+    U->>H: 添加图片链接
+    
+    U->>H: 点击提交审核
+    H->>H: 前端校验
+    
+    alt 校验失败
+        H->>U: 提示错误信息
+    else 校验通过
+        H->>A: POST /api/web/listings
+        Note over H,A: 提交表单数据
+        
+        A->>A: Token验证
+        
+        alt Token无效
+            A-->>H: 401 未登录
+            H->>U: 提示重新登录
+        else Token有效
+            A->>A: 校验参数
+            
+            alt 参数无效
+                A-->>H: 400 错误
+                H->>U: 显示错误
+            else 参数有效
+                A->>D: 查询区县信息
+                D-->>A: 返回区县数据
+                
+                A->>A: 构建帖子数据
+                Note over A: 生成ID,设置状态
+                
+                A->>D: 保存帖子
+                D-->>A: 返回帖子ID
+                
+                alt 有图片
+                    A->>D: 保存图片关联
+                end
+                
+                A-->>H: 200 成功
+                H->>U: 显示发布成功
+                H->>H: 清空表单
+                H->>H: 跳转我的页面
+            end
+        end
+    end
