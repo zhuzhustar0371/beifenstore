@@ -1,0 +1,25 @@
+- main [ref=e4]:
+  - generic [ref=e5]:
+    - generic [ref=e6]: 高端运营驾驶舱
+    - heading "知禧管理后台" [level=1] [ref=e7]
+    - paragraph [ref=e8]: 融合空间化界面、进阶玻璃拟态和实时经营数据，为日常运营提供清晰、稳定的管理中枢。
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - paragraph [ref=e11]: 空间层次
+        - paragraph [ref=e12]: 40px 模糊
+      - generic [ref=e13]:
+        - paragraph [ref=e14]: 主色系统
+        - paragraph [ref=e15]: 靛蓝电蓝
+      - generic [ref=e16]:
+        - paragraph [ref=e17]: 视觉景深
+        - paragraph [ref=e18]: 玻璃层叠
+  - generic [ref=e19]:
+    - generic [ref=e20]:
+      - img [ref=e22]
+      - generic [ref=e25]:
+        - paragraph [ref=e26]: 管理控制台
+        - heading "登录管理后台" [level=2] [ref=e27]
+    - generic [ref=e28]:
+      - textbox "管理员账号" [ref=e29]: zhixi_admin
+      - textbox "管理员密码" [ref=e30]
+      - button "登录后台" [ref=e31] [cursor=pointer]
