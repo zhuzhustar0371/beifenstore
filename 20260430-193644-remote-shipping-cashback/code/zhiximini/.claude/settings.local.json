@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/**)",
+      "Read(//c/Users/**)",
+      "Bash(find /home -maxdepth 4 -name \"manager-backend\" -type d)",
+      "Bash(find:*)",
+      "Bash(ssh:*)",
+      "Bash(cd:*)",
+      "Bash(scp:*)",
+      "WebSearch",
+      "WebFetch(domain:pay.weixin.qq.com)",
+      "Bash(ls:*)",
+      "Bash(npx skills *)",
+      "Bash(mvn compile *)",
+      "Bash(XCOPY \"G:\\\\zhiximini\\\\backend-api\\\\src\" \"G:\\\\store\\\\20260428-004747-refund-websocket\\\\local-backend\\\\src\" /E /I /Y /Q)",
+      "Bash(XCOPY \"G:\\\\zhiximini\\\\backend-api\\\\pom.xml\" \"G:\\\\store\\\\20260428-004747-refund-websocket\\\\local-backend\\\\\" /Y /Q && echo \"Local backend backup OK\")",
+      "Bash(XCOPY \"G:\\\\zhiximini\\\\zhixi-website\\\\admin-frontend\\\\src\" \"G:\\\\store\\\\20260428-004747-refund-websocket\\\\local-frontend\\\\src\" /E /I /Y /Q)",
+      "Bash(XCOPY \"G:\\\\zhiximini\\\\zhixi-website\\\\admin-frontend\\\\public\" \"G:\\\\store\\\\20260428-004747-refund-websocket\\\\local-frontend\\\\public\" /E /I /Y /Q)",
+      "Bash(XCOPY \"G:\\\\zhiximini\\\\zhixi-website\\\\admin-frontend\\\\package.json\" \"G:\\\\store\\\\20260428-004747-refund-websocket\\\\local-frontend\\\\\" /Y /Q && XCOPY \"G:\\\\zhiximini\\\\zhixi-website\\\\admin-frontend\\\\vite.config.*\" \"G:\\\\store\\\\20260428-004747-refund-websocket\\\\local-frontend\\\\\" /Y /Q)",
+      "Bash(XCOPY \"G:\\\\zhiximini\\\\zhixi-website\\\\admin-frontend\\\\index.html\" \"G:\\\\store\\\\20260428-004747-refund-websocket\\\\local-frontend\\\\\" /Y /Q && echo \"Local frontend backup OK\")",
+      "Bash(cp -r /g/zhiximini/backend-api/src /g/store/20260428-004747-refund-websocket/local-backend/src)",
+      "Bash(cp /g/zhiximini/backend-api/pom.xml /g/store/20260428-004747-refund-websocket/local-backend/)",
+      "Bash(cp -r /g/zhiximini/zhixi-website/admin-frontend/src /g/store/20260428-004747-refund-websocket/local-frontend/src)",
+      "Bash(cp /g/zhiximini/zhixi-website/admin-frontend/package.json /g/store/20260428-004747-refund-websocket/local-frontend/)",
+      "Bash(cp /g/zhiximini/zhixi-website/admin-frontend/index.html /g/store/20260428-004747-refund-websocket/local-frontend/)",
+      "Bash(mvn package *)"
+    ]
+  }
+}

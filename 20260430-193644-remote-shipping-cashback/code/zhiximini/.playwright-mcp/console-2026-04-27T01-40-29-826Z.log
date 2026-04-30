@@ -1,0 +1,8 @@
+[ 1805775ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:5173/src/components/OrderModal.vue?t=1777255835263:0
+[ 1805782ms] [ERROR] [hmr] Failed to reload /src/components/OrderModal.vue. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://127.0.0.1:5173/@vite/client:175
+[ 1805810ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:5173/src/components/OrderModal.vue?t=1777255835322:0
+[ 1805811ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:5173/src/components/OrderModal.vue?t=1777255835404:0
+[ 1805811ms] [ERROR] [hmr] Failed to reload /src/components/OrderModal.vue. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://127.0.0.1:5173/@vite/client:175
+[ 1805814ms] [ERROR] [hmr] Failed to reload /src/components/OrderModal.vue. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://127.0.0.1:5173/@vite/client:175
+[ 1805854ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:5173/src/components/OrderModal.vue?t=1777255835429:0
+[ 1805979ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:5173/src/components/OrderModal.vue?t=1777255835429:0

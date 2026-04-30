@@ -1,0 +1,38 @@
+diff --git a/backend-api/src/main/resources/data.sql b/backend-api/src/main/resources/data.sql
+--- a/backend-api/src/main/resources/data.sql
++++ b/backend-api/src/main/resources/data.sql
+@@
+-  ('知禧洗衣液', 0.10, '单价 0.10 元体验装，适合线上支付与返现链路测试。', '/images/product.png', TRUE);
++  ('知禧洗衣液', 10.00, '单价 10.00 元/件，适合线上支付与返现链路测试。', '/images/product.png', TRUE);
+diff --git a/wechat-app/pages/rules/rules.js b/wechat-app/pages/rules/rules.js
+--- a/wechat-app/pages/rules/rules.js
++++ b/wechat-app/pages/rules/rules.js
+@@
+-  unitPrice: 0.10,
++  unitPrice: 10.00,
+@@
+-    { label: '第2单', ratioText: '10%', cashbackAmount: 0.01 },
+-    { label: '第3单', ratioText: '20%', cashbackAmount: 0.02 },
+-    { label: '第4单', ratioText: '70%', cashbackAmount: 0.07 },
++    { label: '第2单', ratioText: '10%', cashbackAmount: 1.00 },
++    { label: '第3单', ratioText: '20%', cashbackAmount: 2.00 },
++    { label: '第4单', ratioText: '70%', cashbackAmount: 7.00 },
+@@
+-    { label: '第1批', peopleRule: '满3人', ratioText: '100%', cashbackAmount: 0.10 },
+-    { label: '第2批', peopleRule: '满3人', ratioText: '20%', cashbackAmount: 0.02 },
+-    { label: '第3批及以后', peopleRule: '每满3人', ratioText: '20%', cashbackAmount: 0.02 }
++    { label: '第1批', peopleRule: '满3人', ratioText: '100%', cashbackAmount: 10.00 },
++    { label: '第2批', peopleRule: '满3人', ratioText: '20%', cashbackAmount: 2.00 },
++    { label: '第3批及以后', peopleRule: '每满3人', ratioText: '20%', cashbackAmount: 2.00 }
+diff --git a/wechat-app/pages/index/index.wxml b/wechat-app/pages/index/index.wxml
+--- a/wechat-app/pages/index/index.wxml
++++ b/wechat-app/pages/index/index.wxml
+@@
+-            <text class="product-desc text-ellipsis">{{item.description || '单价0.10元/件，温和洁净，适合家庭日常使用'}}</text>
++            <text class="product-desc text-ellipsis">{{item.description || '单价10元/件，温和洁净，适合家庭日常使用'}}</text>
+@@
+-        <text class="summary-price">99元 · 一箱6瓶 · 全家够用</text>
++        <text class="summary-price">10元 · 当前活动单价 · 自购享返现</text>
+@@
+-            <text class="step-text">全额返还99元 = 产品免费拿</text>
++            <text class="step-text">全额返还10元 = 产品免费拿</text>

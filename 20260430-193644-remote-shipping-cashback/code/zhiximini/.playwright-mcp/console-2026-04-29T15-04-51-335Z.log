@@ -1,0 +1,6 @@
+[     109ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://127.0.0.1:4173/cashbacks:0
+[     116ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:4173/favicon.ico:0
+[   65315ms] [ERROR] Access to XMLHttpRequest at 'https://api.mashishi.com/api/admin/auth/login' from origin 'http://127.0.0.1:4173' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://127.0.0.1:4173/cashbacks:0
+[   65316ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://api.mashishi.com/api/admin/auth/login:0
+[   66507ms] [ERROR] Access to XMLHttpRequest at 'https://api.mashishi.com/api/admin/auth/login' from origin 'http://127.0.0.1:4173' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://127.0.0.1:4173/cashbacks:0
+[   66508ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://api.mashishi.com/api/admin/auth/login:0
