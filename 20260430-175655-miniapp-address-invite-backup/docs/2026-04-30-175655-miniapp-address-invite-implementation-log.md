@@ -28,11 +28,90 @@
 - 已确认本次改动主要涉及 `wechat-app` 与 `backend-api` 两个独立 Git 仓库。
 - 已识别现有未提交修改，后续修改时将避免覆盖无关文件。
 
+### 2026-04-30 17:57:00 - 18:00:30 备份执行
+
+- 已创建本地备份目录：`G:/store/20260430-175655-miniapp-address-invite-backup`
+- 本地备份目录结构：
+  - `docs/2026-04-30-175655-miniapp-address-invite-atomic-plan.md`
+  - `docs/2026-04-30-175655-miniapp-address-invite-implementation-log.md`
+  - `code/wechat-app`
+  - `code/backend-api`
+- 已完整复制当前 `wechat-app` 与 `backend-api` 工作区到本地备份目录。
+- 已克隆远端备份仓库：`git@github.com:zhuzhustar0371/beifenstore.git`
+- 首次提交时误将两个源码目录记录成嵌套 Git 仓库引用，随后已修正为普通源码文件快照。
+- 已将备份推送到远端备份仓库：
+  - 远端仓库：`beifenstore`
+  - 备份提交：`5e7d04699a3ffa9cd41c401bd0be684933229828`
+  - 备份目录：`20260430-175655-miniapp-address-invite-backup`
+
+### 2026-04-30 18:00:30 - 18:12:00 代码修改
+
+- 后端新增小程序登录预检查接口：
+  - `backend-api/src/main/java/com/zhixi/backend/dto/WechatMiniappPrecheckRequest.java`
+  - `backend-api/src/main/java/com/zhixi/backend/controller/AuthController.java`
+  - `backend-api/src/main/java/com/zhixi/backend/service/UserAuthService.java`
+- 预检查接口能力：
+  - 根据 `wx.login` 换取的 `code` 判断该小程序用户是否已注册
+  - 返回 `registered`、`hasInviter`、`canInputInviteCode`
+  - 登录页可在用户点击正式登录前决定是否显示邀请码区域
+- 小程序登录页改动：
+  - `wechat-app/pages/login/login.js`
+  - `wechat-app/pages/login/login.wxml`
+  - `wechat-app/pages/login/login.wxss`
+- 登录页改动内容：
+  - 外部分享/二维码带入邀请码时，显示只读邀请码提示，不显示可编辑输入框
+  - 老用户二次进入登录页时，通过后端预检查隐藏邀请码输入项
+  - 新用户且没有外部邀请码时，才显示邀请码输入框
+  - 登录成功后写入 `miniappHasLoggedInBefore` 本地标记，作为预检查失败时的兜底判断
+- 下单地址页改动：
+  - `wechat-app/pages/address-edit/address-edit.js`
+  - `wechat-app/pages/address-edit/address-edit.wxml`
+  - `wechat-app/pages/address-edit/address-edit.wxss`
+- 下单地址页改动内容：
+  - 已有默认地址时优先展示“地址确认态”
+  - 用户可点击“修改地址”切换到地址编辑态
+  - 未修改默认地址时，下单跳过重复地址保存，直接创建订单并支付
+  - 无默认地址时继续沿用原先填写地址后支付的流程
+- 修改过程中发现 WXML 中文文案在控制台读取时出现编码显示异常，已在最终文件中恢复为正常中文文案。
+
+### 2026-04-30 18:12:00 - 18:15:00 本地验证
+
+- 已执行小程序 JS 语法检查：
+  - `wechat-app/pages/login/login.js`
+  - `wechat-app/pages/address-edit/address-edit.js`
+- 语法检查结果：通过
+- 已执行后端编译验证：
+  - 命令：`mvn -q -DskipTests compile`
+- 编译结果：通过
+- 说明：
+  - Maven 输出了 JDK 相关 `System::load` / `Unsafe` 警告，但未导致编译失败
+  - 本轮未执行云端构建和正式发布
+
+### 当前工作区状态
+
+- `wechat-app` 本次相关变更：
+  - `pages/address-edit/address-edit.js`
+  - `pages/address-edit/address-edit.wxml`
+  - `pages/address-edit/address-edit.wxss`
+  - `pages/login/login.js`
+  - `pages/login/login.wxml`
+  - `pages/login/login.wxss`
+- `wechat-app` 既有未提交、且非本次修改文件：
+  - `pages/product/product.wxml`
+  - `pages/product/product.wxss`
+- `backend-api` 本次相关变更：
+  - `src/main/java/com/zhixi/backend/controller/AuthController.java`
+  - `src/main/java/com/zhixi/backend/service/UserAuthService.java`
+  - `src/main/java/com/zhixi/backend/dto/WechatMiniappPrecheckRequest.java`
+- `backend-api` 既有未提交、且非本次修改文件：
+  - `src/main/java/com/zhixi/backend/config/DatabaseMigrationRunner.java`
+  - `src/main/java/com/zhixi/backend/dto/AdminProductUpsertRequest.java`
+  - `src/main/java/com/zhixi/backend/mapper/ProductMapper.java`
+  - `src/main/java/com/zhixi/backend/model/Product.java`
+  - `src/main/java/com/zhixi/backend/service/AdminManageService.java`
+  - `src/main/resources/schema.sql`
+
 ### 待继续记录
 
-- 本地双备份创建结果
-- `beifenstore` 远端备份推送结果
-- 代码修改明细
-- 本地验证结果
-- 构建发布结果
+- 云端构建发布结果（如执行）
 - 异常回退结果（如发生）
