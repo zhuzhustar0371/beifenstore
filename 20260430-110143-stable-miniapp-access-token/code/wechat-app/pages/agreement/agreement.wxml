@@ -1,0 +1,63 @@
+<view class="page">
+  <view class="card hero">
+    <text class="hero-title">用户协议</text>
+    <text class="hero-sub">本协议于 2026 年 4 月 22 日最新修订</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">一、服务说明</text>
+    <text class="p">“知禧净享生活”是一款微信小程序，主要提供商品浏览、商品详情查看、微信授权登录、手机号短信登录、密码重置、下单支付、订单查询、收货地址管理、联系客服、邀请好友及返现收益查看等功能。我们可能根据运营、监管或业务需要对服务内容进行调整，具体以小程序内实际展示为准。</text>
+    <text class="p">商品信息、价格、库存、优惠、返现、邀请奖励及其他活动权益等，均以页面展示、活动规则和系统记录为准。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">二、账号与使用</text>
+    <text class="p">你应使用真实、合法、有效的信息登录和使用本服务，并妥善保管账号、验证码、密码及其他登录凭证。</text>
+    <text class="p">账号仅限你本人使用，不得出租、出借、转让、售卖或以其他方式供他人使用。因你保管不善、授权不当、操作失误或第三方使用账号而造成的后果，由你自行承担。</text>
+    <text class="p">如发现账号异常、被盗用或其他安全风险，应及时联系我们处理。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">三、订单、支付与返现</text>
+    <text class="p">你提交订单并完成支付后，订单状态以系统记录、支付结果和实际履约结果为准。平台可能接入第三方支付、物流或客服服务，你同意为完成交易和履约所必需的信息共享。</text>
+    <text class="p">邀请返现、复购返现及其他活动权益，具体发放条件、计算方式、结算周期、提现规则及限制条件，以页面展示、活动规则或另行说明为准。</text>
+    <text class="p">你不得通过虚假交易、刷单、恶意邀请、批量注册、套现、作弊或其他不正当方式获取返现、奖励或其他权益。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">四、用户行为规范</text>
+    <text class="p">你应遵守中华人民共和国法律法规、微信平台规则及本协议约定，不得利用本服务从事违法违规行为，不得发布违法信息，不得侵犯他人合法权益。</text>
+    <text class="p">你不得干扰、破坏本服务的正常运行，不得通过任何方式攻击、入侵、篡改或绕过系统，不得利用本服务实施刷单、套现、虚假宣传、恶意投诉或其他损害平台、商家或第三人权益的行为。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">五、隐私保护</text>
+    <text class="p">我们重视对你个人信息的保护。有关个人信息的收集、使用、存储、共享、保护及你的相关权利，请另行查阅《隐私政策》。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">六、服务中断或终止</text>
+    <text class="p">因网络故障、系统维护、微信平台接口调整、第三方服务异常、不可抗力或其他无法预见、无法控制的原因，可能导致本服务中断、延迟或异常。我们会尽力处理，但在法律允许范围内不承担超出合理控制范围的责任。</text>
+    <text class="p">如你违反法律法规、本协议或平台规则，我们有权中止、限制或终止向你提供全部或部分服务。服务中断或终止后，我们仍可能基于法律法规、交易留痕、争议处理和审计需要保留相关记录。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">七、责任范围及限制</text>
+    <text class="p">平台展示内容仅供你参考，具体商品、订单、履约、返现及活动结果，以实际页面、系统记录和最终履约结果为准。</text>
+    <text class="p">因你自身原因导致的损失，包括但不限于信息填写错误、账号泄露、操作失误、未及时查收通知等，由你自行承担。除法律法规明确规定外，我们不对第三方服务、第三方支付、物流配送或其他第三方行为承担超出合理范围的责任。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">八、协议变更</text>
+    <text class="p">我们有权根据法律法规、业务调整或运营需要修订本协议，并在小程序内公布最新版本。你继续使用本服务，即视为接受更新后的协议；如你不同意更新内容，应立即停止使用本服务。</text>
+  </view>
+
+  <view class="card block footer">
+    <text class="section-title">九、联系我们</text>
+    <text class="p">如你对本协议有任何疑问、建议或投诉，可通过以下方式联系我们：</text>
+    <text class="p">官方邮箱：zhixi202507@163.com</text>
+    <text class="p">客服电话：15383235338</text>
+    <text class="p">运营主体：石家庄知禧健康管理有限公司</text>
+    <text class="p">通讯地址：河北省石家庄市正定县正定镇华西路小商品步行街中段6107-2</text>
+  </view>
+</view>
