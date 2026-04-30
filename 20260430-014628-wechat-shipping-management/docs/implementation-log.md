@@ -130,6 +130,11 @@
   - `https://api.mashishi.com/api/health` 返回 `{"status":"UP"}`。
   - `https://mashishi.com` 返回 `200 OK`。
   - `admin.mashishi.com` 从当前机器 curl 连接失败；服务器文件确认管理端 dist 已更新。该域名入口状态需单独核对 DNS/Nginx 入口，不影响本次 API 后端健康结论。
+- 最终日志归档：
+  - 最终日志已同步到本地备份：`G:\store\20260430-014628-wechat-shipping-management\docs\implementation-log.md`。
+  - 同步最终日志到 `beifenstore` 时再次触发 Windows 长路径 checkout 造成的误删显示，已用 Git tree 修复。
+  - 远端最终修复提交：`757e8b6a2272b1a6da4045866dbe20ae8dd5d03d`。
+  - 已验证远端树中同时存在旧备份目录、本次备份目录、`atomic-operation-plan.md` 和 `implementation-log.md`。
 
 ## 未纳入本次修改的既有工作区内容
 
