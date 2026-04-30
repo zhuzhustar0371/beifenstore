@@ -39,6 +39,7 @@
 - 2026-04-30 15:00 Started local Vite dev server at `http://127.0.0.1:4174/`.
 - 2026-04-30 15:00 Browser Use plugin could not run because local Node runtime is `v22.15.1` and the plugin requires `>= v22.22.0`.
 - 2026-04-30 15:00 Playwright MCP opened `http://127.0.0.1:4174/orders?userId=1`; app rendered the admin login screen. Only console error was missing `favicon.ico`.
+- 2026-04-30 15:01 Synced final operation log to `beifenstore`, commit `13aab52`.
 
 ## Verification
 - `mvn -DskipTests package`: success.
@@ -49,6 +50,7 @@
 ## Cloud Backup
 - Complete. Remote: `git@github.com:zhuzhustar0371/beifenstore.git`
 - Commit: `3636107 backup: admin user pagination nickname order search 20260430-143000`
+- Final log update commit: `13aab52 docs: update admin user search backup log 20260430-1500`
 
 ## Rollback
 - Use `code/` snapshot from this backup directory.
