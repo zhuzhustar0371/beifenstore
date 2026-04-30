@@ -87,6 +87,28 @@
   - Maven 输出了 JDK 相关 `System::load` / `Unsafe` 警告，但未导致编译失败
   - 本轮未执行云端构建和正式发布
 
+### 2026-04-30 18:15:00 - 18:22:00 发布能力核查
+
+- 已检查现有发布脚本：
+  - `G:/zhiximini/scripts/cloud-preview.ps1`
+  - `G:/zhiximini/scripts/deploy_backend_api.sh`
+- 核查结论：
+  - 当前仓库存在后端自动部署脚本，但 `backend-api` 工作区包含本次无关的未提交修改：
+    - `DatabaseMigrationRunner.java`
+    - `AdminProductUpsertRequest.java`
+    - `ProductMapper.java`
+    - `Product.java`
+    - `AdminManageService.java`
+    - `schema.sql`
+  - 若直接执行后端部署脚本，会把上述无关改动一并打进新的 JAR，上线风险不可接受，因此本轮未直接部署后端。
+  - 当前业务仓库未发现可直接执行的小程序自动上传链路。
+  - 历史文档与本轮扫描结果一致：当前环境缺少 `miniprogram-ci`、上传私钥或微信开发者工具 CLI，无法在本会话中自动上传微信小程序版本。
+- 因此本轮状态为：
+  - 本地代码修改完成
+  - 本地编译验证完成
+  - 双备份与日志归档完成
+  - 未执行云端正式发布，原因已记录
+
 ### 当前工作区状态
 
 - `wechat-app` 本次相关变更：
@@ -113,5 +135,5 @@
 
 ### 待继续记录
 
-- 云端构建发布结果（如执行）
+- 云端构建发布结果（需在隔离无关改动后执行）
 - 异常回退结果（如发生）
