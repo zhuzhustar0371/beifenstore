@@ -1,0 +1,2 @@
+﻿ M pages/product/product.wxml
+ M pages/product/product.wxss
