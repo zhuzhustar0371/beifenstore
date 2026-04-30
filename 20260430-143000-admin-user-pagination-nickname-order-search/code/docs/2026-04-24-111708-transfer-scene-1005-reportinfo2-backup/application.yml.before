@@ -1,0 +1,72 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: zhixi-backend
+  datasource:
+    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/zhixi?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false}
+    username: ${DB_USER:mysql-zhixi}
+    password: ${DB_PASSWORD:Zxjk20260406Aj}
+    driver-class-name: ${DB_DRIVER:com.mysql.cj.jdbc.Driver}
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:Zxjk20260406Aj}
+      timeout: ${REDIS_TIMEOUT:3000ms}
+  sql:
+    init:
+      mode: ${SQL_INIT_MODE:never}
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+app:
+  pay:
+    mock-enabled: ${APP_PAY_MOCK_ENABLED:false}
+  cors:
+    origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:5174,https://mashishi.com,https://www.mashishi.com,https://admin.mashishi.com}
+  upload:
+    dir: ${APP_UPLOAD_DIR:/home/ubuntu/apps/backend-api/uploads}
+  user-session:
+    expires-hours: ${USER_SESSION_EXPIRES_HOURS:24}
+  sms:
+    code-expire-minutes: ${SMS_CODE_EXPIRE_MINUTES:5}
+    skip-verify: ${SMS_SKIP_VERIFY:false}
+    tencent:
+      secret-id: ${TENCENT_SMS_SECRET_ID:AKID5KOErJemjWLEvOgwynQr56uVt30oW1JN}
+      secret-key: ${TENCENT_SMS_SECRET_KEY:wfGesthS4WowHSUJxPfkcHnBd1FJMJ4g}
+      sdk-app-id: ${TENCENT_SMS_SDK_APP_ID:1401108208}
+      sign-name: ${TENCENT_SMS_SIGN_NAME:石家庄知禧健康管理}
+      template-id: ${TENCENT_SMS_TEMPLATE_ID:2625405}
+      reset-template-id: ${TENCENT_SMS_RESET_TEMPLATE_ID:}
+      region: ${TENCENT_SMS_REGION:ap-guangzhou}
+  wechat:
+    web-app-id: ${WECHAT_WEB_APP_ID:}
+    web-app-secret: ${WECHAT_WEB_APP_SECRET:}
+    redirect-uri: ${WECHAT_WEB_REDIRECT_URI:https://api.mashishi.com/api/auth/wechat/callback}
+    web-success-redirect-uri: ${WECHAT_WEB_SUCCESS_REDIRECT_URI:https://mashishi.com}
+    miniapp:
+      app-id: ${WECHAT_MINIAPP_APP_ID:${WECHAT_PAY_APPID:}}
+      app-secret: ${WECHAT_MINIAPP_APP_SECRET:}
+    pay:
+      mchid: ${WECHAT_PAY_MCHID:1107238481}
+      appid: ${WECHAT_PAY_APPID:wx036abe08723e1e24}
+      api-v3-key: ${WECHAT_PAY_API_V3_KEY:}
+      merchant-serial-number: ${WECHAT_PAY_SERIAL_NUMBER:}
+      private-key-path: ${WECHAT_PAY_PRIVATE_KEY_PATH:/home/ubuntu/apps/backend-api/cert/apiclient_key.pem}
+      notify-url: ${WECHAT_PAY_NOTIFY_URL:https://api.mashishi.com/api/pay/wechat/notify}
+      refund-notify-url: ${WECHAT_PAY_REFUND_NOTIFY_URL:https://api.mashishi.com/api/pay/wechat/refund/notify}
+      public-key-id: ${WECHAT_PAY_PUBLIC_KEY_ID:}
+      public-key-path: ${WECHAT_PAY_PUBLIC_KEY_PATH:}
+      public-key-pem: ${WECHAT_PAY_PUBLIC_KEY_PEM:}
+      transfer-notify-url: ${WECHAT_PAY_TRANSFER_NOTIFY_URL:}
+      transfer-scene-id: ${WECHAT_PAY_TRANSFER_SCENE_ID:1000}
+      transfer-activity-name: ${WECHAT_PAY_TRANSFER_ACTIVITY_NAME:知禧返现}
+      transfer-reward-desc: ${WECHAT_PAY_TRANSFER_REWARD_DESC:消费返现奖励}
+      transfer-user-recv-perception: ${WECHAT_PAY_TRANSFER_USER_RECV_PERCEPTION:现金奖励}
+      transfer-report-info-type: ${WECHAT_PAY_TRANSFER_REPORT_INFO_TYPE:}
+      transfer-report-info-content: ${WECHAT_PAY_TRANSFER_REPORT_INFO_CONTENT:}
+      transfer-remark-prefix: ${WECHAT_PAY_TRANSFER_REMARK_PREFIX:知禧返现}
