@@ -23,3 +23,29 @@
 4. 执行前端重新发布。
 5. 验证官网、后台、健康检查。
 6. 记录回撤结果与回退点。
+
+## 2026-04-30 17:08 代码回撤
+- 回撤提交：`git revert --no-edit cd00800`
+- 生成提交：`77b0643 Revert "feat: add expandable admin order rows"`
+- 推送分支：`origin/release/20260423-invite-cashback-linkage` 成功
+- 保留未纳入回撤的既有内容：`admin-frontend/src/views/ProductsPage.vue`、`frontend-dist-upload/`
+
+## 2026-04-30 17:08 前端重新发布
+- 执行命令：`powershell -ExecutionPolicy Bypass -File G:\zhiximini\scripts\cloud-preview.ps1 -Target frontend`
+- 官网前端产物：`dist/assets/index-BdswURnl.css`、`dist/assets/index-f_qKmuID.js`
+- 管理后台产物：`dist/assets/index-BPy3-W6z.css`、`dist/assets/index-C3AvqoMl.js`
+- 远端部署目录：`/home/ubuntu/zhixi/current`
+- 管理后台兼容目录同步：`/home/ubuntu/apps/manager-backend/dist`
+
+## 2026-04-30 17:09 回撤后验证
+- `https://mashishi.com` 正常
+- `https://api.mashishi.com/api/health` 正常，返回 `{"success":true,"message":"OK","data":{"status":"UP"}}`
+- `https://admin.mashishi.com/orders` 返回 `HTTP/1.1 200 OK`
+- `https://admin.mashishi.com/assets/index-C3AvqoMl.js` 返回 `HTTP/1.1 200 OK`
+- `https://admin.mashishi.com/assets/index-BPy3-W6z.css` 返回 `HTTP/1.1 200 OK`
+- 构建阶段仍有既有 CSS 压缩告警：`Expected identifier but found "-"`，未阻塞回撤发布。
+
+## 2026-04-30 17:09 当前回退点
+- 业务仓库回撤提交：`77b0643`
+- 回撤前本地备份：`G:\store\20260430-170715-rollback-admin-orders-expand-copy-users-100pages`
+- beifenstore 最新快照：`1198d8e`
