@@ -1,0 +1,14 @@
+﻿# 原子化操作说明
+- 时间戳: 20260430-133747
+- 任务: 管理后台订单页新增订单号搜索与分页，解决旧订单无法在仅展示最新20条的页面中查找的问题。
+- 修改前状态:
+  - backend-api 存在用户已有未提交改动: src/main/java/com/zhixi/backend/config/DatabaseMigrationRunner.java, src/main/java/com/zhixi/backend/mapper/OrderMapper.java
+  - zhixi-website 存在未跟踪目录: frontend-dist-upload/
+- 本次预计修改范围:
+  - zhixi-website/admin-frontend/src/api.js
+  - zhixi-website/admin-frontend/src/views/OrdersPage.vue
+- 备份内容:
+  - code/backend-api
+  - code/zhixi-website
+- 回退方式:
+  - 可直接从该备份目录恢复对应仓库内容。
