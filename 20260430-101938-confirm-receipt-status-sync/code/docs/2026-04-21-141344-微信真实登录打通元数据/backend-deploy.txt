@@ -1,0 +1,2 @@
+﻿backend_backup=/home/ubuntu/apps/backend-api/backups/app-20260421143409.jar
+backend_hotfix_backup=/home/ubuntu/apps/backend-api/backups/app-20260421144425.jar
