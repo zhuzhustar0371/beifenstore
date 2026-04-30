@@ -50,7 +50,7 @@
 
 ## 发布记录
 
-1. 使用干净 worktree G:\zhiximini\_tmp\backend-release-20260430-115430 从 backend-api 提交 48a3361 构建后端 jar。
+1. 使用干净 worktree G:\zhiximini\_tmp\backend-release-20260430-115430 从 backend-api 提交 48a3361 构建后端 jar；构建完成后已清理该临时 worktree。
 2. 已上传 jar 到服务器 ubuntu@43.139.76.37。
 3. 替换线上后端前已备份旧 jar：/home/ubuntu/apps/backend-api/backups/app-before-shipping-reimplement-20260430115956.jar。
 4. 已重启 zhixi-backend.service。
