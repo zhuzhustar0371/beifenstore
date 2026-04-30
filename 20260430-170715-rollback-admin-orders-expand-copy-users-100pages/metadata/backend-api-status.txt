@@ -1,0 +1,6 @@
+﻿ M src/main/java/com/zhixi/backend/config/DatabaseMigrationRunner.java
+ M src/main/java/com/zhixi/backend/dto/AdminProductUpsertRequest.java
+ M src/main/java/com/zhixi/backend/mapper/ProductMapper.java
+ M src/main/java/com/zhixi/backend/model/Product.java
+ M src/main/java/com/zhixi/backend/service/AdminManageService.java
+ M src/main/resources/schema.sql
