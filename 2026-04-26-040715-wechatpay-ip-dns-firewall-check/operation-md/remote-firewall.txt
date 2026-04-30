@@ -1,0 +1,6 @@
+��## UFW
+Status: inactive
+## IPTABLES_OUTPUT
+-P OUTPUT ACCEPT
+## NFT_WECHAT_MATCH
+nft no matching rules or unavailable

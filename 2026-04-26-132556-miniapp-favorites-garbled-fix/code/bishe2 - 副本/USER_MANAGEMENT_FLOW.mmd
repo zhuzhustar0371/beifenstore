@@ -1,0 +1,47 @@
+flowchart TD
+    A["Start: open user management"] --> B["GET /admin/users"]
+    B --> C{"Has session.user?"}
+    C -- No --> D["Redirect /login"]
+    C -- Yes --> E{"Role is admin?"}
+    E -- No --> F["Deny and redirect to role home"]
+    E -- Yes --> G["Load users + listings collections"]
+
+    G --> H["Filter and paginate by status/role/keyword"]
+    H --> I["Render users/index.ejs"]
+
+    I --> J{"Which admin action?"}
+
+    J --> K["POST /admin/users/:id/disable"]
+    K --> K1["Update users.status=disabled"]
+    K1 --> K2["Record admin_actions: disable"]
+    K2 --> I
+
+    J --> L["POST /admin/users/:id/enable"]
+    L --> L1["Update users.status=active"]
+    L1 --> L2["Record admin_actions: enable"]
+    L2 --> I
+
+    J --> M["POST /admin/users/:id/make-service"]
+    M --> M1{"Target user exists?"}
+    M1 -- No --> I
+    M1 -- Yes --> M2["Set role=customer_service, status=active"]
+    M2 --> M3["Fill openid/open_id/username/account if missing"]
+    M3 --> M4["Record admin_actions: make_service"]
+    M4 --> I
+
+    J --> N["POST /admin/users/:id/remove-service"]
+    N --> N1["Set role=user"]
+    N1 --> N2["Record admin_actions: remove_service"]
+    N2 --> I
+
+    J --> O["POST /admin/users/:id/reset-password"]
+    O --> O1{"Current operator role=admin?"}
+    O1 -- No --> OX["Return 403"]
+    O1 -- Yes --> O2{"New password length >= 6?"}
+    O2 -- No --> OY["Return 400"]
+    O2 -- Yes --> O3{"Target user exists?"}
+    O3 -- No --> OZ["Return 404"]
+    O3 -- Yes --> O4["Generate password_hash/password_salt"]
+    O4 --> O5["Write back with set and update timestamps"]
+    O5 --> O6["Record admin_actions: reset_password"]
+    O6 --> I

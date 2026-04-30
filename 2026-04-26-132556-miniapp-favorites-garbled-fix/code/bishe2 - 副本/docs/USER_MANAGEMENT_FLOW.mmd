@@ -1,0 +1,61 @@
+flowchart TD
+    A["访问后台用户管理"] --> B["GET /admin/users"]
+    B --> C{"会话存在且角色=admin?"}
+    C -- "否" --> C1["重定向 /login 或回首页并提示无权限"]
+    C -- "是" --> D["loadBaseCollections(): users + listings"]
+    D --> E["统计每个用户 listing_count"]
+    E --> F["按 status/role/keyword 过滤"]
+    F --> G["按 created_at 倒序 + 分页"]
+    G --> H["渲染 users/index.ejs"]
+
+    H --> I{"管理员在页面选择操作"}
+
+    I --> J["POST /admin/users/:id/disable"]
+    J --> J1["users.doc(id).update: status=disabled"]
+    J1 --> J2["recordAdminAction(action=disable, note=reason)"]
+    J2 --> J3["flash 成功并重定向 /admin/users"]
+    J --> J4["失败: flash 错误并重定向 /admin/users"]
+
+    I --> K["POST /admin/users/:id/enable"]
+    K --> K1["users.doc(id).update: status=active"]
+    K1 --> K2["recordAdminAction(action=enable)"]
+    K2 --> K3["flash 成功并重定向 /admin/users"]
+    K --> K4["失败: flash 错误并重定向 /admin/users"]
+
+    I --> L["POST /admin/users/:id/make-service"]
+    L --> L0["读取 users.doc(id)"]
+    L0 --> Lq{"用户存在?"}
+    Lq -- "否" --> Lq1["flash 未找到用户并重定向"]
+    Lq -- "是" --> L1["生成 serviceLogin 标识"]
+    L1 --> L2["更新 role=customer_service, status=active"]
+    L2 --> L3{"openid/username/account 缺失?"}
+    L3 -- "是" --> L31["补齐为 serviceLogin"]
+    L3 -- "否" --> L4["保留原值"]
+    L31 --> L5["recordAdminAction(action=make_service)"]
+    L4 --> L5
+    L5 --> L6["flash 登录提示(serviceLogin + SERVICE_PASSWORD)"]
+    L6 --> L7["重定向 /admin/users"]
+    L --> L8["失败: flash 错误并重定向 /admin/users"]
+
+    I --> M["POST /admin/users/:id/remove-service"]
+    M --> M1["users.doc(id).update: role=user"]
+    M1 --> M2["recordAdminAction(action=remove_service)"]
+    M2 --> M3["flash 成功并重定向 /admin/users"]
+    M --> M4["失败: flash 错误并重定向 /admin/users"]
+
+    I --> N["POST /admin/users/:id/reset-password"]
+    N --> N0["前端弹窗输入新密码(>=6)并二次确认"]
+    N0 --> N1{"session.user.role == admin?"}
+    N1 -- "否" --> N1x["返回 403 或 flash 错误"]
+    N1 -- "是" --> N2{"newPassword 长度 >= 6?"}
+    N2 -- "否" --> N2x["返回 400 或 flash 错误"]
+    N2 -- "是" --> N3["读取目标 users.doc(id)"]
+    N3 --> N4{"用户存在?"}
+    N4 -- "否" --> N4x["返回 404 或 flash 错误"]
+    N4 -- "是" --> N5["buildPasswordFields(newPassword)"]
+    N5 --> N6["读取当前用户文档并去掉 _id"]
+    N6 --> N7["users.doc(id).set(合并原字段+新 hash/salt)"]
+    N7 --> N8["写入 password_reset_method/password_updated_at"]
+    N8 --> N9["recordAdminAction(action=reset_password)"]
+    N9 --> N10["返回 200 或 flash 成功"]
+    N --> N11["异常: 返回 500 或 flash 错误"]

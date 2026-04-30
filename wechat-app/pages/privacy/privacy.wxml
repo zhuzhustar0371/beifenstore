@@ -1,0 +1,54 @@
+<view class="page">
+  <view class="card hero">
+    <text class="hero-title">隐私政策</text>
+    <text class="hero-sub">本政策于 2026 年 4 月 22 日最新修订</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">一、我们如何收集和使用你的个人信息</text>
+    <text class="p">为向你提供知禧净享生活服务，我们可能收集并使用你主动提供或因使用服务而产生的必要信息，包括手机号、短信验证码、微信昵称、头像、openid/unionid（如有）、订单信息、收货地址、联系客服内容、邀请关系、返现记录以及设备信息、日志信息等。</text>
+    <text class="p">我们仅会在实现登录、下单、支付、发货、售后、客服、风控、返现结算和服务优化所必需的范围内处理上述信息。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">二、我们如何共享、转让和公开披露信息</text>
+    <text class="p">我们不会向第三方出售或出租你的个人信息。仅在获得你的同意、为完成支付或发货等必要服务、为遵守法律法规，或为维护你、我们或其他用户的人身财产安全所必需时，才会在最小必要范围内共享相关信息。</text>
+    <text class="p">如因合并、收购、资产转让等发生业务变更，我们会依法要求接收方继续受本政策约束。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">三、第三方服务</text>
+    <text class="p">为实现本服务功能，我们可能接入微信开放能力、微信支付、短信服务、物流服务、客服服务或其他必要第三方服务。相关服务商仅可在完成对应服务所必需的范围内处理必要信息。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">四、我们如何保存和保护信息</text>
+    <text class="p">你的个人信息原则上存储在中国境内。我们仅在实现本政策所述目的所必需的期限内保留相关信息，法律法规另有要求的除外。</text>
+    <text class="p">我们会采取合理可行的安全措施，防止个人信息遭到未经授权的访问、披露、使用、修改、损坏或丢失，但互联网环境并非绝对安全，我们无法保证信息的绝对安全。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">五、你的权利</text>
+    <text class="p">你依法享有查询、复制、更正、删除、撤回同意、注销账号等权利。你可以通过小程序内客服或反馈入口联系我们行使权利。</text>
+    <text class="p">如你要求删除、注销或撤回授权，我们会在法律允许范围内及时处理；但已依法保存的必要记录，我们可能仍需保留。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">六、未成年人保护</text>
+    <text class="p">若你为未成年人，请在监护人同意和指导下使用本服务，并避免提供超出必要范围的个人信息。若法律法规对未成年人信息保护有更严格要求，我们将按法律规定执行。</text>
+  </view>
+
+  <view class="card block">
+    <text class="section-title">七、政策更新</text>
+    <text class="p">我们可能会根据法律法规、业务变化或技术调整更新本隐私政策。更新后，我们会通过小程序页面、弹窗或其他适当方式通知你；若你继续使用本服务，即表示你同意更新后的隐私政策。</text>
+  </view>
+
+  <view class="card block footer">
+    <text class="section-title">八、联系我们</text>
+    <text class="p">如果你对本隐私政策或个人信息处理有任何疑问、意见或建议，可通过以下方式联系我们：</text>
+    <text class="p">官方邮箱：zhixi202507@163.com</text>
+    <text class="p">客服电话：15383235338</text>
+    <text class="p">运营主体：石家庄知禧健康管理有限公司</text>
+    <text class="p">通讯地址：河北省石家庄市正定县正定镇华西路小商品步行街中段6107-2</text>
+  </view>
+</view>

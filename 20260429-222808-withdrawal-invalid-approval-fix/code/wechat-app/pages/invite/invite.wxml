@@ -1,0 +1,49 @@
+<view class="page">
+  <view class="tabs" wx:if="{{showTabs}}">
+    <text
+      class="tab {{tab === 'code' ? 'active' : ''}}"
+      data-tab="code"
+      bindtap="switchTab"
+    >{{texts.tabCode}}</text>
+    <text
+      class="tab {{tab === 'record' ? 'active' : ''}}"
+      data-tab="record"
+      bindtap="switchTab"
+    >{{texts.tabRecord}}</text>
+  </view>
+
+  <block wx:if="{{tab === 'code'}}">
+    <view class="invite-card card">
+      <text class="title">{{texts.myInviteCode}}</text>
+      <text class="code">{{inviteCode || '------'}}</text>
+      <button class="btn-copy" bindtap="copyCode">{{texts.copyInviteCode}}</button>
+    </view>
+    <view class="qrcode-card card">
+      <text class="title">{{texts.inviteQrcode}}</text>
+      <view class="qrcode-wrap">
+        <image wx:if="{{qrcodeUrl}}" class="qrcode" src="{{qrcodeUrl}}" mode="aspectFit" />
+        <text wx:elif="{{qrcodeLoading}}" class="qrcode-status">{{texts.qrcodeLoading}}</text>
+        <view wx:else class="qrcode-empty">
+          <text class="qrcode-status">{{qrcodeError || texts.noQrcode}}</text>
+          <button wx:if="{{qrcodeError}}" class="btn-reload" bindtap="reloadQrcode">{{texts.reloadQrcode}}</button>
+        </view>
+      </view>
+      <text class="tip">{{texts.qrcodeTip}}</text>
+    </view>
+  </block>
+
+  <block wx:if="{{tab === 'record'}}">
+    <view class="list" wx:if="{{recordList.length > 0}}">
+      <view class="record-item list-item" wx:for="{{recordList}}" wx:key="id">
+        <view>
+          <text class="name">{{item.nickName || texts.userPrefix}}</text>
+          <text class="time">{{item.bindTime}}</text>
+        </view>
+        <text class="tag {{item.hasFirstOrder ? 'done' : 'pending'}}">{{item.hasFirstOrder ? texts.firstOrderDone : texts.firstOrderPending}}</text>
+      </view>
+    </view>
+    <view class="empty-state" wx:else>
+      <text>{{texts.emptyRecord}}</text>
+    </view>
+  </block>
+</view>

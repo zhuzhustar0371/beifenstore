@@ -1,0 +1,3 @@
+﻿wechat-app
+## release/20260423-invite-cashback-linkage...origin/release/20260423-invite-cashback-linkage
+86dc4d6 (HEAD -> release/20260423-invite-cashback-linkage, origin/release/20260423-invite-cashback-linkage) fix: bind home cashback price text

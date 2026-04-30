@@ -1,0 +1,104 @@
+<view class="container">
+  <view class="hero-banner">
+    <view class="hero-content">
+      <view class="hero-tag">官方严选</view>
+      <text class="hero-title">知禧好物 · 净享生活</text>
+      <text class="hero-sub">品质护肤洗护 / 自购享返现 / 邀请有礼</text>
+    </view>
+  </view>
+
+  <view class="content-stack">
+    <view class="section-header">
+      <text class="section-title">优选推荐</text>
+    </view>
+
+    <view wx:if="{{loading}}" class="loading-card">
+      <text>加载中...</text>
+    </view>
+
+    <block wx:elif="{{products && products.length > 0}}">
+      <view class="product-list">
+        <view class="product-card" wx:for="{{products}}" wx:key="id" bindtap="goProduct" data-id="{{item.id}}">
+          <view class="product-image-box">
+            <image class="product-image" src="{{item.imageUrl || '/images/product-placeholder.png'}}" mode="aspectFill"></image>
+            <view class="tag-row">
+              <text class="tag-hot" wx:if="{{index === 0}}">热卖</text>
+              <text class="tag-soft" wx:if="{{index === 0}}">优选</text>
+            </view>
+          </view>
+          <view class="product-content">
+            <text class="product-name text-ellipsis">{{item.name}}</text>
+            <text class="product-desc text-ellipsis">{{item.description || '单价0.10元/件，温和洁净，适合家庭日常使用'}}</text>
+            <view class="product-bottom">
+              <view class="price-box">
+                <text class="price-symbol">¥</text>
+                <text class="price-value">{{item.price}}</text>
+              </view>
+              <view class="buy-btn-icon">+</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <view wx:else class="empty-card">
+      <text>暂无商品上架</text>
+    </view>
+
+    <view class="benefits-card">
+      <view class="benefits-header">
+        <view class="benefits-accent"></view>
+        <text class="benefits-title">知禧会员权益</text>
+      </view>
+
+      <view class="summary-card">
+        <text class="summary-price">99元 · 一箱6瓶 · 全家够用</text>
+        <text class="summary-desc">强力去污 · 无荧光添加 · 全家适用</text>
+      </view>
+
+      <view class="benefits-section">
+        <text class="benefits-section-title">成为VIP会员 · 三步实现免单</text>
+        <view class="steps-list">
+          <view class="step-item">
+            <view class="step-index">1</view>
+            <text class="step-text">购买产品 → 立即成为VIP</text>
+          </view>
+          <view class="step-item">
+            <view class="step-index">2</view>
+            <text class="step-text">邀请3位好友购买同款</text>
+          </view>
+          <view class="step-item">
+            <view class="step-index">3</view>
+            <text class="step-text">全额返还99元 = 产品免费拿</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="section-divider"></view>
+
+      <view class="benefits-section share-section">
+        <text class="benefits-section-title">分享不只免单</text>
+        <text class="benefits-section-subtitle">还能当副业 · 上班赚钱两不误</text>
+        <view class="share-list">
+          <view class="share-item">
+            <view class="share-dot"></view>
+            <text class="share-text">好友下单你拿奖励</text>
+          </view>
+          <view class="share-item">
+            <view class="share-dot"></view>
+            <text class="share-text">邀请越多 · 收益越多</text>
+          </view>
+          <view class="share-item">
+            <view class="share-dot"></view>
+            <text class="share-text">轻松分享，额外收入稳稳入账</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="footer-slogan">
+        <text class="footer-title">好产品 + 好模式 = 越分享越划算</text>
+        <text class="footer-subtitle">—— 安全清洁 · 知禧净享生活 ——</text>
+      </view>
+    </view>
+  </view>
+</view>

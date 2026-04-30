@@ -1,0 +1,104 @@
+﻿
+# backend-api/src/main/java/com/zhixi/backend/service/AdminManageService.java
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-201952-transfer-scene-retry\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\AdminManageService.java" "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\AdminManageService.java"
+index d5a9794..1de12b5 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-201952-transfer-scene-retry\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\AdminManageService.java"
++++ "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\AdminManageService.java"
+@@ -227,7 +227,7 @@ public class AdminManageService {
+     if (cb == null) {
+       throw new BusinessException("返现记录不存在");
+     }
+-    if (!"PENDING".equals(cb.getStatus()) && !isRetryableLegacyNoAuthFailure(cb)) {
++    if (!"PENDING".equals(cb.getStatus()) && !isRetryableTransferConfigFailure(cb)) {
+       throw new BusinessException("该笔佣金不处于待发状态");
+     }
+     User user = userMapper.findById(cb.getUserId());
+@@ -387,14 +387,22 @@ public class AdminManageService {
+     return status == null ? "" : status.trim().toUpperCase(Locale.ROOT);
+   }
+ 
+-  private boolean isRetryableLegacyNoAuthFailure(CashbackRecord cb) {
++  private boolean isRetryableTransferConfigFailure(CashbackRecord cb) {
+     if (cb == null || !"FAILED".equals(cb.getStatus())) {
+       return false;
+     }
+     String reason = cb.getTransferFailReason();
+     return (cb.getTransferId() == null || cb.getTransferId().isBlank())
+         && reason != null
+-        && (reason.contains("NO_AUTH") || reason.contains("升级版本") || reason.contains("升级前功能"));
++        && (
++            reason.contains("NO_AUTH")
++                || reason.contains("升级版本")
++                || reason.contains("升级前功能")
++                || reason.contains("INVALID_REQUEST")
++                || reason.contains("尚未获取该转账场景")
++                || reason.contains("转账场景")
++                || reason.contains("transfer_scene_id")
++        );
+   }
+ 
+   private String fallback(String value, String fallback) {
+
+# backend-api/src/main/java/com/zhixi/backend/service/WechatPayService.java
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-201952-transfer-scene-retry\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\WechatPayService.java" "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\WechatPayService.java"
+index 0e8667d..28a6be1 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-201952-transfer-scene-retry\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\WechatPayService.java"
++++ "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\WechatPayService.java"
+@@ -422,10 +422,16 @@ public class WechatPayService {
+ 
+   private String normalizeWechatError(String code, String message) {
+     String normalizedMessage = message == null || message.isBlank() ? "未知错误" : message.trim();
++    String normalizedCode = code == null ? "" : code.trim();
++    if ("INVALID_REQUEST".equalsIgnoreCase(normalizedCode)
++        && (normalizedMessage.contains("转账场景") || normalizedMessage.contains("transfer_scene_id"))) {
++      return normalizedCode + " - " + normalizedMessage
++          + "。请在微信支付商户平台「产品中心-商家转账」获取对应转账场景，或将 WECHAT_PAY_TRANSFER_SCENE_ID 配置为已开通的场景ID后重试。";
++    }
+     if (code == null || code.isBlank()) {
+       return normalizedMessage;
+     }
+-    return code.trim() + " - " + normalizedMessage;
++    return normalizedCode + " - " + normalizedMessage;
+   }
+ 
+   private static String mapString(Map<?, ?> values, String key) {
+
+# admin-frontend/src/views/CashbacksPage.vue
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-201952-transfer-scene-retry\\admin-frontend\\src\\views\\CashbacksPage.vue" "G:\\zhiximini\\zhixi-website\\admin-frontend\\src\\views\\CashbacksPage.vue"
+index a156d3b..955aa35 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-201952-transfer-scene-retry\\admin-frontend\\src\\views\\CashbacksPage.vue"
++++ "G:\\zhiximini\\zhixi-website\\admin-frontend\\src\\views\\CashbacksPage.vue"
+@@ -106,7 +106,7 @@
+               <td>
+                 <div class="action-stack">
+                   <button
+-                    v-if="cashback.status === 'PENDING' || isRetryableNoAuthFailure(cashback)"
++                    v-if="cashback.status === 'PENDING' || isRetryableTransferConfigFailure(cashback)"
+                     class="btn-inline"
+                     :disabled="transferringId === cashback.id"
+                     @click="onTransferCashback(cashback)"
+@@ -222,11 +222,19 @@ function isSyncingStatus(status) {
+   return ["PROCESSING", "WAIT_USER_CONFIRM", "TRANSFERING", "CANCELING"].includes(status);
+ }
+ 
+-function isRetryableNoAuthFailure(cashback) {
++function isRetryableTransferConfigFailure(cashback) {
+   const reason = cashback?.transferFailReason || "";
+   return cashback?.status === "FAILED"
+     && !cashback?.transferId
+-    && (reason.includes("NO_AUTH") || reason.includes("升级版本") || reason.includes("升级前功能"));
++    && (
++      reason.includes("NO_AUTH")
++      || reason.includes("升级版本")
++      || reason.includes("升级前功能")
++      || reason.includes("INVALID_REQUEST")
++      || reason.includes("尚未获取该转账场景")
++      || reason.includes("转账场景")
++      || reason.includes("transfer_scene_id")
++    );
+ }
+ 
+ function formatMoney(value) {
