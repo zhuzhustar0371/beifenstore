@@ -1,4 +1,0 @@
-﻿{
-    "error":  "远程服务器返回错误: (400) 错误的请求。",
-    "body":  "{\"success\":false,\"message\":\"WECHAT_WEB_APP_ID is not configured\",\"data\":null}"
-}

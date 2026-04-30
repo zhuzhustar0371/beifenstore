@@ -1,4 +1,0 @@
-﻿{
-    "error":  "The remote server returned an error: (400) Bad Request.",
-    "body":  "{\"success\":false,\"message\":\"小程序登录失败: invalid code, rid: 69e71b1d-48591b78-2b9e82cf\",\"data\":null}"
-}

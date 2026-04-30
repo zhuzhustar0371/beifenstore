@@ -1,1 +1,0 @@
-﻿No old/new WeChat Pay IP hardcode found in backend-api/wechat-app/zhixi-website.
