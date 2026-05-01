@@ -1,0 +1,19 @@
+﻿## release/20260423-invite-cashback-linkage...origin/release/20260423-invite-cashback-linkage
+ M src/main/java/com/zhixi/backend/config/DatabaseMigrationRunner.java
+ M src/main/java/com/zhixi/backend/controller/AuthController.java
+ M src/main/java/com/zhixi/backend/dto/AdminProductUpsertRequest.java
+ M src/main/java/com/zhixi/backend/dto/CreateOrderRequest.java
+ M src/main/java/com/zhixi/backend/mapper/CashbackRecordMapper.java
+ M src/main/java/com/zhixi/backend/mapper/OrderMapper.java
+ M src/main/java/com/zhixi/backend/mapper/ProductMapper.java
+ M src/main/java/com/zhixi/backend/mapper/UserSessionMapper.java
+ M src/main/java/com/zhixi/backend/model/Order.java
+ M src/main/java/com/zhixi/backend/model/Product.java
+ M src/main/java/com/zhixi/backend/service/AdminManageService.java
+ M src/main/java/com/zhixi/backend/service/CashbackService.java
+ M src/main/java/com/zhixi/backend/service/OrderService.java
+ M src/main/java/com/zhixi/backend/service/UserAuthService.java
+ M src/main/java/com/zhixi/backend/service/UserService.java
+ M src/main/resources/schema.sql
+?? src/main/java/com/zhixi/backend/dto/WechatMiniappPrecheckRequest.java
+
