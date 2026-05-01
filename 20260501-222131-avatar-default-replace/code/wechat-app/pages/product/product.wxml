@@ -1,0 +1,56 @@
+<view class="container pb-140">
+  <view wx:if="{{loading}}" class="loading-state">加载中...</view>
+
+  <block wx:if="{{product}}">
+    <view class="hero-image-wrap">
+      <image class="hero-image" src="{{product.imageUrl || '/images/product-placeholder.png'}}" mode="aspectFill" />
+      <view class="image-overlay"></view>
+    </view>
+
+    <view class="content-sheet">
+      <view class="title-row">
+        <text class="price-symbol color-red">¥</text>
+        <text class="price-huge color-red">{{product.price}}</text>
+        <view class="stock-badge">库存充足</view>
+      </view>
+
+      <text class="product-title">{{product.name}}</text>
+      <text class="product-sub">{{product.description || '官方精选好物，适合家庭日常使用。'}}</text>
+
+      <view class="divider"></view>
+
+      <view class="spec-row">
+        <text class="spec-label">购买数量</text>
+        <view class="stepper">
+          <view class="step-btn {{count <= 1 ? 'disabled' : ''}}" bindtap="minus">-</view>
+          <input class="step-input" type="number" value="{{count}}" bindinput="onCountInput" />
+          <view class="step-btn" bindtap="plus">+</view>
+        </view>
+      </view>
+
+      <view class="rules-card" bindtap="goToRules">
+        <view>
+          <text class="rules-card-title">查看本商品返现规则</text>
+          <text class="rules-card-desc">返现按当前商品独立计数，点此查看个人返现和邀请返现说明。</text>
+        </view>
+        <text class="rules-card-action">规则详情 ></text>
+      </view>
+
+      <view class="details-section">
+        <text class="section-title">商品详情</text>
+        <view class="detail-card">
+          <text class="detail-text">{{product.detailContent || product.description || '暂无商品详情'}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <view class="bottom-bar" wx:if="{{product}}">
+    <view class="total-wrap">
+      <text class="fs-24 color-secondary">合计：</text>
+      <text class="fs-28 color-red fw-600">¥</text>
+      <text class="fs-40 color-red fw-700 ml-xs">{{total}}</text>
+    </view>
+    <button class="btn-primary buy-now-btn" bindtap="submitOrder">立即结算</button>
+  </view>
+</view>
