@@ -1,0 +1,258 @@
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  mobile VARCHAR(32) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NULL,
+  nickname VARCHAR(64) NOT NULL,
+  invite_code VARCHAR(32) NOT NULL UNIQUE,
+  inviter_user_id BIGINT NULL,
+  status TINYINT NOT NULL DEFAULT 1,
+  miniapp_openid VARCHAR(128) NULL UNIQUE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS products (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(128) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  personal_second_ratio DECIMAL(10,4) NULL DEFAULT 0.1000,
+  personal_third_ratio DECIMAL(10,4) NULL DEFAULT 0.2000,
+  personal_fourth_ratio DECIMAL(10,4) NULL DEFAULT 1.0000,
+  invite_batch_size INT NULL DEFAULT 3,
+  invite_first_ratio DECIMAL(10,4) NULL DEFAULT 1.0000,
+  invite_repeat_ratio DECIMAL(10,4) NULL DEFAULT 0.2000,
+  description VARCHAR(512),
+  detail_content TEXT,
+  image_url VARCHAR(255),
+  sales_count BIGINT NOT NULL DEFAULT 0,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  is_featured BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  product_id BIGINT NOT NULL,
+  quantity INT NOT NULL,
+  product_amount DECIMAL(10,2) NOT NULL,
+  shipping_fee DECIMAL(10,2) NOT NULL DEFAULT 0,
+  cashback_base_amount DECIMAL(10,2) NOT NULL,
+  total_amount DECIMAL(10,2) NOT NULL,
+  status VARCHAR(32) NOT NULL,
+  recipient_name VARCHAR(64),
+  recipient_phone VARCHAR(32),
+  province VARCHAR(64),
+  city VARCHAR(64),
+  district VARCHAR(64),
+  address VARCHAR(255),
+  tracking_no VARCHAR(64),
+  pay_type VARCHAR(32) NULL,
+  transaction_id VARCHAR(64) NULL,
+  refund_status VARCHAR(32) NOT NULL DEFAULT 'NONE',
+  refund_no VARCHAR(64) NULL,
+  refund_id VARCHAR(64) NULL,
+  refund_apply_time TIMESTAMP NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  paid_at TIMESTAMP NULL,
+  completed_at TIMESTAMP NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_addresses (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  recipient_name VARCHAR(64) NOT NULL,
+  recipient_phone VARCHAR(32) NOT NULL,
+  province VARCHAR(64) NOT NULL,
+  city VARCHAR(64) NOT NULL,
+  district VARCHAR(64) NOT NULL,
+  detail_address VARCHAR(255) NOT NULL,
+  is_default BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_user_addresses_user_id (user_id)
+);
+
+CREATE TABLE IF NOT EXISTS shipping_records (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  order_id BIGINT NOT NULL,
+  company_name VARCHAR(128) NOT NULL,
+  tracking_no VARCHAR(128) NOT NULL,
+  ship_time TIMESTAMP NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_shipping_records_order_id (order_id)
+);
+
+CREATE TABLE IF NOT EXISTS invite_relations (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  inviter_user_id BIGINT NOT NULL,
+  invitee_user_id BIGINT NOT NULL UNIQUE,
+  bind_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  first_paid_time TIMESTAMP NULL
+);
+
+CREATE TABLE IF NOT EXISTS invite_product_relations (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  inviter_user_id BIGINT NOT NULL,
+  invitee_user_id BIGINT NOT NULL,
+  product_id BIGINT NOT NULL,
+  bind_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  first_paid_time TIMESTAMP NULL,
+  UNIQUE KEY uk_invite_product_invitee (invitee_user_id, product_id),
+  KEY idx_invite_product_batch (inviter_user_id, product_id, first_paid_time)
+);
+
+CREATE TABLE IF NOT EXISTS cashback_records (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  related_order_id BIGINT NULL,
+  product_id BIGINT NULL,
+  cashback_type VARCHAR(32) NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  related_invite_batch_id INT NULL,
+  status VARCHAR(32) NOT NULL,
+  remark VARCHAR(255),
+  out_batch_no VARCHAR(64) NULL,
+  out_detail_no VARCHAR(64) NULL,
+  transfer_id VARCHAR(64) NULL,
+  transfer_detail_id VARCHAR(64) NULL,
+  transfer_fail_reason VARCHAR(512) NULL,
+  transfer_package_info VARCHAR(1024) NULL,
+  transfer_time TIMESTAMP NULL,
+  eligible_at TIMESTAMP NULL,
+  withdrawal_request_id BIGINT NULL,
+  early_withdrawal TINYINT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS withdrawal_requests (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  requested_amount DECIMAL(10,2) NULL,
+  status VARCHAR(32) NOT NULL,
+  source VARCHAR(32) NOT NULL DEFAULT 'USER',
+  apply_mode VARCHAR(32) NOT NULL DEFAULT 'MATURED_ONLY',
+  remark VARCHAR(255) NULL,
+  idempotency_key VARCHAR(64) NULL UNIQUE,
+  request_no VARCHAR(32) NULL UNIQUE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  approved_at TIMESTAMP NULL,
+  completed_at TIMESTAMP NULL,
+  INDEX idx_user_status (user_id, status)
+);
+
+CREATE TABLE IF NOT EXISTS withdrawal_request_items (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  request_id BIGINT NOT NULL,
+  cashback_record_id BIGINT NOT NULL UNIQUE,
+  amount DECIMAL(10,2) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS cashback_debts (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  order_id BIGINT NULL,
+  cashback_id BIGINT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  reason VARCHAR(255) NOT NULL,
+  status VARCHAR(32) NOT NULL DEFAULT 'PENDING',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_user_status (user_id, status)
+);
+
+CREATE TABLE IF NOT EXISTS admins (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(64) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  display_name VARCHAR(128) NOT NULL,
+  mobile VARCHAR(32),
+  role_code VARCHAR(64) NOT NULL DEFAULT 'SUPER_ADMIN',
+  status TINYINT NOT NULL DEFAULT 1,
+  last_login_at TIMESTAMP NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS admin_sessions (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  admin_id BIGINT NOT NULL,
+  token VARCHAR(128) NOT NULL UNIQUE,
+  expires_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS admin_roles (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  code VARCHAR(64) NOT NULL UNIQUE,
+  name VARCHAR(128) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS admin_permissions (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  code VARCHAR(128) NOT NULL UNIQUE,
+  name VARCHAR(128) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS admin_role_permissions (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  role_code VARCHAR(64) NOT NULL,
+  permission_code VARCHAR(128) NOT NULL,
+  UNIQUE KEY uk_role_permission (role_code, permission_code)
+);
+
+CREATE TABLE IF NOT EXISTS admin_operation_logs (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  admin_id BIGINT NOT NULL,
+  module VARCHAR(128) NOT NULL,
+  action VARCHAR(32) NOT NULL,
+  target_type VARCHAR(64),
+  target_id BIGINT NULL,
+  request_payload TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_sessions (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  token VARCHAR(128) NOT NULL UNIQUE,
+  login_type VARCHAR(32) NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS sms_login_codes (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  phone VARCHAR(32) NOT NULL,
+  code VARCHAR(8) NOT NULL,
+  scene VARCHAR(32) NOT NULL DEFAULT 'REGISTER',
+  used BOOLEAN NOT NULL DEFAULT FALSE,
+  expires_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_wechat_auth (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  source_type VARCHAR(32) NOT NULL DEFAULT 'MINIAPP',
+  openid VARCHAR(128) NOT NULL UNIQUE,
+  unionid VARCHAR(128) NULL,
+  nickname VARCHAR(128) NULL,
+  avatar_url VARCHAR(255) NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS wechat_qr_sessions (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  scene VARCHAR(64) NOT NULL UNIQUE,
+  status VARCHAR(32) NOT NULL DEFAULT 'PENDING',
+  openid VARCHAR(128) NULL,
+  nickname VARCHAR(128) NULL,
+  user_id BIGINT NULL,
+  token VARCHAR(128) NULL,
+  expires_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  confirmed_at TIMESTAMP NULL
+);

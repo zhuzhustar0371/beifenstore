@@ -1,0 +1,105 @@
+package com.zhixi.backend.mapper;
+
+import com.zhixi.backend.model.Product;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
+
+@Mapper
+public interface ProductMapper {
+  String PRODUCT_COLUMNS =
+      "id,name,price,description,detail_content AS detailContent,main_image_url AS imageUrl,"
+          + "COALESCE(sales_count, 0) AS salesCount,(status = 1) AS active,(COALESCE(is_featured, 0) = 1) AS featured,"
+          + "COALESCE(personal_second_ratio, 0.10) AS personalSecondRatio,"
+          + "COALESCE(personal_third_ratio, 0.20) AS personalThirdRatio,"
+          + "COALESCE(personal_fourth_ratio, 1.00) AS personalFourthRatio,"
+          + "COALESCE(invite_batch_size, 3) AS inviteBatchSize,"
+          + "COALESCE(invite_first_ratio, 1.00) AS inviteFirstRatio,"
+          + "COALESCE(invite_repeat_ratio, 0.20) AS inviteRepeatRatio,"
+          + "created_at AS createdAt";
+
+  @Select("SELECT " + PRODUCT_COLUMNS + " FROM products WHERE status = 1 ORDER BY COALESCE(is_featured, 0) DESC, COALESCE(sales_count, 0) DESC, id DESC")
+  List<Product> findActive();
+
+  @Select("SELECT " + PRODUCT_COLUMNS + " FROM products WHERE status = 1 AND COALESCE(is_featured, 0) = 1 ORDER BY id DESC LIMIT 1")
+  Product findFeaturedActive();
+
+  @Select("SELECT " + PRODUCT_COLUMNS + " FROM products WHERE id = #{id}")
+  Product findById(Long id);
+
+  @Select("SELECT " + PRODUCT_COLUMNS + " FROM products ORDER BY COALESCE(is_featured, 0) DESC, id DESC")
+  List<Product> findAll();
+
+  @Select({
+      "<script>",
+      "SELECT COUNT(1) FROM products",
+      "WHERE 1=1",
+      "<if test='keyword != null and keyword != \"\"'>",
+      "  AND name LIKE CONCAT('%', #{keyword}, '%')",
+      "</if>",
+      "<if test='active != null'>",
+      "  AND status = CASE WHEN #{active} THEN 1 ELSE 0 END",
+      "</if>",
+      "</script>"
+  })
+  long countByAdminQuery(@Param("keyword") String keyword, @Param("active") Boolean active);
+
+  @Select({
+      "<script>",
+      "SELECT ", PRODUCT_COLUMNS, " FROM products",
+      "WHERE 1=1",
+      "<if test='keyword != null and keyword != \"\"'>",
+      "  AND name LIKE CONCAT('%', #{keyword}, '%')",
+      "</if>",
+      "<if test='active != null'>",
+      "  AND status = CASE WHEN #{active} THEN 1 ELSE 0 END",
+      "</if>",
+      "ORDER BY COALESCE(is_featured, 0) DESC, id DESC",
+      "LIMIT #{limit} OFFSET #{offset}",
+      "</script>"
+  })
+  List<Product> findByAdminQuery(
+      @Param("keyword") String keyword,
+      @Param("active") Boolean active,
+      @Param("offset") int offset,
+      @Param("limit") int limit
+  );
+
+  @Update("UPDATE products SET sales_count = COALESCE(sales_count, 0) + #{quantity}, updated_at = NOW() WHERE id = #{productId}")
+  int incrementSalesCount(@Param("productId") Long productId, @Param("quantity") int quantity);
+
+  @Insert("INSERT INTO products(name, sub_title, description, detail_content, main_image_url, price, status, is_featured, "
+      + "personal_second_ratio, personal_third_ratio, personal_fourth_ratio, invite_batch_size, invite_first_ratio, invite_repeat_ratio, "
+      + "sort_no, created_at, updated_at) "
+      + "VALUES(#{name}, #{name}, #{description}, #{detailContent}, #{imageUrl}, #{price}, CASE WHEN #{active} THEN 1 ELSE 0 END, "
+      + "CASE WHEN #{featured} THEN 1 ELSE 0 END, #{personalSecondRatio}, #{personalThirdRatio}, #{personalFourthRatio}, "
+      + "#{inviteBatchSize}, #{inviteFirstRatio}, #{inviteRepeatRatio}, 0, NOW(), NOW())")
+  @Options(useGeneratedKeys = true, keyProperty = "id")
+  int insert(Product product);
+
+  @Update("UPDATE products SET name = #{name}, sub_title = #{name}, price = #{price}, description = #{description}, detail_content = #{detailContent}, "
+      + "main_image_url = #{imageUrl}, status = CASE WHEN #{active} THEN 1 ELSE 0 END, "
+      + "is_featured = CASE WHEN #{featured} THEN 1 ELSE 0 END, personal_second_ratio = #{personalSecondRatio}, "
+      + "personal_third_ratio = #{personalThirdRatio}, personal_fourth_ratio = #{personalFourthRatio}, "
+      + "invite_batch_size = #{inviteBatchSize}, invite_first_ratio = #{inviteFirstRatio}, invite_repeat_ratio = #{inviteRepeatRatio}, "
+      + "updated_at = NOW() WHERE id = #{id}")
+  int update(Product product);
+
+  @Update("UPDATE products SET status = CASE WHEN #{active} THEN 1 ELSE 0 END, is_featured = CASE WHEN #{active} THEN is_featured ELSE 0 END, updated_at = NOW() WHERE id = #{id}")
+  int updateActive(@Param("id") Long id, @Param("active") Boolean active);
+
+  @Update("UPDATE products SET is_featured = 0, updated_at = NOW() WHERE COALESCE(is_featured, 0) = 1")
+  int clearFeatured();
+
+  @Update("UPDATE products SET is_featured = 0, updated_at = NOW() WHERE id <> #{id} AND COALESCE(is_featured, 0) = 1")
+  int clearFeaturedExcept(@Param("id") Long id);
+
+  @Delete("DELETE FROM products WHERE id = #{id}")
+  int deleteById(Long id);
+}
