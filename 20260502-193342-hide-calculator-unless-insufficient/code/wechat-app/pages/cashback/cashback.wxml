@@ -1,0 +1,143 @@
+<view class="container pb-60">
+  <view class="wallet-card">
+    <view class="wallet-bg"></view>
+    <view class="wallet-content">
+      <view class="header-row">
+        <button
+          class="btn-withdraw"
+          loading="{{applyingWithdrawal}}"
+          disabled="{{applyingWithdrawal}}"
+          bindtap="withdraw"
+        >申请提现</button>
+        <view class="title-wrap">
+          <text class="title">当前方案预计到账</text>
+          <text class="subtitle">{{withdrawPreview.activeModePreview.label}}</text>
+        </view>
+      </view>
+      <view class="amount-row">
+        <text class="symbol">¥</text>
+        <text class="amount-huge">{{withdrawPreview.activeModePreview.netAmount}}</text>
+      </view>
+      <view class="stats-row stats-grid">
+        <text class="stat-text">返现毛额：¥{{withdrawPreview.activeModePreview.grossAmount}}</text>
+        <text class="stat-text">待扣款总额：¥{{withdrawPreview.activeModePreview.debtAmount}}</text>
+        <text class="stat-text">本次可抵扣：¥{{withdrawPreview.activeModePreview.deductibleDebtAmount}}</text>
+        <text class="stat-text">已满7天：¥{{stats.maturedTotal}}</text>
+        <text class="stat-text">未满7天：¥{{stats.immatureTotal}}</text>
+        <text class="stat-text" wx:if="{{withdrawPreview.activeModePreview.hasRemainingDebt}}">还差扣款：¥{{withdrawPreview.activeModePreview.remainingDebtAmount}}</text>
+        <text class="stat-text" wx:else>待处理提现：¥{{stats.inRequestTotal}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="list-section">
+    <view class="section-title">
+      <text>提现计算器</text>
+    </view>
+
+    <view class="mode-grid">
+      <view
+        class="mode-card {{item.mode === withdrawPreview.activeMode ? 'mode-card-active' : ''}}"
+        wx:for="{{withdrawPreview.modeList}}"
+        wx:key="mode"
+        data-mode="{{item.mode}}"
+        bindtap="selectPreviewMode"
+      >
+        <view class="mode-card-top">
+          <text class="mode-label">{{item.label}}</text>
+          <text class="mode-tag mode-tag-recommend" wx:if="{{item.isRecommended && item.canSubmit}}">推荐</text>
+          <text class="mode-tag mode-tag-blocked" wx:elif="{{!item.canSubmit}}">不可申请</text>
+        </view>
+        <text class="mode-net">到账 ¥{{item.netAmount}}</text>
+        <text class="mode-meta">毛额 ¥{{item.grossAmount}} · 扣款 ¥{{item.deductibleDebtAmount}}</text>
+        <text class="mode-hint">{{item.reason || item.hint}}</text>
+      </view>
+    </view>
+
+    <block wx:if="{{withdrawPreview.activeModePreview.hasRemainingDebt}}">
+      <view class="ledger-card">
+        <view class="ledger-row">
+          <text class="ledger-label">返现毛额</text>
+          <text class="ledger-value">¥{{withdrawPreview.activeModePreview.grossAmount}}</text>
+        </view>
+        <view class="ledger-row">
+          <text class="ledger-label">待扣款总额</text>
+          <text class="ledger-value">¥{{withdrawPreview.activeModePreview.debtAmount}}</text>
+        </view>
+        <view class="ledger-row">
+          <text class="ledger-label">本次可抵扣</text>
+          <text class="ledger-value ledger-deduct">-¥{{withdrawPreview.activeModePreview.deductibleDebtAmount}}</text>
+        </view>
+        <view class="ledger-row">
+          <text class="ledger-label">扣款仍不足</text>
+          <text class="ledger-value ledger-warning">¥{{withdrawPreview.activeModePreview.remainingDebtAmount}}</text>
+        </view>
+        <view class="ledger-row ledger-row-total">
+          <text class="ledger-label">预计到账</text>
+          <text class="ledger-value ledger-total">¥{{withdrawPreview.activeModePreview.netAmount}}</text>
+        </view>
+        <text class="ledger-note">说明：当前返现金额不足以覆盖待扣款，提交前会被拦截。</text>
+      </view>
+
+      <view class="debt-card" wx:if="{{withdrawPreview.hasPendingDebt}}">
+        <view class="debt-head">
+          <text class="debt-title">待扣款明细</text>
+          <text class="debt-summary">共{{withdrawPreview.pendingDebtCount}}笔，¥{{withdrawPreview.pendingDebtTotal}}</text>
+        </view>
+        <view class="debt-item" wx:for="{{withdrawPreview.pendingDebts}}" wx:key="id">
+          <view class="debt-info">
+            <text class="debt-reason">{{item.reasonText}}</text>
+            <text class="debt-meta">订单{{item.orderText}} · {{item.createdAtText}}</text>
+          </view>
+          <text class="debt-amount">-¥{{item.amount}}</text>
+        </view>
+      </view>
+
+      <view class="debt-empty" wx:else>
+        <text class="debt-empty-text">当前没有待扣款，预计到账金额等于返现毛额。</text>
+      </view>
+    </block>
+  </view>
+
+  <view class="list-section">
+    <view class="section-title">
+      <text>返现明细</text>
+    </view>
+
+    <view wx:if="{{loading}}" class="loading-state">加载中...</view>
+
+    <block wx:elif="{{list.length > 0}}">
+      <view class="list-card" wx:for="{{list}}" wx:key="id">
+        <view class="icon-wrap {{item.cashbackType === 'SELF_ORDER' ? 'bg-blue' : 'bg-green'}}">
+          <text wx:if="{{item.cashbackType === 'SELF_ORDER'}}">自</text>
+          <text wx:else>邀</text>
+        </view>
+
+        <view class="item-content">
+          <text class="item-title">{{item.typeText}}</text>
+          <text class="item-time">{{item.createdAt || '刚刚'}}</text>
+        </view>
+
+        <view class="item-right">
+          <text class="item-amount {{item.status === 'PENDING' ? 'color-orange' : 'color-green'}}">+{{item.amount}}</text>
+          <text class="item-status">{{item.statusText}}</text>
+          <button
+            wx:if="{{item.canConfirmTransfer}}"
+            class="btn-confirm-transfer"
+            data-id="{{item.id}}"
+            loading="{{confirmingId === item.id}}"
+            disabled="{{confirmingId === item.id}}"
+            bindtap="confirmTransfer"
+          >
+            确认收款
+          </button>
+        </view>
+      </view>
+    </block>
+
+    <view class="empty-state" wx:else>
+      <view class="empty-icon"></view>
+      <text class="empty-text">暂无返现记录</text>
+    </view>
+  </view>
+</view>
