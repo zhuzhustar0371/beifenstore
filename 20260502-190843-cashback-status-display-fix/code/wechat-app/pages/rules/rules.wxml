@@ -1,0 +1,46 @@
+<view class="page">
+  <view class="content card">
+    <text class="section-title">一、当前商品返现范围</text>
+    <text class="p" wx:if="{{rule.productName}}">当前商品：{{rule.productName}}</text>
+    <text class="p">{{rule.scopeNote}}</text>
+    <text class="p">商品单价 {{rule.unitPriceText}} 元 / 件，{{rule.settleCondition}}</text>
+  </view>
+
+  <view class="content card">
+    <text class="section-title">二、个人下单返现规则</text>
+    <text class="p">只统计您购买当前商品的付款顺序，不与其他商品混算。</text>
+    <view class="table-wrap">
+      <view class="row head">
+        <text class="col">订单阶段</text>
+        <text class="col">返现比例</text>
+        <text class="col">返现金额</text>
+      </view>
+      <view class="row" wx:for="{{rule.personalRules}}" wx:key="label">
+        <text class="col">{{item.label}}</text>
+        <text class="col">{{item.ratioText}}</text>
+        <text class="col">{{item.amountText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="content card">
+    <text class="section-title">三、邀请返现规则</text>
+    <text class="p">邀请返现按“邀请人 + 商品”独立统计，只累计当前商品的首单记录。</text>
+    <view class="table-wrap">
+      <view class="row head">
+        <text class="col">批次</text>
+        <text class="col">人数门槛</text>
+        <text class="col">邀请人返现</text>
+      </view>
+      <view class="row" wx:for="{{rule.inviteRules}}" wx:key="label">
+        <text class="col">{{item.label}}</text>
+        <text class="col">{{item.peopleRule}}</text>
+        <text class="col">{{item.amountText}}</text>
+      </view>
+    </view>
+    <text class="p">{{rule.inviteCondition}}</text>
+  </view>
+
+  <view class="status" wx:if="{{loading}}">规则加载中...</view>
+  <view class="status error" wx:if="{{!loading && error}}">{{error}}</view>
+</view>
