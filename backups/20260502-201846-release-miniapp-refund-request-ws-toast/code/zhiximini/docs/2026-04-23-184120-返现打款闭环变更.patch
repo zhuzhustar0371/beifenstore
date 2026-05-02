@@ -1,0 +1,730 @@
+﻿
+# backend-api/src/main/java/com/zhixi/backend/model/CashbackRecord.java
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\model\\CashbackRecord.java" "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\model\\CashbackRecord.java"
+index a80ec11..42bbe1a 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\model\\CashbackRecord.java"
++++ "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\model\\CashbackRecord.java"
+@@ -15,6 +15,8 @@ public class CashbackRecord {
+   private String outBatchNo;
+   private String outDetailNo;
+   private String transferId;
++  private String transferDetailId;
++  private String transferFailReason;
+   private LocalDateTime transferTime;
+   private LocalDateTime createdAt;
+ 
+@@ -114,6 +116,22 @@ public class CashbackRecord {
+     this.transferId = transferId;
+   }
+ 
++  public String getTransferDetailId() {
++    return transferDetailId;
++  }
++
++  public void setTransferDetailId(String transferDetailId) {
++    this.transferDetailId = transferDetailId;
++  }
++
++  public String getTransferFailReason() {
++    return transferFailReason;
++  }
++
++  public void setTransferFailReason(String transferFailReason) {
++    this.transferFailReason = transferFailReason;
++  }
++
+   public LocalDateTime getTransferTime() {
+     return transferTime;
+   }
+
+# backend-api/src/main/java/com/zhixi/backend/config/DatabaseMigrationRunner.java
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\config\\DatabaseMigrationRunner.java" "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\config\\DatabaseMigrationRunner.java"
+index d088d1b..0d867b2 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\config\\DatabaseMigrationRunner.java"
++++ "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\config\\DatabaseMigrationRunner.java"
+@@ -208,6 +208,16 @@ public class DatabaseMigrationRunner implements CommandLineRunner {
+         "SELECT transfer_id FROM cashback_records LIMIT 1",
+         "ALTER TABLE cashback_records ADD COLUMN transfer_id VARCHAR(64) NULL"
+     );
++    ensureColumn(
++        "cashback_records.transfer_detail_id",
++        "SELECT transfer_detail_id FROM cashback_records LIMIT 1",
++        "ALTER TABLE cashback_records ADD COLUMN transfer_detail_id VARCHAR(64) NULL"
++    );
++    ensureColumn(
++        "cashback_records.transfer_fail_reason",
++        "SELECT transfer_fail_reason FROM cashback_records LIMIT 1",
++        "ALTER TABLE cashback_records ADD COLUMN transfer_fail_reason VARCHAR(512) NULL"
++    );
+     ensureColumn(
+         "cashback_records.transfer_time",
+         "SELECT transfer_time FROM cashback_records LIMIT 1",
+
+# backend-api/src/main/java/com/zhixi/backend/mapper/CashbackRecordMapper.java
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\mapper\\CashbackRecordMapper.java" "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\mapper\\CashbackRecordMapper.java"
+index 404dd0d..a57927f 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\mapper\\CashbackRecordMapper.java"
++++ "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\mapper\\CashbackRecordMapper.java"
+@@ -17,23 +17,23 @@ public interface CashbackRecordMapper {
+   @Options(useGeneratedKeys = true, keyProperty = "id")
+   int insert(CashbackRecord record);
+ 
+-  @Select("SELECT id,user_id AS userId,related_order_id AS orderId,cashback_type AS type,amount,related_invite_batch_id AS batchNo,status,remark,out_batch_no AS outBatchNo,out_detail_no AS outDetailNo,transfer_id AS transferId,transfer_time AS transferTime,created_at AS createdAt " +
++  @Select("SELECT id,user_id AS userId,related_order_id AS orderId,cashback_type AS type,amount,related_invite_batch_id AS batchNo,status,remark,out_batch_no AS outBatchNo,out_detail_no AS outDetailNo,transfer_id AS transferId,transfer_detail_id AS transferDetailId,transfer_fail_reason AS transferFailReason,transfer_time AS transferTime,created_at AS createdAt " +
+       "FROM cashback_records WHERE id = #{id}")
+   CashbackRecord findById(Long id);
+ 
+-  @Select("SELECT id,user_id AS userId,related_order_id AS orderId,cashback_type AS type,amount,related_invite_batch_id AS batchNo,status,remark,out_batch_no AS outBatchNo,out_detail_no AS outDetailNo,transfer_id AS transferId,transfer_time AS transferTime,created_at AS createdAt " +
++  @Select("SELECT id,user_id AS userId,related_order_id AS orderId,cashback_type AS type,amount,related_invite_batch_id AS batchNo,status,remark,out_batch_no AS outBatchNo,out_detail_no AS outDetailNo,transfer_id AS transferId,transfer_detail_id AS transferDetailId,transfer_fail_reason AS transferFailReason,transfer_time AS transferTime,created_at AS createdAt " +
+       "FROM cashback_records WHERE user_id = #{userId} ORDER BY id DESC")
+   List<CashbackRecord> findByUserId(Long userId);
+ 
+-  @Select("SELECT id,user_id AS userId,related_order_id AS orderId,cashback_type AS type,amount,related_invite_batch_id AS batchNo,status,remark,out_batch_no AS outBatchNo,out_detail_no AS outDetailNo,transfer_id AS transferId,transfer_time AS transferTime,created_at AS createdAt " +
++  @Select("SELECT id,user_id AS userId,related_order_id AS orderId,cashback_type AS type,amount,related_invite_batch_id AS batchNo,status,remark,out_batch_no AS outBatchNo,out_detail_no AS outDetailNo,transfer_id AS transferId,transfer_detail_id AS transferDetailId,transfer_fail_reason AS transferFailReason,transfer_time AS transferTime,created_at AS createdAt " +
+       "FROM cashback_records WHERE related_order_id = #{orderId} ORDER BY id DESC")
+   List<CashbackRecord> findByOrderId(Long orderId);
+ 
+-  @Select("SELECT id,user_id AS userId,related_order_id AS orderId,cashback_type AS type,amount,related_invite_batch_id AS batchNo,status,remark,out_batch_no AS outBatchNo,out_detail_no AS outDetailNo,transfer_id AS transferId,transfer_time AS transferTime,created_at AS createdAt " +
++  @Select("SELECT id,user_id AS userId,related_order_id AS orderId,cashback_type AS type,amount,related_invite_batch_id AS batchNo,status,remark,out_batch_no AS outBatchNo,out_detail_no AS outDetailNo,transfer_id AS transferId,transfer_detail_id AS transferDetailId,transfer_fail_reason AS transferFailReason,transfer_time AS transferTime,created_at AS createdAt " +
+       "FROM cashback_records ORDER BY id DESC")
+   List<CashbackRecord> findAll();
+ 
+-  @Select("SELECT id,user_id AS userId,related_order_id AS orderId,cashback_type AS type,amount,related_invite_batch_id AS batchNo,status,remark,out_batch_no AS outBatchNo,out_detail_no AS outDetailNo,transfer_id AS transferId,transfer_time AS transferTime,created_at AS createdAt " +
++  @Select("SELECT id,user_id AS userId,related_order_id AS orderId,cashback_type AS type,amount,related_invite_batch_id AS batchNo,status,remark,out_batch_no AS outBatchNo,out_detail_no AS outDetailNo,transfer_id AS transferId,transfer_detail_id AS transferDetailId,transfer_fail_reason AS transferFailReason,transfer_time AS transferTime,created_at AS createdAt " +
+       "FROM cashback_records WHERE user_id = #{userId} AND cashback_type = 'INVITE_BATCH' ORDER BY related_invite_batch_id DESC, id DESC")
+   List<CashbackRecord> findInviteBatchByUserId(Long userId);
+ 
+@@ -60,7 +60,7 @@ public interface CashbackRecordMapper {
+ 
+   @Select({
+       "<script>",
+-      "SELECT id,user_id AS userId,related_order_id AS orderId,cashback_type AS type,amount,related_invite_batch_id AS batchNo,status,remark,out_batch_no AS outBatchNo,out_detail_no AS outDetailNo,transfer_id AS transferId,transfer_time AS transferTime,created_at AS createdAt FROM cashback_records",
++      "SELECT id,user_id AS userId,related_order_id AS orderId,cashback_type AS type,amount,related_invite_batch_id AS batchNo,status,remark,out_batch_no AS outBatchNo,out_detail_no AS outDetailNo,transfer_id AS transferId,transfer_detail_id AS transferDetailId,transfer_fail_reason AS transferFailReason,transfer_time AS transferTime,created_at AS createdAt FROM cashback_records",
+       "WHERE 1=1",
+       "<if test='userId != null'>",
+       "  AND user_id = #{userId}",
+@@ -86,13 +86,23 @@ public interface CashbackRecordMapper {
+   @Select("SELECT COUNT(1) FROM cashback_records WHERE user_id = #{userId} AND cashback_type = 'INVITE_BATCH' AND related_invite_batch_id = #{batchNo}")
+   int existsInviteBatch(@Param("userId") Long userId, @Param("batchNo") Integer batchNo);
+ 
+-  @Update("UPDATE cashback_records SET status = #{status}, out_batch_no = #{outBatchNo}, out_detail_no = #{outDetailNo}, transfer_id = #{transferId}, transfer_time = #{transferTime} WHERE id = #{id}")
+-  int updateTransferInfo(
++  @Update("UPDATE cashback_records SET status = 'PROCESSING', out_batch_no = #{outBatchNo}, out_detail_no = #{outDetailNo}, transfer_fail_reason = NULL, transfer_time = #{transferTime} WHERE id = #{id} AND status = 'PENDING'")
++  int markTransferProcessing(
++      @Param("id") Long id,
++      @Param("outBatchNo") String outBatchNo,
++      @Param("outDetailNo") String outDetailNo,
++      @Param("transferTime") java.time.LocalDateTime transferTime
++  );
++
++  @Update("UPDATE cashback_records SET status = #{status}, out_batch_no = #{outBatchNo}, out_detail_no = #{outDetailNo}, transfer_id = #{transferId}, transfer_detail_id = #{transferDetailId}, transfer_fail_reason = #{transferFailReason}, transfer_time = #{transferTime} WHERE id = #{id}")
++  int updateTransferResult(
+       @Param("id") Long id,
+       @Param("status") String status,
+       @Param("outBatchNo") String outBatchNo,
+       @Param("outDetailNo") String outDetailNo,
+       @Param("transferId") String transferId,
++      @Param("transferDetailId") String transferDetailId,
++      @Param("transferFailReason") String transferFailReason,
+       @Param("transferTime") java.time.LocalDateTime transferTime
+   );
+ 
+@@ -109,3 +119,4 @@ public interface CashbackRecordMapper {
+   @Select("SELECT COALESCE(SUM(amount),0) FROM cashback_records WHERE status <> 'CANCELLED' AND DATE(created_at) = CURRENT_DATE")
+   Double todayAmount();
+ }
++
+
+# backend-api/src/main/java/com/zhixi/backend/service/WechatPayService.java
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\WechatPayService.java" "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\WechatPayService.java"
+index 7c014bc..f397991 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\WechatPayService.java"
++++ "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\WechatPayService.java"
+@@ -18,9 +18,11 @@ import com.wechat.pay.java.service.refund.model.CreateRequest;
+ import com.wechat.pay.java.service.refund.model.Refund;
+ import com.wechat.pay.java.service.refund.model.Status;
+ import com.wechat.pay.java.service.transferbatch.TransferBatchService;
++import com.wechat.pay.java.service.transferbatch.model.GetTransferDetailByOutNoRequest;
+ import com.wechat.pay.java.service.transferbatch.model.InitiateBatchTransferRequest;
+ import com.wechat.pay.java.service.transferbatch.model.InitiateBatchTransferResponse;
+ import com.wechat.pay.java.service.transferbatch.model.TransferDetailInput;
++import com.wechat.pay.java.service.transferbatch.model.TransferDetailEntity;
+ import com.zhixi.backend.common.BusinessException;
+ import com.zhixi.backend.model.CashbackRecord;
+ import com.zhixi.backend.model.Order;
+@@ -235,19 +237,19 @@ public class WechatPayService {
+     InitiateBatchTransferRequest request = new InitiateBatchTransferRequest();
+     request.setAppid(appId);
+ 
+-    String outBatchNo = "BATCH" + cb.getId() + "T" + System.currentTimeMillis();
++    String outBatchNo = configuredOrDefault(cb.getOutBatchNo(), "ZXCB" + cb.getId());
+     cb.setOutBatchNo(outBatchNo);
+     request.setOutBatchNo(outBatchNo);
+     request.setBatchName("Zhixi cashback settlement " + cb.getId());
+     request.setBatchRemark("Cashback settlement");
+-    request.setTotalAmount(cb.getAmount().multiply(new BigDecimal("100")).longValue());
++    request.setTotalAmount(toWechatCentAmount(cb.getAmount()));
+     request.setTotalNum(1);
+ 
+     TransferDetailInput detail = new TransferDetailInput();
+-    String outDetailNo = "DETAIL" + cb.getId();
++    String outDetailNo = configuredOrDefault(cb.getOutDetailNo(), "ZXCBD" + cb.getId());
+     cb.setOutDetailNo(outDetailNo);
+     detail.setOutDetailNo(outDetailNo);
+-    detail.setTransferAmount(cb.getAmount().multiply(new BigDecimal("100")).longValue());
++    detail.setTransferAmount(toWechatCentAmount(cb.getAmount()));
+     detail.setTransferRemark("Cashback settlement");
+     detail.setOpenid(openid);
+ 
+@@ -255,9 +257,43 @@ public class WechatPayService {
+ 
+     try {
+       return transferBatchService.initiateBatchTransfer(request);
++    } catch (ServiceException e) {
++      log.error("WeChat transfer failed: code={}, message={}", e.getErrorCode(), e.getErrorMessage());
++      throw new BusinessException("微信商家转账失败：" + normalizeWechatError(e.getErrorCode(), e.getErrorMessage()));
++    } catch (HttpException e) {
++      log.error("WeChat transfer network error", e);
++      throw new BusinessException("微信商家转账网络异常，请稍后同步状态或重试");
+     } catch (Exception e) {
+       log.error("WeChat transfer failed", e);
+-      throw new BusinessException("Merchant transfer failed");
++      throw new BusinessException("微信商家转账失败：" + e.getMessage());
++    }
++  }
++
++  public TransferDetailEntity queryTransferDetailByOutNo(String outBatchNo, String outDetailNo) {
++    init();
++    requireConfigured("out_batch_no", outBatchNo);
++    requireConfigured("out_detail_no", outDetailNo);
++
++    GetTransferDetailByOutNoRequest request = new GetTransferDetailByOutNoRequest();
++    request.setOutBatchNo(outBatchNo);
++    request.setOutDetailNo(outDetailNo);
++    try {
++      return transferBatchService.getTransferDetailByOutNo(request);
++    } catch (ServiceException e) {
++      log.error(
++          "WeChat transfer detail query failed. outBatchNo={}, outDetailNo={}, code={}, message={}",
++          outBatchNo,
++          outDetailNo,
++          e.getErrorCode(),
++          e.getErrorMessage()
++      );
++      throw new BusinessException("微信商家转账状态查询失败：" + normalizeWechatError(e.getErrorCode(), e.getErrorMessage()));
++    } catch (HttpException e) {
++      log.error("WeChat transfer detail query network error. outBatchNo={}, outDetailNo={}", outBatchNo, outDetailNo, e);
++      throw new BusinessException("微信商家转账状态查询网络异常，请稍后重试");
++    } catch (Exception e) {
++      log.error("WeChat transfer detail query failed. outBatchNo={}, outDetailNo={}", outBatchNo, outDetailNo, e);
++      throw new BusinessException("微信商家转账状态查询失败：" + e.getMessage());
+     }
+   }
+ 
+@@ -276,6 +312,33 @@ public class WechatPayService {
+     return value != null && !value.isBlank();
+   }
+ 
++  private String configuredOrDefault(String value, String fallback) {
++    return isConfigured(value) ? value.trim() : fallback;
++  }
++
++  private long toWechatCentAmount(BigDecimal amount) {
++    if (amount == null) {
++      throw new BusinessException("返现金额不能为空");
++    }
++    try {
++      long cents = amount.movePointRight(2).longValueExact();
++      if (cents <= 0) {
++        throw new BusinessException("返现金额必须大于0");
++      }
++      return cents;
++    } catch (ArithmeticException ex) {
++      throw new BusinessException("返现金额精度不合法");
++    }
++  }
++
++  private String normalizeWechatError(String code, String message) {
++    String normalizedMessage = message == null || message.isBlank() ? "未知错误" : message.trim();
++    if (code == null || code.isBlank()) {
++      return normalizedMessage;
++    }
++    return code.trim() + " - " + normalizedMessage;
++  }
++
+   private String toNativePayBusinessMessage(ServiceException e) {
+     String errorMessage = e.getErrorMessage();
+     if (errorMessage != null && errorMessage.contains("产品权限未开通")) {
+
+# backend-api/src/main/java/com/zhixi/backend/service/AdminManageService.java
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\AdminManageService.java" "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\AdminManageService.java"
+index 5f39da0..c7b92b0 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\AdminManageService.java"
++++ "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\AdminManageService.java"
+@@ -1,6 +1,8 @@
+ package com.zhixi.backend.service;
+ 
+ import com.wechat.pay.java.service.refund.model.Status;
++import com.wechat.pay.java.service.transferbatch.model.FailReasonType;
++import com.wechat.pay.java.service.transferbatch.model.TransferDetailEntity;
+ import com.zhixi.backend.common.BusinessException;
+ import com.zhixi.backend.dto.AdminPageResult;
+ import com.zhixi.backend.dto.AdminProductUpsertRequest;
+@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
+ 
+ import java.time.LocalDateTime;
+ import java.util.List;
++import java.util.Locale;
+ import java.util.stream.Collectors;
+ 
+ @Service
+@@ -221,8 +224,7 @@ public class AdminManageService {
+     }
+   }
+ 
+-  @Transactional
+-  public void transferCashback(Long cashbackId) {
++  public CashbackRecord transferCashback(Long cashbackId) {
+     CashbackRecord cb = cashbackRecordMapper.findById(cashbackId);
+     if (cb == null) {
+       throw new BusinessException("返现记录不存在");
+@@ -236,16 +238,68 @@ public class AdminManageService {
+       throw new BusinessException("该用户不存在或尚未绑定微信小程序，无法进行微信打款");
+     }
+ 
+-    com.wechat.pay.java.service.transferbatch.model.InitiateBatchTransferResponse resp = wechatPayService.transferToWallet(cb, openid);
++    String outBatchNo = stableOutBatchNo(cb);
++    String outDetailNo = stableOutDetailNo(cb);
++    LocalDateTime now = LocalDateTime.now();
++    int changed = cashbackRecordMapper.markTransferProcessing(cashbackId, outBatchNo, outDetailNo, now);
++    if (changed <= 0) {
++      throw new BusinessException("返现状态已变化，请刷新后重试");
++    }
++    cb.setOutBatchNo(outBatchNo);
++    cb.setOutDetailNo(outDetailNo);
++
++    try {
++      com.wechat.pay.java.service.transferbatch.model.InitiateBatchTransferResponse resp = wechatPayService.transferToWallet(cb, openid);
++      cashbackRecordMapper.updateTransferResult(
++          cashbackId,
++          mapTransferBatchStatus(resp.getBatchStatus()),
++          cb.getOutBatchNo(),
++          cb.getOutDetailNo(),
++          resp.getBatchId(),
++          null,
++          null,
++          LocalDateTime.now()
++      );
++      return cashbackRecordMapper.findById(cashbackId);
++    } catch (BusinessException ex) {
++      cashbackRecordMapper.updateTransferResult(
++          cashbackId,
++          "FAILED",
++          cb.getOutBatchNo(),
++          cb.getOutDetailNo(),
++          null,
++          null,
++          trimReason(ex.getMessage()),
++          LocalDateTime.now()
++      );
++      throw ex;
++    }
++  }
++
++  public CashbackRecord syncCashbackTransfer(Long cashbackId) {
++    CashbackRecord cb = cashbackRecordMapper.findById(cashbackId);
++    if (cb == null) {
++      throw new BusinessException("返现记录不存在");
++    }
++    if (cb.getOutBatchNo() == null || cb.getOutBatchNo().isBlank()
++        || cb.getOutDetailNo() == null || cb.getOutDetailNo().isBlank()) {
++      throw new BusinessException("该返现尚未发起微信打款，无法同步状态");
++    }
+ 
+-    cashbackRecordMapper.updateTransferInfo(
++    TransferDetailEntity detail = wechatPayService.queryTransferDetailByOutNo(cb.getOutBatchNo(), cb.getOutDetailNo());
++    String nextStatus = mapTransferDetailStatus(detail.getDetailStatus());
++    String failReason = "FAILED".equals(nextStatus) ? resolveTransferFailReason(detail) : null;
++    cashbackRecordMapper.updateTransferResult(
+         cashbackId,
+-        "PROCESSING",
+-        cb.getOutBatchNo(),
+-        cb.getOutDetailNo(),
+-        resp.getBatchId(),
+-        java.time.LocalDateTime.now()
++        nextStatus,
++        fallback(detail.getOutBatchNo(), cb.getOutBatchNo()),
++        fallback(detail.getOutDetailNo(), cb.getOutDetailNo()),
++        fallback(detail.getBatchId(), cb.getTransferId()),
++        detail.getDetailId(),
++        trimReason(failReason),
++        LocalDateTime.now()
+     );
++    return cashbackRecordMapper.findById(cashbackId);
+   }
+ 
+   public long todayUsers() {
+@@ -290,6 +344,96 @@ public class AdminManageService {
+     return auth.getOpenid();
+   }
+ 
++  private String stableOutBatchNo(CashbackRecord cb) {
++    if (cb.getOutBatchNo() != null && !cb.getOutBatchNo().isBlank()) {
++      return cb.getOutBatchNo().trim();
++    }
++    return "ZXCB" + cb.getId();
++  }
++
++  private String stableOutDetailNo(CashbackRecord cb) {
++    if (cb.getOutDetailNo() != null && !cb.getOutDetailNo().isBlank()) {
++      return cb.getOutDetailNo().trim();
++    }
++    return "ZXCBD" + cb.getId();
++  }
++
++  private String mapTransferBatchStatus(String batchStatus) {
++    String status = normalizeStatus(batchStatus);
++    if ("FINISHED".equals(status) || "SUCCESS".equals(status)) {
++      return "TRANSFERRED";
++    }
++    if ("CLOSED".equals(status) || "FAIL".equals(status) || "FAILED".equals(status)) {
++      return "FAILED";
++    }
++    return "PROCESSING";
++  }
++
++  private String mapTransferDetailStatus(String detailStatus) {
++    String status = normalizeStatus(detailStatus);
++    if ("SUCCESS".equals(status) || "SUCCEEDED".equals(status)) {
++      return "TRANSFERRED";
++    }
++    if ("FAIL".equals(status) || "FAILED".equals(status) || "CLOSED".equals(status)) {
++      return "FAILED";
++    }
++    return "PROCESSING";
++  }
++
++  private String normalizeStatus(String status) {
++    return status == null ? "" : status.trim().toUpperCase(Locale.ROOT);
++  }
++
++  private String resolveTransferFailReason(TransferDetailEntity detail) {
++    if (detail == null) {
++      return "微信未返回失败原因";
++    }
++    FailReasonType failReason = detail.getFailReason();
++    if (failReason == null) {
++      return "微信转账失败，明细状态：" + fallback(detail.getDetailStatus(), "UNKNOWN");
++    }
++    return transferFailReasonText(failReason);
++  }
++
++  private String transferFailReasonText(FailReasonType failReason) {
++    return switch (failReason) {
++      case ACCOUNT_FROZEN -> "收款账号被冻结";
++      case REAL_NAME_CHECK_FAIL -> "收款人实名校验未通过";
++      case NAME_NOT_CORRECT -> "收款人姓名不正确";
++      case OPENID_INVALID -> "收款人 openid 无效";
++      case TRANSFER_QUOTA_EXCEED -> "商户转账额度超限";
++      case DAY_RECEIVED_QUOTA_EXCEED -> "用户单日收款额度超限";
++      case MONTH_RECEIVED_QUOTA_EXCEED -> "用户单月收款额度超限";
++      case DAY_RECEIVED_COUNT_EXCEED -> "用户单日收款次数超限";
++      case PRODUCT_AUTH_CHECK_FAIL -> "商户号未开通或未满足商家转账权限";
++      case OVERDUE_CLOSE -> "转账超时关闭";
++      case ACCOUNT_NOT_EXIST -> "收款账号不存在";
++      case TRANSFER_RISK -> "微信风控拦截";
++      case RECEIVE_ACCOUNT_NOT_PERMMIT -> "收款账号不允许收款";
++      case PAYEE_ACCOUNT_ABNORMAL -> "收款账号状态异常";
++      case PAYER_ACCOUNT_ABNORMAL -> "商户付款账号状态异常";
++      case TRANSFER_SCENE_UNAVAILABLE -> "转账场景不可用";
++      case TRANSFER_SCENE_INVALID -> "转账场景不合法";
++      case TRANSFER_REMARK_SET_FAIL -> "转账备注设置失败";
++      case RECEIVE_ACCOUNT_NOT_CONFIGURE -> "收款账号未完成配置";
++      case MERCHANT_REJECT -> "商户已拒绝";
++      case MERCHANT_NOT_CONFIRM -> "商户未确认";
++      default -> failReason.name();
++    };
++  }
++
++  private String fallback(String value, String fallback) {
++    return value == null || value.isBlank() ? fallback : value.trim();
++  }
++
++  private String trimReason(String value) {
++    if (value == null || value.isBlank()) {
++      return null;
++    }
++    String trimmed = value.trim();
++    return trimmed.length() > 500 ? trimmed.substring(0, 500) : trimmed;
++  }
++
+   private String mapRefundStatus(Status status) {
+     if (Status.SUCCESS.equals(status)) {
+       return "SUCCESS";
+
+# backend-api/src/main/java/com/zhixi/backend/controller/AdminController.java
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\controller\\AdminController.java" "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\controller\\AdminController.java"
+index c32d76e..e9ef7ff 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\controller\\AdminController.java"
++++ "G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\controller\\AdminController.java"
+@@ -185,10 +185,16 @@ public class AdminController {
+   }
+ 
+   @PostMapping("/cashbacks/{cashbackId}/transfer")
+-  public ApiResponse<Void> transferCashback(
++  public ApiResponse<CashbackRecord> transferCashback(
+       @PathVariable Long cashbackId
+   ) {
+-    adminManageService.transferCashback(cashbackId);
+-    return ApiResponse.ok(null);
++    return ApiResponse.ok(adminManageService.transferCashback(cashbackId));
++  }
++
++  @PostMapping("/cashbacks/{cashbackId}/transfer/sync")
++  public ApiResponse<CashbackRecord> syncCashbackTransfer(
++      @PathVariable Long cashbackId
++  ) {
++    return ApiResponse.ok(adminManageService.syncCashbackTransfer(cashbackId));
+   }
+ }
+
+# backend-api/src/main/resources/schema.sql
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\resources\\schema.sql" "G:\\zhiximini\\backend-api\\src\\main\\resources\\schema.sql"
+index eda682b..c29a27b 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\backend-api\\src\\main\\resources\\schema.sql"
++++ "G:\\zhiximini\\backend-api\\src\\main\\resources\\schema.sql"
+@@ -78,6 +78,8 @@ CREATE TABLE IF NOT EXISTS cashback_records (
+   out_batch_no VARCHAR(64) NULL,
+   out_detail_no VARCHAR(64) NULL,
+   transfer_id VARCHAR(64) NULL,
++  transfer_detail_id VARCHAR(64) NULL,
++  transfer_fail_reason VARCHAR(512) NULL,
+   transfer_time TIMESTAMP NULL,
+   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ );
+
+# admin-frontend/src/api.js
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\admin-frontend\\src\\api.js" "G:\\zhiximini\\zhixi-website\\admin-frontend\\src\\api.js"
+index 20ab57b..a7cb49e 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\admin-frontend\\src\\api.js"
++++ "G:\\zhiximini\\zhixi-website\\admin-frontend\\src\\api.js"
+@@ -87,3 +87,8 @@ export async function transferCashback(cashbackId) {
+   const { data } = await client.post(`/admin/cashbacks/${cashbackId}/transfer`);
+   return data.data;
+ }
++
++export async function syncCashbackTransfer(cashbackId) {
++  const { data } = await client.post(`/admin/cashbacks/${cashbackId}/transfer/sync`);
++  return data.data;
++}
+
+# admin-frontend/src/views/CashbacksPage.vue
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\admin-frontend\\src\\views\\CashbacksPage.vue" "G:\\zhiximini\\zhixi-website\\admin-frontend\\src\\views\\CashbacksPage.vue"
+index 819bb8a..89045c0 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\admin-frontend\\src\\views\\CashbacksPage.vue"
++++ "G:\\zhiximini\\zhixi-website\\admin-frontend\\src\\views\\CashbacksPage.vue"
+@@ -50,7 +50,9 @@
+               <th>状态</th>
+               <th>备注</th>
+               <th>创建时间</th>
+-              <th>打款批次</th>
++              <th>微信批次</th>
++              <th>微信明细</th>
++              <th>失败原因</th>
+               <th>操作</th>
+             </tr>
+           </thead>
+@@ -62,7 +64,7 @@
+               <td>
+                 <span class="status-badge info">{{ cashbackTypeText(cashback.type) }}</span>
+               </td>
+-              <td>¥{{ cashback.amount }}</td>
++              <td>¥{{ formatMoney(cashback.amount) }}</td>
+               <td>
+                 <span :class="['status-badge', statusClass(cashback.status)]">
+                   {{ cashbackStatusText(cashback.status) }}
+@@ -70,21 +72,48 @@
+               </td>
+               <td>{{ cashback.remark || "-" }}</td>
+               <td>{{ cashback.createdAt || "-" }}</td>
+-              <td>{{ cashback.outBatchNo || cashback.transferId || "-" }}</td>
+               <td>
+-                <button
+-                  class="btn-inline"
+-                  :disabled="transferringId === cashback.id || cashback.status !== 'PENDING'"
+-                  @click="onTransferCashback(cashback)"
+-                >
+-                  {{
+-                    transferringId === cashback.id
+-                      ? "处理中..."
+-                      : cashback.status === "PENDING"
+-                        ? "批准打款"
+-                        : "不可操作"
+-                  }}
+-                </button>
++                <div class="transfer-cell">
++                  <span>{{ cashback.outBatchNo || "-" }}</span>
++                  <small v-if="cashback.transferId">{{ cashback.transferId }}</small>
++                </div>
++              </td>
++              <td>
++                <div class="transfer-cell">
++                  <span>{{ cashback.outDetailNo || "-" }}</span>
++                  <small v-if="cashback.transferDetailId">{{ cashback.transferDetailId }}</small>
++                </div>
++              </td>
++              <td class="max-w-[240px] whitespace-normal text-red-100/80">
++                {{ cashback.transferFailReason || "-" }}
++              </td>
++              <td>
++                <div class="action-stack">
++                  <button
++                    v-if="cashback.status === 'PENDING'"
++                    class="btn-inline"
++                    :disabled="transferringId === cashback.id"
++                    @click="onTransferCashback(cashback)"
++                  >
++                    {{ transferringId === cashback.id ? "处理中..." : "批准打款" }}
++                  </button>
++                  <button
++                    v-else-if="cashback.status === 'PROCESSING'"
++                    class="btn-inline"
++                    :disabled="syncingId === cashback.id"
++                    @click="onSyncTransfer(cashback)"
++                  >
++                    {{ syncingId === cashback.id ? "同步中..." : "同步状态" }}
++                  </button>
++                  <button
++                    v-else
++                    class="btn-inline"
++                    :disabled="!cashback.outBatchNo || syncingId === cashback.id"
++                    @click="onSyncTransfer(cashback)"
++                  >
++                    {{ syncingId === cashback.id ? "同步中..." : cashback.outBatchNo ? "再次同步" : "不可操作" }}
++                  </button>
++                </div>
+               </td>
+             </tr>
+           </tbody>
+@@ -99,7 +128,7 @@
+ import { onMounted, reactive, ref } from "vue";
+ import GlassCard from "../components/GlassCard.vue";
+ import PageHeader from "../components/PageHeader.vue";
+-import { fetchAdminCashbacks, transferCashback } from "../api";
++import { fetchAdminCashbacks, syncCashbackTransfer, transferCashback } from "../api";
+ 
+ const cashbacks = ref([]);
+ const loading = ref(false);
+@@ -107,6 +136,7 @@ const errorMessage = ref("");
+ const transferMessage = ref("");
+ const transferBannerClass = ref("info");
+ const transferringId = ref(null);
++const syncingId = ref(null);
+ 
+ const cashbackFilters = reactive({
+   userId: "",
+@@ -166,20 +196,30 @@ function cashbackStatusText(status) {
+   return map[status] || status || "-";
+ }
+ 
++function formatMoney(value) {
++  const amount = Number(value || 0);
++  if (!Number.isFinite(amount)) {
++    return "0.00";
++  }
++  return amount.toFixed(2);
++}
++
+ async function onTransferCashback(cashback) {
+   const ok = window.confirm(
+-    `确认批准并发起打款？\n返现ID：${cashback.id}\n用户ID：${cashback.userId}\n金额：¥${cashback.amount}`
++    `确认批准并发起打款？\n返现ID：${cashback.id}\n用户ID：${cashback.userId}\n金额：¥${formatMoney(cashback.amount)}`
+   );
+   if (!ok) return;
+ 
+   transferringId.value = cashback.id;
+   showTransferMessage(`正在提交返现 #${cashback.id} 的打款请求...`);
+   try {
+-    await transferCashback(cashback.id);
++    const updated = await transferCashback(cashback.id);
+     await loadCashbacks();
+-    showTransferMessage(`返现 #${cashback.id} 已发起打款，状态已更新为“打款中”。`, "success");
++    const statusText = cashbackStatusText(updated?.status || "PROCESSING");
++    showTransferMessage(`返现 #${cashback.id} 已发起微信商家转账，当前状态：${statusText}。`, "success");
+   } catch (error) {
+     const message = error?.response?.data?.message || error?.message || "批准打款失败";
++    await loadCashbacks();
+     showTransferMessage(message, "danger");
+     window.alert(message);
+   } finally {
+@@ -187,5 +227,26 @@ async function onTransferCashback(cashback) {
+   }
+ }
+ 
++async function onSyncTransfer(cashback) {
++  if (!cashback.outBatchNo || !cashback.outDetailNo) {
++    showTransferMessage("该返现没有微信商户批次号或明细号，无法同步状态。", "danger");
++    return;
++  }
++
++  syncingId.value = cashback.id;
++  showTransferMessage(`正在同步返现 #${cashback.id} 的微信打款状态...`);
++  try {
++    const updated = await syncCashbackTransfer(cashback.id);
++    await loadCashbacks();
++    showTransferMessage(`返现 #${cashback.id} 同步完成，当前状态：${cashbackStatusText(updated?.status)}。`, "success");
++  } catch (error) {
++    const message = error?.response?.data?.message || error?.message || "同步打款状态失败";
++    showTransferMessage(message, "danger");
++    window.alert(message);
++  } finally {
++    syncingId.value = null;
++  }
++}
++
+ onMounted(loadCashbacks);
+ </script>
+
+# admin-frontend/src/styles.css
+
+diff --git "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\admin-frontend\\src\\styles.css" "G:\\zhiximini\\zhixi-website\\admin-frontend\\src\\styles.css"
+index 3010df6..d675911 100644
+--- "G:\\zhiximini\\_local_backups\\20260423-184120-cashback-transfer-closure\\admin-frontend\\src\\styles.css"
++++ "G:\\zhiximini\\zhixi-website\\admin-frontend\\src\\styles.css"
+@@ -157,6 +157,18 @@ select {
+     @apply inline-flex min-h-9 items-center justify-center rounded-[14px] border border-white/20 bg-white/[0.16] px-phi-3 py-phi-2 text-[0.75rem] font-black text-white shadow-glass-soft backdrop-blur-[40px] transition-all duration-300 hover:-translate-y-1 hover:border-cyan-200/70 hover:bg-cyan-400/20 hover:shadow-neon-blue disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-slate-300 disabled:hover:translate-y-0;
+   }
+ 
++  .action-stack {
++    @apply flex flex-col items-start gap-2;
++  }
++
++  .transfer-cell {
++    @apply flex max-w-[220px] flex-col gap-1 whitespace-normal break-all leading-snug;
++  }
++
++  .transfer-cell small {
++    @apply text-[0.6875rem] font-bold text-indigo-100/55;
++  }
++
+   .form-input,
+   .filter-input,
+   .table-input {
+@@ -176,7 +188,7 @@ select {
+   }
+ 
+   .data-table {
+-    @apply w-full min-w-[980px] border-separate border-spacing-0 text-left text-[0.875rem] font-bold text-indigo-50/80;
++    @apply w-full min-w-[1180px] border-separate border-spacing-0 text-left text-[0.875rem] font-bold text-indigo-50/80;
+   }
+ 
+   .data-table th {

@@ -1,0 +1,134 @@
+﻿diff --git "a/G:\\zhiximini\\docs\\2026-04-24-104850-transfer-scene-1005-backup\\WechatPayService.java.before" "b/G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\WechatPayService.java"
+index 28a6be1..f25e62b 100644
+--- "a/G:\\zhiximini\\docs\\2026-04-24-104850-transfer-scene-1005-backup\\WechatPayService.java.before"
++++ "b/G:\\zhiximini\\backend-api\\src\\main\\java\\com\\zhixi\\backend\\service\\WechatPayService.java"
+@@ -95,6 +95,15 @@ public class WechatPayService {
+   @Value("${app.wechat.pay.transfer-user-recv-perception:现金奖励}")
+   private String transferUserRecvPerception;
+ 
++  @Value("${app.wechat.pay.transfer-report-info-type:}")
++  private String transferReportInfoType;
++
++  @Value("${app.wechat.pay.transfer-report-info-content:}")
++  private String transferReportInfoContent;
++
++  @Value("${app.wechat.pay.transfer-remark-prefix:知禧返现}")
++  private String transferRemarkPrefix;
++
+   private final ObjectMapper objectMapper = new ObjectMapper();
+ 
+   private Config wechatPayConfig;
+@@ -264,19 +273,18 @@ public class WechatPayService {
+     cb.setOutBatchNo(outBatchNo);
+     String outBillNo = configuredOrDefault(cb.getOutDetailNo(), "ZXCBD" + cb.getId());
+     cb.setOutDetailNo(outBillNo);
++    String sceneId = configuredOrDefault(transferSceneId, "1000");
+ 
+-    List<Map<String, String>> reportInfos = new ArrayList<>();
+-    reportInfos.add(sceneReportInfo("活动名称", limitedText(transferActivityName, "知禧返现", 32)));
+-    reportInfos.add(sceneReportInfo("奖励说明", limitedText(transferRewardDesc, "消费返现奖励", 32)));
++    List<Map<String, String>> reportInfos = buildTransferSceneReportInfos(sceneId);
+ 
+     Map<String, Object> body = new LinkedHashMap<>();
+     body.put("appid", appId);
+     body.put("out_bill_no", outBillNo);
+-    body.put("transfer_scene_id", configuredOrDefault(transferSceneId, "1000"));
++    body.put("transfer_scene_id", sceneId);
+     body.put("openid", openid);
+     body.put("transfer_amount", toWechatCentAmount(cb.getAmount()));
+-    body.put("transfer_remark", limitedText("知禧返现" + cb.getId(), "知禧返现", 32));
+-    body.put("user_recv_perception", normalizeUserRecvPerception(transferUserRecvPerception));
++    body.put("transfer_remark", buildTransferRemark(cb.getId(), sceneId));
++    body.put("user_recv_perception", normalizeUserRecvPerception(transferUserRecvPerception, sceneId));
+     body.put("transfer_scene_report_infos", reportInfos);
+     if (isConfigured(transferNotifyUrl)) {
+       body.put("notify_url", transferNotifyUrl.trim());
+@@ -397,10 +405,58 @@ public class WechatPayService {
+     return normalized.length() <= maxLength ? normalized : normalized.substring(0, maxLength);
+   }
+ 
+-  private String normalizeUserRecvPerception(String value) {
+-    String normalized = configuredOrDefault(value, "现金奖励");
+-    if ("现金奖励".equals(normalized) || "活动奖励".equals(normalized)) {
+-      return normalized;
++  private List<Map<String, String>> buildTransferSceneReportInfos(String sceneId) {
++    List<Map<String, String>> reportInfos = new ArrayList<>();
++    if ("1000".equals(sceneId)) {
++      reportInfos.add(sceneReportInfo("活动名称", limitedText(transferActivityName, "知禧返现", 32)));
++      reportInfos.add(sceneReportInfo("奖励说明", limitedText(transferRewardDesc, "消费返现奖励", 32)));
++      return reportInfos;
++    }
++
++    String infoType = configuredOrDefault(transferReportInfoType, defaultTransferReportInfoType(sceneId));
++    String infoContent = configuredOrDefault(transferReportInfoContent, defaultTransferReportInfoContent(sceneId));
++    requireConfigured("WECHAT_PAY_TRANSFER_REPORT_INFO_TYPE", infoType);
++    requireConfigured("WECHAT_PAY_TRANSFER_REPORT_INFO_CONTENT", infoContent);
++    reportInfos.add(sceneReportInfo(limitedText(infoType, infoType, 32), limitedText(infoContent, infoContent, 32)));
++    return reportInfos;
++  }
++
++  private String buildTransferRemark(Long cashbackId, String sceneId) {
++    String prefix = configuredOrDefault(transferRemarkPrefix, defaultTransferRemarkPrefix(sceneId));
++    return limitedText(prefix + cashbackId, prefix, 32);
++  }
++
++  private String normalizeUserRecvPerception(String value, String sceneId) {
++    return limitedText(value, defaultUserRecvPerception(sceneId), 32);
++  }
++
++  private String defaultTransferReportInfoType(String sceneId) {
++    if ("1005".equals(sceneId)) {
++      return "岗位类型";
++    }
++    return "";
++  }
++
++  private String defaultTransferReportInfoContent(String sceneId) {
++    if ("1005".equals(sceneId)) {
++      return "推广员";
++    }
++    return "";
++  }
++
++  private String defaultTransferRemarkPrefix(String sceneId) {
++    if ("1005".equals(sceneId)) {
++      return "返现佣金";
++    }
++    return "知禧返现";
++  }
++
++  private String defaultUserRecvPerception(String sceneId) {
++    if ("1005".equals(sceneId)) {
++      return "劳务报酬";
++    }
++    if ("1000".equals(sceneId)) {
++      return "活动奖励";
+     }
+     return "现金奖励";
+   }
+diff --git "a/G:\\zhiximini\\docs\\2026-04-24-104850-transfer-scene-1005-backup\\application.yml.before" "b/G:\\zhiximini\\backend-api\\src\\main\\resources\\application.yml"
+index d4c6e9d..ff8ea36 100644
+--- "a/G:\\zhiximini\\docs\\2026-04-24-104850-transfer-scene-1005-backup\\application.yml.before"
++++ "b/G:\\zhiximini\\backend-api\\src\\main\\resources\\application.yml"
+@@ -67,3 +67,6 @@ app:
+       transfer-activity-name: ${WECHAT_PAY_TRANSFER_ACTIVITY_NAME:知禧返现}
+       transfer-reward-desc: ${WECHAT_PAY_TRANSFER_REWARD_DESC:消费返现奖励}
+       transfer-user-recv-perception: ${WECHAT_PAY_TRANSFER_USER_RECV_PERCEPTION:现金奖励}
++      transfer-report-info-type: ${WECHAT_PAY_TRANSFER_REPORT_INFO_TYPE:}
++      transfer-report-info-content: ${WECHAT_PAY_TRANSFER_REPORT_INFO_CONTENT:}
++      transfer-remark-prefix: ${WECHAT_PAY_TRANSFER_REMARK_PREFIX:知禧返现}
+diff --git "a/G:\\zhiximini\\docs\\2026-04-24-104850-transfer-scene-1005-backup\\.env.example.before" "b/G:\\zhiximini\\backend-api\\.env.example"
+index 747f01f..8e1c391 100644
+--- "a/G:\\zhiximini\\docs\\2026-04-24-104850-transfer-scene-1005-backup\\.env.example.before"
++++ "b/G:\\zhiximini\\backend-api\\.env.example"
+@@ -37,3 +37,10 @@ WECHAT_PAY_REFUND_NOTIFY_URL=https://api.mashishi.com/api/pay/wechat/refund/noti
+ WECHAT_PAY_PUBLIC_KEY_ID=
+ WECHAT_PAY_PUBLIC_KEY_PATH=
+ WECHAT_PAY_PUBLIC_KEY_PEM=
++WECHAT_PAY_TRANSFER_SCENE_ID=1000
++WECHAT_PAY_TRANSFER_ACTIVITY_NAME=知禧返现
++WECHAT_PAY_TRANSFER_REWARD_DESC=消费返现奖励
++WECHAT_PAY_TRANSFER_USER_RECV_PERCEPTION=活动奖励
++WECHAT_PAY_TRANSFER_REPORT_INFO_TYPE=
++WECHAT_PAY_TRANSFER_REPORT_INFO_CONTENT=
++WECHAT_PAY_TRANSFER_REMARK_PREFIX=知禧返现

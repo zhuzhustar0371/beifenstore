@@ -1,0 +1,15 @@
+﻿- initialize
+System.Management.Automation.RemoteException
+√ IDE server has started, listening on http://127.0.0.1:55906
+- preparing
+- Fetching AppID () permissions
+√ Using AppID: wx036abe08723e1e24
+- Upload
+
+┌─────────┬────────────┬─────────────┐
+│ (index) │    size    │ size (Byte) │
+├─────────┼────────────┼─────────────┤
+│  TOTAL  │ '326.4 KB' │   334192    │
+└─────────┴────────────┴─────────────┘
+
+√ upload
