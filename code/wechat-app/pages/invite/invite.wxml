@@ -1,0 +1,77 @@
+<view class="page">
+  <view class="tabs" wx:if="{{showTabs}}">
+    <text
+      class="tab {{tab === 'code' ? 'active' : ''}}"
+      data-tab="code"
+      bindtap="switchTab"
+    >{{texts.tabCode}}</text>
+    <text
+      class="tab {{tab === 'record' ? 'active' : ''}}"
+      data-tab="record"
+      bindtap="switchTab"
+    >{{texts.tabRecord}}</text>
+  </view>
+
+  <block wx:if="{{tab === 'code'}}">
+    <view class="invite-card card">
+      <text class="title">{{texts.myInviteCode}}</text>
+      <text class="code">{{inviteCode || '------'}}</text>
+      <button class="btn-copy" bindtap="copyCode">{{texts.copyInviteCode}}</button>
+    </view>
+    <view class="bind-invite-card card">
+      <text class="bind-title">填写邀请码</text>
+      <block wx:if="{{hasInviter === true}}">
+        <view class="bind-bound-row">
+          <text class="bind-bound-icon">✓</text>
+          <text class="bind-bound-text">你已绑定邀请关系</text>
+        </view>
+      </block>
+      <block wx:elif="{{hasInviter === false}}">
+        <text class="bind-tip">若有人邀请你加入，可在此填写邀请码完成绑定</text>
+        <view class="bind-row">
+          <input
+            class="bind-input"
+            placeholder="输入邀请人的邀请码"
+            value="{{bindCodeInput}}"
+            maxlength="32"
+            bindinput="onBindCodeInput"
+          />
+          <button class="bind-btn" bindtap="submitBindCode" loading="{{bindingCode}}">绑定</button>
+        </view>
+      </block>
+      <block wx:else>
+        <text class="bind-loading">加载中...</text>
+      </block>
+    </view>
+
+    <view class="qrcode-card card">
+      <text class="title">{{texts.inviteQrcode}}</text>
+      <view class="qrcode-wrap">
+        <image wx:if="{{qrcodeUrl}}" class="qrcode" src="{{qrcodeUrl}}" mode="aspectFit" />
+        <text wx:elif="{{qrcodeLoading}}" class="qrcode-status">{{texts.qrcodeLoading}}</text>
+        <view wx:else class="qrcode-empty">
+          <text class="qrcode-status">{{qrcodeError || texts.noQrcode}}</text>
+          <button wx:if="{{qrcodeError}}" class="btn-reload" bindtap="reloadQrcode">{{texts.reloadQrcode}}</button>
+        </view>
+      </view>
+      <text class="tip">{{texts.qrcodeTip}}</text>
+      <button class="btn-share" open-type="share">{{texts.shareInvite}}</button>
+    </view>
+  </block>
+
+  <block wx:if="{{tab === 'record'}}">
+    <view class="list" wx:if="{{recordList.length > 0}}">
+      <view class="record-item list-item" wx:for="{{recordList}}" wx:key="id">
+        <image class="record-avatar" src="{{item.avatarUrl || '/images/avatar-default.png'}}" mode="aspectFill" />
+        <view class="record-main">
+          <text class="name">{{item.nickName || texts.userPrefix}}</text>
+          <text class="time">{{item.bindTime}}</text>
+        </view>
+        <text class="tag {{item.hasFirstOrder ? 'done' : 'pending'}}">{{item.hasFirstOrder ? texts.firstOrderDone : texts.firstOrderPending}}</text>
+      </view>
+    </view>
+    <view class="empty-state" wx:else>
+      <text>{{texts.emptyRecord}}</text>
+    </view>
+  </block>
+</view>

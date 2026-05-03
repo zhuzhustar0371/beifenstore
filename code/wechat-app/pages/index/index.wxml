@@ -1,0 +1,129 @@
+<view class="container">
+  <view class="hero-banner">
+    <view class="hero-content">
+      <view class="hero-tag">官方严选</view>
+      <text class="hero-title">知禧好物 · 净享生活</text>
+      <text class="hero-sub">品质洗护 / 自购返现 / 邀请有礼</text>
+    </view>
+  </view>
+
+  <view class="content-stack">
+    <view class="section-header">
+      <text class="section-title">优选推荐</text>
+    </view>
+
+    <view class="floating-action-rail">
+      <button class="floating-action-btn floating-action-btn--benefits" bindtap="scrollToBenefits">
+        <text class="floating-action-btn__label">权益</text>
+      </button>
+      <button class="floating-action-btn floating-action-btn--rules" bindtap="scrollToRules">
+        <text class="floating-action-btn__label">规则</text>
+      </button>
+    </view>
+
+    <view wx:if="{{loading}}" class="loading-card">
+      <text>加载中...</text>
+    </view>
+
+    <block wx:elif="{{visibleProducts && visibleProducts.length > 0}}">
+      <view class="product-list {{hasProductGrid ? 'product-list-grid' : ''}}">
+        <view class="product-card" wx:for="{{visibleProducts}}" wx:key="id" bindtap="goProduct" data-id="{{item.id}}">
+          <view class="product-image-box">
+            <image class="product-image" src="{{item.imageUrl || '/images/product-placeholder.png'}}" mode="aspectFill"></image>
+            <view class="tag-row">
+              <text class="tag-hot" wx:if="{{item.featured || index === 0}}">热卖</text>
+              <text class="tag-soft" wx:if="{{item.featured || index === 0}}">优选</text>
+            </view>
+          </view>
+          <view class="product-content">
+            <text class="product-name text-ellipsis">{{item.name}}</text>
+            <text class="product-desc text-ellipsis">{{item.description || '温和洁净，适合家庭日常使用'}}</text>
+            <view class="product-bottom">
+              <view class="price-box">
+                <text class="price-symbol">¥</text>
+                <text class="price-value">{{item.priceText || item.price}}</text>
+              </view>
+              <view class="buy-btn-icon">+</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <view wx:else class="empty-card">
+      <text>暂无商品上架</text>
+    </view>
+
+    <view id="benefits-section" class="benefits-section-anchor">
+      <view class="section-header">
+        <view class="benefits-header-main">
+          <view class="benefits-accent"></view>
+          <text class="benefits-title">知禧会员权益</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="benefits-card">
+      <view class="summary-card">
+        <text class="summary-price">{{featuredPriceText}} 元 · 当前主推商品价格 · 支持返现</text>
+        <text class="summary-desc">强力去污 · 无荧光添加 · 全家适用</text>
+      </view>
+
+      <view class="benefits-section">
+        <text class="benefits-section-title">三步看懂商品独立返现</text>
+        <view class="steps-list">
+          <view class="step-item">
+            <view class="step-index">1</view>
+            <text class="step-text">购买商品，当前商品开始独立累计返现顺序</text>
+          </view>
+          <view class="step-item">
+            <view class="step-index">2</view>
+            <text class="step-text">邀请好友完成当前商品首单，邀请进度按商品独立统计</text>
+          </view>
+          <view class="step-item">
+            <view class="step-index">3</view>
+            <text class="step-text">返现金额以当前商品规则为准，可在详情页查看完整说明</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="section-divider"></view>
+
+      <view class="benefits-section share-section">
+        <text class="benefits-section-title">分享不止返现</text>
+        <text class="benefits-section-subtitle">好物自己用，推荐还能拿奖励</text>
+        <view class="share-list">
+          <view class="share-item">
+            <view class="share-dot"></view>
+            <text class="share-text">好友购买不同商品时，返现和邀请进度分别计算</text>
+          </view>
+          <view class="share-item">
+            <view class="share-dot"></view>
+            <text class="share-text">规则清晰透明，只统计一级邀请</text>
+          </view>
+          <view class="share-item">
+            <view class="share-dot"></view>
+            <text class="share-text">每件商品都可以在详情页查看对应返现规则</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="footer-slogan">
+        <text class="footer-title">好产品 + 清晰规则 = 更顺手的购买与分享体验</text>
+        <text class="footer-subtitle">知禧净享生活，从首页就能快速找到重点内容</text>
+      </view>
+    </view>
+
+    <view id="rules-section" class="rules-card">
+      <view class="rules-header">
+        <text class="rules-title">活动规则</text>
+      </view>
+      <view class="rules-list">
+        <view class="rule-item" wx:for="{{ruleItems}}" wx:key="index">
+          <text class="rule-index">{{index + 1}}</text>
+          <text class="rule-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
