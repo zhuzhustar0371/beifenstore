@@ -1,0 +1,122 @@
+
+> zhixi-website-frontend@1.0.0 dev
+> vite --host 127.0.0.1 --port 5173
+
+
+  [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m840[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m5173[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/OrderModal.vue, /src/components/LoginModal.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/main.js[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/styles.css[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/FeedbackAlert.vue, /src/components/FeedbackAlert.vue?vue&type=style&index=0&scoped=3393e030&lang.css[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/HomePage.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue, /src/components/LoginModal.vue?vue&type=style&index=0&scoped=8e255f99&lang.css[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/OrderModal.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/UserCenterPage.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/OrderModal.vue, /src/components/LoginModal.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/main.js[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/styles.css[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/FeedbackAlert.vue, /src/components/FeedbackAlert.vue?vue&type=style&index=0&scoped=3393e030&lang.css[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/HomePage.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/LoginModal.vue, /src/components/LoginModal.vue?vue&type=style&index=0&scoped=8e255f99&lang.css[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/OrderModal.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/UserCenterPage.vue[22m
+[2m10:10:35[22m [31m[1m[vite][22m[39m [31mInternal server error: Element is missing end tag.[39m
+  Plugin: [35mvite:vue[39m
+  File: [36mG:/zhiximini/zhixi-website/frontend/src/components/OrderModal.vue[39m:2:3
+[33m  1  |  <template>
+  2  |    <div class="modal-overlay" @click.self="$emit('close')">
+     |     ^
+  3  |      <div class="modal modal-order">
+  4  |        <div class="modal-header">[39m
+      at createCompilerError (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1378:17)
+      at emitError (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3014:5)
+      at Object.onclosetag (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:2381:13)
+      at Tokenizer.stateInClosingTagName (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:799:16)
+      at Tokenizer.parse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1157:16)
+      at Object.baseParse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3053:13)
+      at Object.parse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-dom\dist\compiler-dom.cjs.js:910:23)
+      at Object.parse$1 [as parse] (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:1824:24)
+      at createDescriptor (file:///G:/zhiximini/zhixi-website/frontend/node_modules/@vitejs/plugin-vue/dist/index.mjs:71:43)
+      at handleHotUpdate (file:///G:/zhiximini/zhixi-website/frontend/node_modules/@vitejs/plugin-vue/dist/index.mjs:2198:26)
+[2m10:10:35[22m [31m[1m[vite][22m[39m Pre-transform error: Element is missing end tag.
+[2m10:10:35[22m [31m[1m[vite][22m[39m [31mInternal server error: Element is missing end tag.[39m
+  Plugin: [35mvite:vue[39m
+  File: [36mG:/zhiximini/zhixi-website/frontend/src/components/OrderModal.vue[39m:2:3
+[33m  1  |  <template>
+  2  |    <div class="modal-overlay" @click.self="$emit('close')">
+     |     ^
+  3  |      <div class="modal modal-order">
+  4  |        <div class="modal-header">[39m
+      at createCompilerError (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1378:17)
+      at emitError (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3014:5)
+      at Object.onclosetag (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:2381:13)
+      at Tokenizer.stateInClosingTagName (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:799:16)
+      at Tokenizer.parse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1157:16)
+      at Object.baseParse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3053:13)
+      at Object.parse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-dom\dist\compiler-dom.cjs.js:910:23)
+      at Object.parse$1 [as parse] (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:1824:24)
+      at createDescriptor (file:///G:/zhiximini/zhixi-website/frontend/node_modules/@vitejs/plugin-vue/dist/index.mjs:71:43)
+      at handleHotUpdate (file:///G:/zhiximini/zhixi-website/frontend/node_modules/@vitejs/plugin-vue/dist/index.mjs:2198:26)
+[2m10:10:35[22m [31m[1m[vite][22m[39m [31mInternal server error: Element is missing end tag.[39m
+  Plugin: [35mvite:vue[39m
+  File: [36mG:/zhiximini/zhixi-website/frontend/src/components/OrderModal.vue[39m:2:3
+[33m  1  |  <template>
+  2  |    <div class="modal-overlay" @click.self="$emit('close')">
+     |     ^
+  3  |      <div class="modal modal-order">
+  4  |        <div class="modal-header">[39m
+      at createCompilerError (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1378:17)
+      at emitError (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3014:5)
+      at Object.onclosetag (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:2381:13)
+      at Tokenizer.stateInClosingTagName (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:799:16)
+      at Tokenizer.parse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1157:16)
+      at Object.baseParse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3053:13)
+      at Object.parse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-dom\dist\compiler-dom.cjs.js:910:23)
+      at Object.parse$1 [as parse] (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:1824:24)
+      at createDescriptor (file:///G:/zhiximini/zhixi-website/frontend/node_modules/@vitejs/plugin-vue/dist/index.mjs:71:43)
+      at handleHotUpdate (file:///G:/zhiximini/zhixi-website/frontend/node_modules/@vitejs/plugin-vue/dist/index.mjs:2198:26)
+[2m10:10:35[22m [31m[1m[vite][22m[39m [31mInternal server error: Element is missing end tag.[39m
+  Plugin: [35mvite:vue[39m
+  File: [36mG:/zhiximini/zhixi-website/frontend/src/components/OrderModal.vue[39m:2:3
+[33m  1  |  <template>
+  2  |    <div class="modal-overlay" @click.self="$emit('close')">
+     |     ^
+  3  |      <div class="modal modal-order">
+  4  |        <div class="modal-header">[39m
+      at createCompilerError (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1378:17)
+      at emitError (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3014:5)
+      at Object.onclosetag (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:2381:13)
+      at Tokenizer.stateInClosingTagName (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:799:16)
+      at Tokenizer.parse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1157:16)
+      at Object.baseParse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3053:13)
+      at Object.parse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-dom\dist\compiler-dom.cjs.js:910:23)
+      at Object.parse$1 [as parse] (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:1824:24)
+      at createDescriptor (file:///G:/zhiximini/zhixi-website/frontend/node_modules/@vitejs/plugin-vue/dist/index.mjs:71:43)
+      at handleHotUpdate (file:///G:/zhiximini/zhixi-website/frontend/node_modules/@vitejs/plugin-vue/dist/index.mjs:2198:26)
+[2m10:10:35[22m [31m[1m[vite][22m[39m [31mInternal server error: Element is missing end tag.[39m
+  Plugin: [35mvite:vue[39m
+  File: [36mG:/zhiximini/zhixi-website/frontend/src/components/OrderModal.vue[39m:2:3
+[33m  1  |  <template>
+  2  |    <div class="modal-overlay" @click.self="$emit('close')">
+     |     ^
+  3  |      <div class="modal modal-order">
+  4  |        <div class="modal-header">[39m
+      at createCompilerError (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1378:17)
+      at emitError (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3014:5)
+      at Object.onclosetag (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:2381:13)
+      at Tokenizer.stateInClosingTagName (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:799:16)
+      at Tokenizer.parse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1157:16)
+      at Object.baseParse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3053:13)
+      at Object.parse (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-dom\dist\compiler-dom.cjs.js:910:23)
+      at Object.parse$1 [as parse] (G:\zhiximini\zhixi-website\frontend\node_modules\@vue\compiler-sfc\dist\compiler-sfc.cjs.js:1824:24)
+      at createDescriptor (file:///G:/zhiximini/zhixi-website/frontend/node_modules/@vitejs/plugin-vue/dist/index.mjs:71:43)
+      at handleHotUpdate (file:///G:/zhiximini/zhixi-website/frontend/node_modules/@vitejs/plugin-vue/dist/index.mjs:2198:26)
+[2m10:13:09[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/styles.css[22m
+[2m10:13:09[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/OrderModal.vue[22m
