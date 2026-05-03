@@ -1,0 +1,86 @@
+<view class="container pb-40" style="padding-top: {{navBarHeight}}px;">
+  <view
+    class="user-nav"
+    style="height: {{navBarHeight}}px;"
+    hover-class="user-nav-hover"
+    hover-start-time="0"
+    hover-stay-time="120"
+  >
+    <view class="user-nav-highlight"></view>
+    <view class="user-nav-status" style="height: {{statusBarHeight}}px;"></view>
+    <view class="user-nav-content" style="height: {{navContentHeight}}px;">
+      <text class="user-nav-title">我的</text>
+    </view>
+  </view>
+
+  <view class="header-bg"></view>
+
+  <view class="user-card" bindtap="goLogin">
+    <view class="avatar-wrap">
+      <image class="avatar" wx:if="{{userInfo && userInfo.avatarUrl}}" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+      <open-data class="avatar" wx:elif="{{hasLogin}}" type="userAvatarUrl"></open-data>
+      <image class="avatar" wx:else src="/images/avatar-default.png" mode="aspectFill" />
+    </view>
+    <view class="info-wrap">
+      <text class="nickname">{{userInfo ? (userInfo.nickname || '微信用户') : '点击登录/注册'}}</text>
+      <open-data class="nickname" wx:if="{{hasLogin && (!userInfo || !userInfo.nickname)}}" type="userNickName"></open-data>
+      <text class="user-subline" wx:if="{{hasLogin && userInfo && userInfo.inviteCode}}">邀请码 {{userInfo.inviteCode}}</text>
+      <text class="user-subline" wx:elif="{{hasLogin}}">微信已授权登录</text>
+      <text class="login-tip" wx:else>尊享自购返现与邀请特权</text>
+    </view>
+    <view class="arrow-icon" wx:if="{{!hasLogin}}">›</view>
+  </view>
+
+  <view class="assets-box">
+    <view class="asset-item" bindtap="goCashback">
+      <text class="asset-val">{{stats.balance}}</text>
+      <text class="asset-label">待结算(元)</text>
+    </view>
+    <view class="asset-item divider-left" bindtap="goCashback">
+      <text class="asset-val">{{stats.totalEarned}}</text>
+      <text class="asset-label">已到账(元)</text>
+    </view>
+    <view class="asset-item divider-left" bindtap="goInviteRecord">
+      <text class="asset-val">{{stats.inviteCount}}</text>
+      <text class="asset-label">邀请人数</text>
+    </view>
+  </view>
+
+  <view class="action-grid card-box">
+    <view class="grid-item" bindtap="goOrderList">
+      <image class="grid-icon grid-icon-image" src="/images/order-icon.png" mode="aspectFit" />
+      <text>我的订单</text>
+    </view>
+    <view class="grid-item" bindtap="goCashback">
+      <image class="grid-icon grid-icon-image" src="/images/cashback-icon.png" mode="aspectFit" />
+      <text>收益明细</text>
+    </view>
+    <view class="grid-item" bindtap="goInvite">
+      <image class="grid-icon grid-icon-image" src="/images/invite-icon.png" mode="aspectFit" />
+      <text>邀请海报</text>
+    </view>
+    <view class="grid-item" bindtap="goRules">
+      <image class="grid-icon grid-icon-image" src="/images/rule-icon.png" mode="aspectFit" />
+      <text>规则说明</text>
+    </view>
+  </view>
+
+  <view class="menu-list card-box">
+    <view class="menu-item" bindtap="goAddress">
+      <text class="menu-label">管理收货地址</text>
+      <text class="arrow">›</text>
+    </view>
+    <button class="menu-item contact-btn" open-type="contact">
+      <text class="menu-label">联系专属客服</text>
+      <text class="arrow">›</text>
+    </button>
+    <view class="menu-item wechat-copy-item" bindtap="copyWechatId">
+      <text class="menu-label wechat-id-label">专属客服微信</text>
+      <text class="wechat-id-value">missrong318</text>
+    </view>
+  </view>
+
+  <view class="logout-box" wx:if="{{hasLogin}}">
+    <button class="logout-btn" bindtap="logout">退出登录</button>
+  </view>
+</view>
