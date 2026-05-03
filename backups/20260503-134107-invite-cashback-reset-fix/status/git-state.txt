@@ -1,0 +1,137 @@
+﻿backend branch: release/20260423-invite-cashback-linkage
+backend head: 7796a00002c952365107c07e880ae352ee455cde
+
+backend status --short:
+ M pom.xml
+ M src/main/java/com/zhixi/backend/common/ApiResponse.java
+ M src/main/java/com/zhixi/backend/config/DatabaseMigrationRunner.java
+ M src/main/java/com/zhixi/backend/controller/AddressController.java
+ M src/main/java/com/zhixi/backend/controller/AdminController.java
+ M src/main/java/com/zhixi/backend/controller/AuthController.java
+ M src/main/java/com/zhixi/backend/controller/CashbackController.java
+ M src/main/java/com/zhixi/backend/controller/InviteController.java
+ M src/main/java/com/zhixi/backend/controller/OrderController.java
+ M src/main/java/com/zhixi/backend/dto/AdminCashbackVO.java
+ M src/main/java/com/zhixi/backend/dto/AdminOrderVO.java
+ M src/main/java/com/zhixi/backend/dto/AdminProductUpsertRequest.java
+ M src/main/java/com/zhixi/backend/dto/CreateOrderRequest.java
+ M src/main/java/com/zhixi/backend/dto/WechatMiniappLoginRequest.java
+ M src/main/java/com/zhixi/backend/dto/WechatMiniappQrConfirmRequest.java
+ M src/main/java/com/zhixi/backend/mapper/AdminMapper.java
+ M src/main/java/com/zhixi/backend/mapper/CashbackRecordMapper.java
+ M src/main/java/com/zhixi/backend/mapper/InviteRelationMapper.java
+ M src/main/java/com/zhixi/backend/mapper/OrderMapper.java
+ M src/main/java/com/zhixi/backend/mapper/ProductMapper.java
+ M src/main/java/com/zhixi/backend/mapper/ShippingRecordMapper.java
+ M src/main/java/com/zhixi/backend/mapper/UserSessionMapper.java
+ M src/main/java/com/zhixi/backend/model/CashbackRecord.java
+ M src/main/java/com/zhixi/backend/model/Order.java
+ M src/main/java/com/zhixi/backend/model/Product.java
+ M src/main/java/com/zhixi/backend/service/AdminManageService.java
+ M src/main/java/com/zhixi/backend/service/CaptchaService.java
+ M src/main/java/com/zhixi/backend/service/CashbackService.java
+ M src/main/java/com/zhixi/backend/service/MiniappAccessTokenService.java
+ M src/main/java/com/zhixi/backend/service/OrderService.java
+ M src/main/java/com/zhixi/backend/service/ProductService.java
+ M src/main/java/com/zhixi/backend/service/UserAuthService.java
+ M src/main/java/com/zhixi/backend/service/UserService.java
+ M src/main/java/com/zhixi/backend/service/WechatPayService.java
+ M src/main/java/com/zhixi/backend/service/WithdrawalRequestService.java
+ M src/main/resources/application.yml
+ M src/main/resources/schema.sql
+?? src/main/java/com/zhixi/backend/dto/AdminRefundApproveRequest.java
+?? src/main/java/com/zhixi/backend/dto/AdminRefundRejectRequest.java
+?? src/main/java/com/zhixi/backend/dto/UserRefundRequestCreateRequest.java
+?? src/main/java/com/zhixi/backend/dto/WechatMiniappPrecheckRequest.java
+?? src/main/java/com/zhixi/backend/mapper/InviteProductRelationMapper.java
+?? src/main/java/com/zhixi/backend/mapper/OrderMapper.java.bak.20260503
+?? src/main/java/com/zhixi/backend/model/InviteProductRelation.java
+?? src/main/java/com/zhixi/backend/model/Order.java.bak.20260503
+?? src/main/java/com/zhixi/backend/service/OrderService.java.bak.20260503
+?? src/main/resources/schema.sql.bak.20260503
+
+backend diff --stat:
+ pom.xml                                            |   2 +
+ .../java/com/zhixi/backend/common/ApiResponse.java |   2 +-
+ .../backend/config/DatabaseMigrationRunner.java    | 228 +++++++++++++
+ .../backend/controller/AddressController.java      |   2 +-
+ .../zhixi/backend/controller/AdminController.java  |  61 +++-
+ .../zhixi/backend/controller/AuthController.java   |   6 +
+ .../backend/controller/CashbackController.java     |  15 +-
+ .../zhixi/backend/controller/InviteController.java |  34 +-
+ .../zhixi/backend/controller/OrderController.java  |  13 +
+ .../com/zhixi/backend/dto/AdminCashbackVO.java     |   1 +
+ .../java/com/zhixi/backend/dto/AdminOrderVO.java   |   7 +
+ .../backend/dto/AdminProductUpsertRequest.java     |  92 +++++-
+ .../com/zhixi/backend/dto/CreateOrderRequest.java  |  29 +-
+ .../backend/dto/WechatMiniappLoginRequest.java     |   2 +-
+ .../backend/dto/WechatMiniappQrConfirmRequest.java |   4 +-
+ .../java/com/zhixi/backend/mapper/AdminMapper.java |   6 +
+ .../zhixi/backend/mapper/CashbackRecordMapper.java |  89 ++++--
+ .../zhixi/backend/mapper/InviteRelationMapper.java |   4 +
+ .../java/com/zhixi/backend/mapper/OrderMapper.java | 101 ++++--
+ .../com/zhixi/backend/mapper/ProductMapper.java    |  27 +-
+ .../zhixi/backend/mapper/ShippingRecordMapper.java |   4 +
+ .../zhixi/backend/mapper/UserSessionMapper.java    |   4 +
+ .../com/zhixi/backend/model/CashbackRecord.java    |   9 +
+ src/main/java/com/zhixi/backend/model/Order.java   | 126 ++++++++
+ src/main/java/com/zhixi/backend/model/Product.java |  63 ++++
+ .../zhixi/backend/service/AdminManageService.java  | 220 ++++++++++++-
+ .../com/zhixi/backend/service/CaptchaService.java  |   2 +-
+ .../com/zhixi/backend/service/CashbackService.java | 211 +++++++-----
+ .../backend/service/MiniappAccessTokenService.java |  12 +-
+ .../com/zhixi/backend/service/OrderService.java    | 352 ++++++++++++++++++---
+ .../com/zhixi/backend/service/ProductService.java  |  12 +-
+ .../com/zhixi/backend/service/UserAuthService.java | 136 +++++---
+ .../com/zhixi/backend/service/UserService.java     |   9 +
+ .../zhixi/backend/service/WechatPayService.java    |  49 +--
+ .../backend/service/WithdrawalRequestService.java  | 144 ++++++++-
+ src/main/resources/application.yml                 |   6 +-
+ src/main/resources/schema.sql                      |  34 +-
+ 37 files changed, 1823 insertions(+), 295 deletions(-)
+
+frontend branch: release/20260423-invite-cashback-linkage
+frontend head: 41d5e36872b5c04921f86960006d501ee3c2d4df
+
+frontend status --short:
+ M admin-frontend/index.html
+ M admin-frontend/src/App.vue
+ M admin-frontend/src/api.js
+ M admin-frontend/src/layouts/MainLayout.vue
+ M admin-frontend/src/router.js
+ M admin-frontend/src/styles.css
+ M admin-frontend/src/views/CashbacksPage.vue
+ M admin-frontend/src/views/InvitesPage.vue
+ M admin-frontend/src/views/OrdersPage.vue
+ M admin-frontend/src/views/ProductsPage.vue
+ M admin-frontend/src/views/UsersPage.vue
+ M admin-frontend/tailwind.config.js
+ M frontend/index.html
+ M frontend/src/styles.css
+ M frontend/src/views/HomePage.vue
+ M frontend/src/views/RulesPage.vue
+?? .change-logs/
+?? admin-frontend/.claude/
+?? admin-frontend/src/components/RefundRequestToast.vue
+?? admin-frontend/src/composables/
+?? admin-frontend/src/views/AuditLogsPage.vue
+?? frontend-dist-upload/
+
+frontend diff --stat:
+ admin-frontend/index.html                  |   2 +-
+ admin-frontend/src/App.vue                 |  34 +-
+ admin-frontend/src/api.js                  |  59 ++-
+ admin-frontend/src/layouts/MainLayout.vue  |  81 +++-
+ admin-frontend/src/router.js               |   2 +
+ admin-frontend/src/styles.css              | 245 ++++++++--
+ admin-frontend/src/views/CashbacksPage.vue | 255 ++++++++++-
+ admin-frontend/src/views/InvitesPage.vue   |  56 ++-
+ admin-frontend/src/views/OrdersPage.vue    | 692 +++++++++++++++++++++++++++--
+ admin-frontend/src/views/ProductsPage.vue  | 428 ++++++++++++++++--
+ admin-frontend/src/views/UsersPage.vue     |  41 +-
+ admin-frontend/tailwind.config.js          |  39 ++
+ frontend/index.html                        |   2 +-
+ frontend/src/styles.css                    |  59 ++-
+ frontend/src/views/HomePage.vue            |  43 +-
+ frontend/src/views/RulesPage.vue           |  87 ++--
+ 16 files changed, 1924 insertions(+), 201 deletions(-)
